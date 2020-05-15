@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
+
+	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
+	"gopkg.in/yaml.v2"
 )
 
 func main() {
@@ -23,5 +24,5 @@ func main() {
 
 	enc := yaml.NewEncoder(os.Stdout)
 	enc.Encode(foo)
-	fmt.Println(foo)
+	fmt.Println(foo.Types["AnotherType"])
 }

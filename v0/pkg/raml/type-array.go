@@ -11,7 +11,7 @@ func NewArray() *Array {
 }
 
 type Array struct {
-	Base
+	Base `yaml:",inline"`
 
 	UniqueItems *bool    `yaml:"uniqueItems"`
 	Items       *TypeDef `yaml:"items"`

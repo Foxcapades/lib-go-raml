@@ -18,7 +18,7 @@ func NewInteger() *Integer {
 }
 
 type Integer struct {
-	Base
+	Base `yaml:",inline"`
 
 	Minimum    *int64         `yaml:"minimum,omitempty"`
 	Maximum    *int64         `yaml:"maximum,omitempty"`

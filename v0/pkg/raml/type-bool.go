@@ -7,7 +7,7 @@ func NewBoolean() *Boolean {
 }
 
 type Boolean struct {
-	Base
+	Base `yaml:",inline"`
 }
 
 type boAlias Boolean

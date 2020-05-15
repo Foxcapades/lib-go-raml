@@ -1,7 +1,7 @@
 package raml
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 )
 
@@ -17,6 +17,10 @@ func (t *TypeDef) SetType(k string) {
 	t.object.SetType(k)
 }
 
+func (t *TypeDef) GetRawObject() interface{} {
+	return t.object
+}
+
 func (t *TypeDef) ToRAML() (string, error) {
 	panic("implement me")
 }
@@ -30,65 +34,84 @@ func (t TypeDef) MarshalYAML() (interface{}, error) {
 }
 
 func (t *TypeDef) UnmarshalYAML(fn func(interface{}) error) error {
-	kind := "object"
 	raw := "object"
-	simple := true
 
-	if err := fn(&raw); err != nil {
-		simple = false
-		tmp := typeContainer{}
-		err2 := fn(&tmp)
-		if err2 != nil {
-			return fmt.Errorf("Could not parse type definition as string or object, is your raml syntactically correct?:\n  %s\n  %s", err, err2)
-		}
-		raw = tmp.Type
-	} else {
-		t.object = NewCustomType()
-		return fn(t.object)
+	if err := fn(&raw); err == nil {
+		tmp, _ := getType(parseType(raw), func(interface{}) error { return nil })
+		t.object = tmp
+		return nil
 	}
+
+	container := typeContainer{}
+	err := fn(&container)
+	if err != nil {
+		return errors.New("Could not parse type definition as string or object, is your raml syntactically correct?")
+	}
+
+	raw = container.Type
+
 	if raw == "" {
 		raw = "object"
 	}
 
-	if simple {
-		kind = parseType(raw)
+	if tmp, err := getType(parseType(raw), fn); err != nil {
+		return err
+	} else {
+		t.object = tmp
 	}
+	return nil
+}
 
-	var tmp Type
+func getType(kind string, fn func(interface{}) error) (Type, error) {
 	switch kind {
 	case TypeObject:
-		tmp = NewObject()
+		tmp := NewObject()
+		return tmp, fn(tmp)
 	case TypeArray:
-		tmp = NewArray()
+		tmp := NewArray()
+		return tmp, fn(tmp)
 	case TypeString:
-		tmp = NewString()
+		tmp := NewString()
+		return tmp, fn(tmp)
 	case TypeNumber:
-		tmp = NewNumber()
+		tmp := NewNumber()
+		return tmp, fn(tmp)
 	case TypeInteger:
-		tmp = NewInteger()
+		tmp := NewInteger()
+		return tmp, fn(tmp)
 	case TypeBoolean:
-		tmp = NewBoolean()
+		tmp := NewBoolean()
+		return tmp, fn(tmp)
 	case TypeDateOnly:
-		tmp = NewDateOnly()
+		tmp := NewDateOnly()
+		return tmp, fn(tmp)
 	case TypeTimeOnly:
-		tmp = NewTimeOnly()
+		tmp := NewTimeOnly()
+		return tmp, fn(tmp)
 	case TypeDatetimeOnly:
-		tmp = NewDatetimeOnly()
+		tmp := NewDatetimeOnly()
+		return tmp, fn(tmp)
 	case TypeDatetime:
-		tmp = NewDatetime()
+		tmp := NewDatetime()
+		return tmp, fn(tmp)
 	case TypeFile:
-		tmp = NewFile()
+		tmp := NewFile()
+		return tmp, fn(tmp)
 	case TypeAny:
-		tmp = NewAny()
+		tmp := NewAny()
+		return tmp, fn(tmp)
 	case TypeNil:
-		tmp = NewNil()
+		tmp := NewNil()
+		return tmp, fn(tmp)
 	case TypeUnion:
-		tmp = NewUnion()
+		tmp := NewUnion()
+		tmp.SetType(kind)
+		return tmp, nil
 	default:
-		tmp = NewCustomType()
+		tmp := NewCustomType()
+		tmp.SetType(kind)
+		return tmp, nil
 	}
-	t.object = tmp
-	return fn(tmp)
 }
 
 func parseType(kind string) string {

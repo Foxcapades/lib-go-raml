@@ -20,29 +20,16 @@ func (s *String) ToRAML() (string, error) {
 
 type strAlias String
 
-func (s *String) MarshalYAML() (interface{}, error) {
+func (s String) MarshalYAML() (interface{}, error) {
 	if s.canSimplify() {
 		return s.Type, nil
 	}
-	return strAlias(*s), nil
+	return strAlias(s), nil
 }
 
 func (s *String) canSimplify() bool {
-	if !s.Base.canSimplify() {
-		return false
-	}
-
-	if s.Pattern != nil {
-		return false
-	}
-
-	if s.MinLength != nil {
-		return false
-	}
-
-	if s.MaxLength != nil {
-		return false
-	}
-
-	return true
+	return s.Base.canSimplify() &&
+		s.Pattern == nil &&
+		s.MinLength == nil &&
+		s.MaxLength == nil
 }

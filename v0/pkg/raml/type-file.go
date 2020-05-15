@@ -12,7 +12,7 @@ func NewFile() *File {
 }
 
 type File struct {
-	Base
+	Base `yaml:",inline"`
 
 	FileTypes []string `yaml:"fileTypes,omitempty"`
 	MinLength *uint    `yaml:"minLength,omitempty"`

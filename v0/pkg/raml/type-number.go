@@ -27,7 +27,7 @@ func NewNumber() *Number {
 }
 
 type Number struct {
-	Base
+	Base `yaml:",inline"`
 
 	Minimum    *float64      `yaml:"minimum,omitempty"`
 	Maximum    *float64      `yaml:"maximum,omitempty"`
@@ -41,29 +41,17 @@ func (n *Number) ToRAML() (string, error) {
 
 type numAlias Number
 
-func (n *Number) MarshalYAML() (interface{}, error) {
+func (n Number) MarshalYAML() (interface{}, error) {
 	if n.canSimplify() {
 		return n.Type, nil
 	}
-	return numAlias(*n), nil
+	return numAlias(n), nil
 }
 
 func (n *Number) canSimplify() bool {
-	if !n.Base.canSimplify() {
-		return false
-	}
-	if n.Maximum != nil {
-		return false
-	}
-	if n.Minimum != nil {
-		return false
-	}
-	if n.Format != nil {
-		return false
-	}
-	if n.MultipleOf != nil {
-		return false
-	}
-
-	return true
+	return n.Base.canSimplify() &&
+		n.Maximum == nil &&
+		n.Minimum == nil &&
+		n.Format == nil &&
+		n.MultipleOf == nil
 }

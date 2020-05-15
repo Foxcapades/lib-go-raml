@@ -19,7 +19,7 @@ func NewDatetimeOnly() *GenericDatetime {
 }
 
 type GenericDatetime struct {
-	Base
+	Base `yaml:",inline"`
 }
 
 type genAlias GenericDatetime

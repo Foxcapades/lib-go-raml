@@ -28,6 +28,9 @@ func (t *TypeDef) UnmarshalYAML(fn func(interface{}) error) error {
 			return fmt.Errorf("Could not parse type definition as string or object, is your raml syntactically correct?:\n  %s\n  %s", err, err2)
 		}
 		raw = tmp.Type
+	} else {
+		t.object = NewCustomType()
+		return fn(t.object)
 	}
 	if raw == "" {
 		raw = "object"

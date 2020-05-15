@@ -9,6 +9,18 @@ type TypeDef struct {
 	object Type
 }
 
+func (t *TypeDef) GetType() string {
+	return t.object.GetType()
+}
+
+func (t *TypeDef) SetType(k string) {
+	t.object.SetType(k)
+}
+
+func (t *TypeDef) ToRAML() (string, error) {
+	panic("implement me")
+}
+
 type typeContainer struct {
 	Type string `yaml:"type"`
 }

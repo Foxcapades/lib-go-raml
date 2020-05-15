@@ -14,6 +14,14 @@ type Base struct {
 	Required    *bool                  `yaml:"required,omitempty"`
 }
 
+func (b *Base) GetType() string {
+	return b.Type
+}
+
+func (b *Base) SetType(t string) {
+	b.Type = t
+}
+
 func (b *Base) ToRAML() (string, error) {
 	return dataTypeRaml(b)
 }

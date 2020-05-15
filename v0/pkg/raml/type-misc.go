@@ -18,6 +18,9 @@ func NewAny() *Any {
 
 type Any string
 
+func (*Any) SetType(string) {
+}
+
 func (t *Any) GetType() string {
 	return TypeAny
 }
@@ -44,6 +47,9 @@ func NewNil() *Nil {
 
 type Nil string
 
+func (*Nil) SetType(string) {
+}
+
 func (t *Nil) GetType() string {
 	return TypeNil
 }
@@ -69,6 +75,10 @@ func NewUnion() *Union {
 }
 
 type Union string
+
+func (t *Union) SetType(k string) {
+	*t = Union(k)
+}
 
 func (t Union) GetType() string {
 	return string(t)
@@ -97,6 +107,10 @@ func NewCustomType() *CustomType {
 }
 
 type CustomType string
+
+func (t *CustomType) SetType(k string) {
+	*t = CustomType(k)
+}
 
 func (t CustomType) GetType() string {
 	return string(t)

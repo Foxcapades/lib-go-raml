@@ -38,7 +38,3 @@ func (d *Datetime) canSimplify() bool {
 
 	return true
 }
-
-func (d *Datetime) GetType() string {
-	return TypeDatetime
-}

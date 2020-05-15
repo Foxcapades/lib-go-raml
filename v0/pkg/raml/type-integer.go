@@ -26,10 +26,6 @@ type Integer struct {
 	MultipleOf *int64         `yaml:"multipleOf,omitempty"`
 }
 
-func (i *Integer) GetType() string {
-	return TypeInteger
-}
-
 func (i *Integer) ToRAML() (string, error) {
 	return dataTypeRaml(i)
 }

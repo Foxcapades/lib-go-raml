@@ -30,7 +30,3 @@ func (b *GenericDatetime) MarshalYAML() (interface{}, error) {
 	}
 	return genAlias(*b), nil
 }
-
-func (b *GenericDatetime) GetType() string {
-	return b.Type
-}

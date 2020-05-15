@@ -48,7 +48,3 @@ func (f *File) canSimplify() bool {
 
 	return true
 }
-
-func (f *File) GetType() string {
-	return TypeFile
-}

@@ -17,10 +17,6 @@ type Object struct {
 	DiscriminatorValue   *string            `yaml:"discriminatorValue,omitempty"`
 }
 
-func (o *Object) GetType() string {
-	return TypeObject
-}
-
 func (o *Object) ToRAML() (string, error) {
 	return dataTypeRaml(o)
 }

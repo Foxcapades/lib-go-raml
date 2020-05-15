@@ -14,10 +14,6 @@ type String struct {
 	MaxLength *uint   `yaml:"maxLength,omitempty"`
 }
 
-func (s *String) GetType() string {
-	return TypeString
-}
-
 func (s *String) ToRAML() (string, error) {
 	return dataTypeRaml(s)
 }

@@ -35,10 +35,6 @@ type Number struct {
 	MultipleOf *float64      `yaml:"multipleOf,omitempty"`
 }
 
-func (n *Number) GetType() string {
-	return TypeNumber
-}
-
 func (n *Number) ToRAML() (string, error) {
 	return dataTypeRaml(n)
 }

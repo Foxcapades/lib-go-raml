@@ -30,6 +30,7 @@ func (f *File) ToRaml() (string, error) {
 }
 
 type fAlias File
+
 func (f *File) MarshalYAML() (interface{}, error) {
 	if f.canSimplify() {
 		return f.Type, nil
@@ -90,4 +91,8 @@ func (f *File) canSimplify() bool {
 	}
 
 	return true
+}
+
+func (f *File) GetType() string {
+	return TypeFile
 }

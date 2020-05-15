@@ -3,16 +3,19 @@ package raml
 const TypeString = "string"
 
 func NewString() *String {
-	return &String{Base: Base{Type: TypeString},
-	}
+	return &String{Base: Base{Type: TypeString}}
 }
 
 type String struct {
-	Base  `yaml:",inline"`
+	Base `yaml:",inline"`
 
 	Pattern   *string `yaml:"pattern,omitempty"`
 	MinLength *uint   `yaml:"minLength,omitempty"`
 	MaxLength *uint   `yaml:"maxLength,omitempty"`
+}
+
+func (s *String) GetType() string {
+	return TypeString
 }
 
 func (s *String) ToRaml() (string, error) {
@@ -20,12 +23,14 @@ func (s *String) ToRaml() (string, error) {
 }
 
 type strAlias String
+
 func (s *String) MarshalYAML() (interface{}, error) {
 	if s.canSimplify() {
 		return s.Type, nil
 	}
 	return strAlias(*s), nil
 }
+
 //
 //func (s *String) UnmarshalYAML(value *yaml.Node) error {
 //	if err := s.Base.UnmarshalYAML(value); err != nil {

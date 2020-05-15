@@ -23,6 +23,7 @@ type GenericDatetime struct {
 }
 
 type genAlias GenericDatetime
+
 func (b *GenericDatetime) MarshalYAML() (interface{}, error) {
 	if b.canSimplify() {
 		return b.Type, nil
@@ -30,3 +31,6 @@ func (b *GenericDatetime) MarshalYAML() (interface{}, error) {
 	return genAlias(*b), nil
 }
 
+func (b *GenericDatetime) GetType() string {
+	return b.Type
+}

@@ -11,12 +11,12 @@ func NewDatetime() *Datetime {
 }
 
 type Datetime struct {
-	Base `yaml:",inline"`
+	Base   `yaml:",inline"`
 	Format *string `yaml:"format,omitempty"`
 }
 
-func (o *Datetime) ToRaml() (string, error) {
-	return dataTypeRaml(o)
+func (d *Datetime) ToRaml() (string, error) {
+	return dataTypeRaml(d)
 }
 
 //func (o *Datetime) UnmarshalYAML(value *yaml.Node) error {
@@ -35,11 +35,12 @@ func (o *Datetime) ToRaml() (string, error) {
 //}
 
 type dtAlias Datetime
-func (b *Datetime) MarshalYAML() (interface{}, error) {
-	if b.canSimplify() {
-		return b.Type, nil
+
+func (d *Datetime) MarshalYAML() (interface{}, error) {
+	if d.canSimplify() {
+		return d.Type, nil
 	}
-	return dtAlias(*b), nil
+	return dtAlias(*d), nil
 }
 
 //func (o *Datetime) assign(key string, val *yaml.Node) error {
@@ -51,13 +52,17 @@ func (b *Datetime) MarshalYAML() (interface{}, error) {
 //	return nil
 //}
 
-func (o *Datetime) canSimplify() bool {
-	if !o.Base.canSimplify() {
+func (d *Datetime) canSimplify() bool {
+	if !d.Base.canSimplify() {
 		return false
 	}
-	if o.Format != nil && *o.Format != DefaultDatetimeFormat {
+	if d.Format != nil && *d.Format != DefaultDatetimeFormat {
 		return false
 	}
 
 	return true
+}
+
+func (d *Datetime) GetType() string {
+	return TypeDatetime
 }

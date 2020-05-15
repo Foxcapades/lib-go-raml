@@ -26,17 +26,23 @@ type Integer struct {
 	MultipleOf *int64         `yaml:"multipleOf,omitempty"`
 }
 
+func (i *Integer) GetType() string {
+	return TypeInteger
+}
+
 func (i *Integer) ToRaml() (string, error) {
 	return dataTypeRaml(i)
 }
 
 type intAlias Integer
+
 func (i *Integer) MarshalYAML() (interface{}, error) {
 	if i.canSimplify() {
 		return i.Type, nil
 	}
 	return intAlias(*i), nil
 }
+
 //
 //func (o *Integer) UnmarshalYAML(value *yaml.Node) error {
 //	if err := o.Base.UnmarshalYAML(value); err != nil {
@@ -79,7 +85,6 @@ func (i *Integer) MarshalYAML() (interface{}, error) {
 //	}
 //	return nil
 //}
-
 
 func (i *Integer) canSimplify() bool {
 	if !i.Base.canSimplify() {

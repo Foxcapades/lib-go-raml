@@ -35,11 +35,16 @@ type Number struct {
 	MultipleOf *float64      `yaml:"multipleOf,omitempty"`
 }
 
+func (n *Number) GetType() string {
+	return TypeNumber
+}
+
 func (n *Number) ToRaml() (string, error) {
 	return dataTypeRaml(n)
 }
 
 type numAlias Number
+
 func (n *Number) MarshalYAML() (interface{}, error) {
 	if n.canSimplify() {
 		return n.Type, nil

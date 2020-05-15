@@ -17,17 +17,23 @@ type Object struct {
 	DiscriminatorValue   *string            `yaml:"discriminatorValue,omitempty"`
 }
 
+func (o *Object) GetType() string {
+	return TypeObject
+}
+
 func (o *Object) ToRaml() (string, error) {
 	return dataTypeRaml(o)
 }
 
 type objAlias Object
+
 func (o *Object) MarshalYAML() (interface{}, error) {
 	if o.canSimplify() {
 		return o.Type, nil
 	}
 	return objAlias(*o), nil
 }
+
 //
 //func (o *Object) UnmarshalYAML(value *yaml.Node) error {
 //	if err := o.Base.UnmarshalYAML(value); err != nil {

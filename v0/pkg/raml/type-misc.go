@@ -18,6 +18,10 @@ func NewAny() *Any {
 
 type Any string
 
+func (t *Any) GetType() string {
+	return TypeAny
+}
+
 func (t *Any) UnmarshalYAML(func(interface{}) error) error {
 	*t = valAny
 	return nil
@@ -40,6 +44,10 @@ func NewNil() *Nil {
 
 type Nil string
 
+func (t *Nil) GetType() string {
+	return TypeNil
+}
+
 func (t *Nil) UnmarshalYAML(func(interface{}) error) error {
 	*t = "nil"
 	return nil
@@ -61,6 +69,10 @@ func NewUnion() *Union {
 }
 
 type Union string
+
+func (t Union) GetType() string {
+	return string(t)
+}
 
 func (t Union) MarshalYAML() (interface{}, error) {
 	return string(t), nil
@@ -85,6 +97,10 @@ func NewCustomType() *CustomType {
 }
 
 type CustomType string
+
+func (t CustomType) GetType() string {
+	return string(t)
+}
 
 func (t *CustomType) UnmarshalYAML(f func(interface{}) error) error {
 	tmp := ""

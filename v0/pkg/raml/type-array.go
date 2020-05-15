@@ -1,7 +1,7 @@
 package raml
 
 const (
-	TypeArray = "array"
+	TypeArray             = "array"
 	DefaultArrayMinLength = uint(0)
 	DefaultArrayMaxLength = uint(2_147_483_647)
 )
@@ -23,13 +23,19 @@ func (a *Array) ToRaml() (string, error) {
 	return dataTypeRaml(a)
 }
 
+func (a *Array) GetType() string {
+	return TypeArray
+}
+
 type arAlias Array
+
 func (a *Array) MarshalYAML() (interface{}, error) {
 	if a.canSimplify() {
 		return a.Type, nil
 	}
 	return arAlias(*a), nil
 }
+
 //
 //func (a *Array) UnmarshalYAML(f func(interface{}) error) error {
 //	return f(a)

@@ -39,7 +39,7 @@ func (n *Number) GetType() string {
 	return TypeNumber
 }
 
-func (n *Number) ToRaml() (string, error) {
+func (n *Number) ToRAML() (string, error) {
 	return dataTypeRaml(n)
 }
 
@@ -51,48 +51,6 @@ func (n *Number) MarshalYAML() (interface{}, error) {
 	}
 	return numAlias(*n), nil
 }
-
-//func (o *Number) UnmarshalYAML(value *yaml.Node) error {
-//	if err := o.Base.UnmarshalYAML(value); err != nil {
-//		return err
-//	}
-//
-//	for i := 0; i < len(value.Content); i++ {
-//		key := value.Content[i].Value
-//		i++
-//		if err := o.assign(key, value.Content[i]); err != nil {
-//			return err
-//		}
-//	}
-//	return nil
-//}
-//
-//func (o *Number) assign(key string, val *yaml.Node) error {
-//	switch key {
-//	case keyMinimum:
-//		tmp, err := strconv.ParseFloat(val.Value, 64)
-//		if err != nil {
-//			return err
-//		}
-//		o.Minimum = &tmp
-//	case keyMaximum:
-//		tmp, err := strconv.ParseFloat(val.Value, 64)
-//		if err != nil {
-//			return err
-//		}
-//		o.Minimum = &tmp
-//	case keyFormat:
-//		tmp := NumberFormat(val.Value)
-//		o.Format = &tmp
-//	case keyMultipleOf:
-//		tmp, err := strconv.ParseFloat(val.Value, 64)
-//		if err != nil {
-//			return err
-//		}
-//		o.MultipleOf = &tmp
-//	}
-//	return nil
-//}
 
 func (n *Number) canSimplify() bool {
 	if !n.Base.canSimplify() {

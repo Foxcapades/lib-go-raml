@@ -6,7 +6,7 @@ import (
 )
 
 type TypeDef struct {
-	object RamlType
+	object Type
 }
 
 type typeContainer struct {
@@ -42,7 +42,7 @@ func (t *TypeDef) UnmarshalYAML(fn func(interface{}) error) error {
 		kind = parseType(raw)
 	}
 
-	var tmp RamlType
+	var tmp Type
 	switch kind {
 	case TypeObject:
 		tmp = NewObject()
@@ -78,19 +78,6 @@ func (t *TypeDef) UnmarshalYAML(fn func(interface{}) error) error {
 	t.object = tmp
 	return fn(tmp)
 }
-
-//func getType(val *yaml.Node) (kind, raw string) {
-//	kind = TypeObject
-//	raw = TypeObject
-//	for i := 0; i < len(val.Content); i++ {
-//		if val.Content[i].Value == keyType {
-//			raw = val.Content[i+1].Value
-//			kind = parseType(raw)
-//			break
-//		}
-//	}
-//	return
-//}
 
 func parseType(kind string) string {
 	if strings.Index(kind, "|") > 0 {

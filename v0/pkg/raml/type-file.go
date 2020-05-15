@@ -1,12 +1,6 @@
 package raml
 
 const (
-	keyFileTypes = "fileTypes"
-	keyMinLength = "minLength"
-	keyMaxLength = "maxLength"
-)
-
-const (
 	TypeFile = "file"
 
 	DefaultFileMinLength = uint(0)
@@ -25,7 +19,7 @@ type File struct {
 	MaxLength *uint    `yaml:"maxLength,omitempty"`
 }
 
-func (f *File) ToRaml() (string, error) {
+func (f *File) ToRAML() (string, error) {
 	return dataTypeRaml(f)
 }
 
@@ -37,44 +31,6 @@ func (f *File) MarshalYAML() (interface{}, error) {
 	}
 	return fAlias(*f), nil
 }
-
-//func (o *File) UnmarshalYAML(value *yaml.Node) error {
-//	if err := o.Base.UnmarshalYAML(value); err != nil {
-//		return err
-//	}
-//
-//	for i := 0; i < len(value.Content); i++ {
-//		key := value.Content[i].Value
-//		i++
-//		if err := o.assign(key, value.Content[i]); err != nil {
-//			return err
-//		}
-//	}
-//	return nil
-//}
-//
-//func (o *File) assign(key string, val *yaml.Node) error {
-//	switch key {
-//	case keyFileTypes:
-//		o.FileTypes = make([]string, 0, len(val.Content))
-//		for i := range val.Content {
-//			o.FileTypes[i] = val.Content[i].Value
-//		}
-//	case keyMinLength:
-//		tmp, err := ParseUint(val)
-//		if err != nil {
-//			return err
-//		}
-//		o.MinLength = &tmp
-//	case keyMaxLength:
-//		tmp, err := ParseUint(val)
-//		if err != nil {
-//			return err
-//		}
-//		o.MaxLength = &tmp
-//	}
-//	return nil
-//}
 
 func (f *File) canSimplify() bool {
 	if !f.Base.canSimplify() {

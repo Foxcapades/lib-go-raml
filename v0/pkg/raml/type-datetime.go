@@ -15,24 +15,9 @@ type Datetime struct {
 	Format *string `yaml:"format,omitempty"`
 }
 
-func (d *Datetime) ToRaml() (string, error) {
+func (d *Datetime) ToRAML() (string, error) {
 	return dataTypeRaml(d)
 }
-
-//func (o *Datetime) UnmarshalYAML(value *yaml.Node) error {
-//	if err := o.Base.UnmarshalYAML(value); err != nil {
-//		return err
-//	}
-//
-//	for i := 0; i < len(value.Content); i++ {
-//		key := value.Content[i].Value
-//		i++
-//		if err := o.assign(key, value.Content[i]); err != nil {
-//			return err
-//		}
-//	}
-//	return nil
-//}
 
 type dtAlias Datetime
 
@@ -42,15 +27,6 @@ func (d *Datetime) MarshalYAML() (interface{}, error) {
 	}
 	return dtAlias(*d), nil
 }
-
-//func (o *Datetime) assign(key string, val *yaml.Node) error {
-//	switch key {
-//	case keyFormat:
-//		tmp := val.Value
-//		o.Format = &tmp
-//	}
-//	return nil
-//}
 
 func (d *Datetime) canSimplify() bool {
 	if !d.Base.canSimplify() {

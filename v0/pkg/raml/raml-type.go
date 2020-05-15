@@ -1,6 +1,6 @@
 package raml
 
-type RamlType interface {
+type Type interface {
 	GetType() string
-	ToRaml() (string, error)
+	ToRAML() (string, error)
 }

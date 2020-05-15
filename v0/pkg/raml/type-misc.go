@@ -31,7 +31,7 @@ func (t *Any) MarshalYAML() (interface{}, error) {
 	return valAny, nil
 }
 
-func (t *Any) ToRaml() (string, error) {
+func (t *Any) ToRAML() (string, error) {
 	return HeaderDataType + `
 
 type: any`, nil
@@ -57,7 +57,7 @@ func (t *Nil) MarshalYAML() (interface{}, error) {
 	return "nil", nil
 }
 
-func (t *Nil) ToRaml() (string, error) {
+func (t *Nil) ToRAML() (string, error) {
 	return HeaderDataType + `
 
 type: nil`, nil
@@ -85,7 +85,7 @@ func (t *Union) UnmarshalYAML(f func(interface{}) error) error {
 	return err
 }
 
-func (t Union) ToRaml() (string, error) {
+func (t Union) ToRAML() (string, error) {
 	return HeaderDataType + `
 
 type: ` + string(t), nil
@@ -113,7 +113,7 @@ func (t CustomType) MarshalYAML() (interface{}, error) {
 	return string(t), nil
 }
 
-func (t CustomType) ToRaml() (string, error) {
+func (t CustomType) ToRAML() (string, error) {
 	return HeaderDataType + `
 
 type: ` + string(t), nil

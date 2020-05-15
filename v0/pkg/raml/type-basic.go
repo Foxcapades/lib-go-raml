@@ -1,18 +1,5 @@
 package raml
 
-const (
-	keyDefault     = "default"
-	keyType        = "type"
-	keyExample     = "example"
-	keyExamples    = "examples"
-	keyDisplayName = "displayName"
-	keyDescription = "description"
-	keyFacets      = "facets"
-	keyXml         = "xml"
-	keyEnum        = "enum"
-	keyRequired    = "required"
-)
-
 type Base struct {
 	Default     interface{}            `yaml:"default,omitempty"`
 	Type        string                 `yaml:"type"`
@@ -27,62 +14,9 @@ type Base struct {
 	Required    *bool                  `yaml:"required,omitempty"`
 }
 
-func (b *Base) ToRaml() (string, error) {
+func (b *Base) ToRAML() (string, error) {
 	return dataTypeRaml(b)
 }
-
-//
-//func (b *Base) UnmarshalYAML(value *yaml.Node) error {
-//	if value.Kind == yaml.ScalarNode {
-//		b.Type = value.Value
-//		return nil
-//	}
-//	if value.Kind != yaml.MappingNode {
-//		return fmt.Errorf("Expected YAML map, instead got %s", value.Tag)
-//	}
-//
-//	for i := 0; i < len(value.Content); i++ {
-//		key := value.Content[i].Value
-//		i++
-//		if err := b.assign(key, value.Content[i]); err != nil {
-//			return err
-//		}
-//	}
-//	return nil
-//}
-//
-//func (b *Base) assign(key string, val *yaml.Node) error {
-//	if key[0] == '(' {
-//		b.Annotations[key] = val
-//		return nil
-//	}
-//
-//	// "type" is intentionally ignored
-//	switch key {
-//	case keyDefault:
-//		b.Default = val
-//	case keyExample:
-//		b.Example = val
-//	case keyExamples:
-//		b.Examples = val
-//	case keyDisplayName:
-//		tmp := val.Value
-//		b.DisplayName = &tmp
-//	case keyDescription:
-//		tmp := val.Value
-//		b.Description = &tmp
-//	case keyFacets:
-//		b.Facets = val
-//	case keyXml:
-//		b.Xml = val
-//	case keyEnum:
-//		b.Enum = val
-//	case keyRequired:
-//		tmp := val.Value == "true"
-//		b.Required = &tmp
-//	}
-//	return nil
-//}
 
 func (b *Base) canSimplify() bool {
 	if b.Default != nil {

@@ -19,7 +19,7 @@ type Array struct {
 	MaxItems    *uint    `yaml:"maxItems"`
 }
 
-func (a *Array) ToRaml() (string, error) {
+func (a *Array) ToRAML() (string, error) {
 	return dataTypeRaml(a)
 }
 

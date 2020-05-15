@@ -20,8 +20,10 @@ func (t TypeDef) MarshalYAML() (interface{}, error) {
 func (t *TypeDef) UnmarshalYAML(fn func(interface{}) error) error {
 	kind := "object"
 	raw := "object"
+	simple := true
 
 	if err := fn(&raw); err != nil {
+		simple = false
 		tmp := typeContainer{}
 		err2 := fn(&tmp)
 		if err2 != nil {
@@ -36,7 +38,9 @@ func (t *TypeDef) UnmarshalYAML(fn func(interface{}) error) error {
 		raw = "object"
 	}
 
-	kind = parseType(raw)
+	if simple {
+		kind = parseType(raw)
+	}
 
 	var tmp RamlType
 	switch kind {

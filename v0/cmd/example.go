@@ -1,28 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
-
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rparse"
+	"github.com/sirupsen/logrus"
+	"github.com/x-cray/logrus-prefixed-formatter"
 	"gopkg.in/yaml.v2"
+	"os"
 )
 
 func main() {
-	bytes, err := ioutil.ReadFile("/home/ellie/Code/upenn/user-dataset-upload-service/schema/library.raml")
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 
-	foo := raml.Library{}
-	if err := yaml.Unmarshal(bytes, &foo); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	//logrus.SetLevel(logrus.DebugLevel)
+	logrus.SetFormatter(new(prefixed.TextFormatter))
+	foo, err := rparse.ParseLibraryFile("/home/ellie/Code/upenn/user-dataset-upload-service/schema/library.raml")
+	if err != nil {
+		panic(err)
 	}
 
 	enc := yaml.NewEncoder(os.Stdout)
 	enc.Encode(foo)
-	fmt.Println(foo.Types["AnotherType"])
+	//yaml.Marshal(foo)
+	//fmt.Println(foo.Types())
 }

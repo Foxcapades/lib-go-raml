@@ -1,24 +1,22 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"fmt"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/sirupsen/logrus"
-	"reflect"
+	"gopkg.in/yaml.v3"
 )
 
-const badDateFormatType = "invalid date format value. expected string, got %s"
+const badDateFormatType = "invalid date format value. expected string, got %s at %d:%d"
 
 // DateFormatSortingHat parses the input into the appropriate implementation of
 // the raml.DateFormat interface.
-func DateFormatSortingHat(
-	val interface{},
-	log *logrus.Entry,
-) (raml.DateFormat, error) {
-	log.Trace("DateFormatSortingHat")
+func DateFormatSortingHat(val *yaml.Node) (raml.DateFormat, error) {
+	logrus.Trace("DateFormatSortingHat")
 
-	if val, ok := val.(string); ok {
-		df := DateFormat(val)
+	if xyml.IsString(val) {
+		df := DateFormat(val.Value)
 		switch df {
 		case DateFormatRfc3339:
 			return &df, nil
@@ -29,5 +27,5 @@ func DateFormatSortingHat(
 		return &df, nil
 	}
 
-	return nil, xlog.Errorf(log, badDateFormatType, reflect.TypeOf(val))
+	return nil, fmt.Errorf(badDateFormatType, val.Tag, val.Line, val.Column)
 }

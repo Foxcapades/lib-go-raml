@@ -1,63 +1,52 @@
 package assign
 
 import (
-	"fmt"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/cast"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/sirupsen/logrus"
-	"reflect"
-
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-func AsMapSlice(v interface{}) (yaml.MapSlice, error) {
-	if val, ok := v.(yaml.MapSlice); ok {
-		return val, nil
+func ToStringMap(v *yaml.Node, ref raml.StringMap) error {
+	logrus.Trace("assign.ToStringMap")
+
+	if err := xyml.RequireMapping(v); err != nil {
+		return err
 	}
 
-	return nil, fmt.Errorf(errReqType, "map", reflect.TypeOf(v))
-}
+	for i := 0; i < len(v.Content); i += 2 {
+		key := v.Content[i]
 
-func ToStringMap(v interface{}, ref raml.StringMap, log *logrus.Entry) error {
-	log.Trace("assign.ToStringMap")
-	slice, err := AsMapSlice(v)
-
-	if err != nil {
-		return xlog.Error(log, err)
-	}
-
-	for i := range slice {
-		l2 := xlog.AddPath(log, slice[i].Key)
-
-		if key, err := cast.AsString(slice[i].Key); err != nil {
-			return xlog.Error(l2, err)
-		} else if val, err := cast.AsString(slice[i].Value); err != nil {
-			return xlog.Error(l2, err)
-		} else {
-			ref.Put(key, val)
+		if err := xyml.RequireString(key); err != nil {
+			return err
 		}
+
+		val := v.Content[i+1]
+
+		if err := xyml.RequireString(val); err != nil {
+			return err
+		}
+
+		ref.Put(key.Value, val.Value)
 	}
 
 	return nil
 }
 
-func ToUntypedMap(v interface{}, ref raml.UntypedMap, log *logrus.Entry) error {
-	log.Trace("assign.ToUntypedMap")
-	slice, err := AsMapSlice(v)
+// TODO: decompose the yaml node further
+func ToUntypedMap(v *yaml.Node, ref raml.UntypedMap) error {
+	logrus.Trace("assign.ToUntypedMap")
 
-	if err != nil {
-		return xlog.Error(log, err)
+	if err := xyml.RequireMapping(v); err != nil {
+		return err
 	}
 
-	for i := range slice {
-		l2 := xlog.AddPath(log, slice[i].Key)
-
-		if key, err := cast.AsString(slice[i].Key); err != nil {
-			return xlog.Error(l2, err)
-		} else {
-			ref.Put(key, slice[i].Value)
+	for i := 0; i < len(v.Content); i += 2 {
+		if err := xyml.RequireString(v.Content[i]); err != nil {
+			return err
 		}
+
+		ref.Put(v.Content[i].Value, v.Content[i+1])
 	}
 
 	return nil

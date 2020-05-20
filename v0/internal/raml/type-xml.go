@@ -3,22 +3,20 @@ package raml
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
-func NewXml(log *logrus.Entry) *Xml {
+func NewXml() *Xml {
 	return &Xml{
-		log:   log.WithField(xlog.KeyType, "internal.Xml"),
 		extra: make(map[interface{}]interface{}),
 	}
 }
 
 type Xml struct {
-	log *logrus.Entry
-
 	isAttr *bool
 	isWrap *bool
 	name   *string
@@ -97,23 +95,9 @@ func (x *Xml) UnsetPrefix() raml.Xml {
 	return x
 }
 
-func (x *Xml) UnmarshalRAML(value interface{}, log *logrus.Entry) error {
-	x.log.Trace("internal.Xml.UnmarshalRaml")
-	ms, err := assign.AsMapSlice(value)
-
-	if err != nil {
-		return xlog.Error(x.log, err)
-	}
-
-	for i := range ms {
-		l2 := xlog.AddPath(x.log, ms[i].Key)
-
-		if err = x.assign(ms[i].Key, ms[i].Value); err != nil {
-			return xlog.Error(l2, err)
-		}
-	}
-
-	return nil
+func (x *Xml) UnmarshalRAML(v *yaml.Node) error {
+	logrus.Trace("internal.Xml.UnmarshalRaml")
+	return xyml.ForEachMap(v, x.assign)
 }
 
 func (x Xml) MarshalRAML(out raml.AnyMap) (bool, error) {
@@ -125,28 +109,25 @@ func (x Xml) MarshalRAML(out raml.AnyMap) (bool, error) {
 	return false, nil
 }
 
-func (x *Xml) assign(key, val interface{}) error {
-	str, ok := key.(string)
-	if !ok {
-		x.extra[key] = val
-		return nil
-	}
-	var err error
-
-	switch str {
+func (x *Xml) assign(key, val *yaml.Node) error {
+	switch key.Value {
 	case rmeta.KeyAttribute:
-		err = assign.AsBoolPtr(val, &x.isAttr, x.log)
+		return assign.AsBoolPtr(val, &x.isAttr)
 	case rmeta.KeyWrapped:
-		err = assign.AsBoolPtr(val, &x.isWrap, x.log)
+		return assign.AsBoolPtr(val, &x.isWrap)
 	case rmeta.KeyName:
-		err = assign.AsStringPtr(val, &x.name, x.log)
+		return assign.AsStringPtr(val, &x.name)
 	case rmeta.KeyNamespace:
-		err = assign.AsStringPtr(val, &x.ns, x.log)
+		return assign.AsStringPtr(val, &x.ns)
 	case rmeta.KeyPrefix:
-		err = assign.AsStringPtr(val, &x.pref, x.log)
+		return assign.AsStringPtr(val, &x.pref)
 	default:
-		x.extra[str] = val
+		if k, err := xyml.CastYmlTypeToScalar(key); err != nil {
+			return err
+		} else {
+			x.extra[k] = val
+		}
 	}
 
-	return err
+	return nil
 }

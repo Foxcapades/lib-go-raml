@@ -2,7 +2,7 @@ package raml
 
 // TimeOnlyExample defines a single example attached to a DataType
 // or Property definition.
-// Generated @ 2020-05-19T21:52:50.990676962-04:00
+// Generated @ 2020-05-20T18:40:12.806494881-04:00
 type TimeOnlyExample interface {
 	Example
 

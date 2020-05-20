@@ -1,30 +1,25 @@
 package assign
 
 import (
-	"reflect"
-
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
-func AsStringList(v interface{}, ptr *[]string, log *logrus.Entry) error {
-	log.Trace("assign.AsStringList")
+func AsStringList(v *yaml.Node, ptr *[]string) error {
+	logrus.Trace("assign.AsStringList")
 
-	arr, err := AsAnyList(v, log)
-
-	if err != nil {
+	if err := xyml.RequireList(v); err != nil {
 		return err
 	}
 
-	tmp := make([]string, len(arr))
+	tmp := make([]string, len(v.Content))
 
-	for i := range arr {
-		l2 := xlog.AddPath(log, i)
-		if str, ok := arr[i].(string); ok {
-			tmp[i] = str
-		} else {
-			return xlog.Errorf(l2, errReqType, "string", reflect.TypeOf(arr[i]))
+	for i, node := range v.Content {
+		if err := xyml.RequireString(node); err != nil {
+			return err
 		}
+		tmp[i] = node.Value
 	}
 
 	*ptr = tmp

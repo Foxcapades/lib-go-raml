@@ -1,28 +1,23 @@
 package raml
 
 import (
-	
-
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-func NewObjectExample(log *logrus.Entry) *ObjectExample {
+func NewObjectExample() *ObjectExample {
 	return &ObjectExample{
-		log:         xlog.WithType(log, "internal.ObjectExample"),
-		annotations: NewAnnotationMap(log),
-		extra:       NewAnyMap(log),
+		annotations: NewAnnotationMap(),
+		extra:       NewAnyMap(),
 	}
 }
 
 type ObjectExample struct {
-	log *logrus.Entry
-
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
@@ -72,7 +67,7 @@ func (e *ObjectExample) SetAnnotations(ann raml.AnnotationMap) raml.ObjectExampl
 }
 
 func (e *ObjectExample) UnsetAnnotations() raml.ObjectExample {
-	e.annotations = NewAnnotationMap(e.log)
+	e.annotations = NewAnnotationMap()
 	return e
 }
 
@@ -98,22 +93,13 @@ func (e *ObjectExample) ExtraFacets() raml.AnyMap {
 	return e.extra
 }
 
-func (e *ObjectExample) UnmarshalRAML(val interface{}, log *logrus.Entry) error {
-	if tmp, ok := val.(yaml.MapSlice); ok {
-		for i := range tmp {
-			row := &tmp[i]
-			l2 := xlog.AddPath(e.log, row.Key)
+func (e *ObjectExample) UnmarshalRAML(value *yaml.Node) error {
 
-			if err := e.assign(row.Key, row.Value, l2); err != nil {
-				return xlog.Error(l2, err)
-			}
-		}
-		return nil
+	if xyml.IsMap(value) {
+		return xyml.ForEachMap(value, e.assign)
 	}
 
-	e.value = val
-
-	return nil
+	return e.assignVal(value)
 }
 
 func (e *ObjectExample) MarshalRAML(out raml.AnyMap) (bool, error) {
@@ -136,35 +122,44 @@ func (e *ObjectExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	return true, nil
 }
 
-func (e *ObjectExample) assign(key, val interface{}, log *logrus.Entry) error {
-	str, ok := key.(string)
+func (e *ObjectExample) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.ObjectExample.assign")
 
-	if !ok {
-		e.extra.Put(key, val)
-		return nil
-	}
-
-	if str[0] == '(' {
-		tmp := NewAnnotation(log)
-		if err := tmp.UnmarshalRAML(val, log); err != nil {
-			return xlog.Error(log, err)
+	if !xyml.IsString(key) {
+		if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
+			return err
+		} else {
+			e.extra.Put(ver, val)
 		}
-		e.annotations.Put(str, tmp)
 		return nil
 	}
 
-	switch str {
-	case rmeta.KeyDisplayName:
-		return assign.AsStringPtr(val, &e.displayName, log)
-	case rmeta.KeyDescription:
-		return assign.AsStringPtr(val, &e.description, log)
-	case rmeta.KeyStrict:
-		return assign.AsBool(val, &e.strict, log)
-	case rmeta.KeyValue:
-		e.value = val
+	if key.Value[0] == '(' {
+		tmp := NewAnnotation()
+		if err := tmp.UnmarshalRAML(val); err != nil {
+			return err
+		}
+		e.annotations.Put(key.Value, tmp)
+		return nil
 	}
 
-	e.extra.Put(str, val)
+	switch key.Value {
+	case rmeta.KeyDisplayName:
+		return assign.AsStringPtr(val, &e.displayName)
+	case rmeta.KeyDescription:
+		return assign.AsStringPtr(val, &e.description)
+	case rmeta.KeyStrict:
+		return assign.AsBool(val, &e.strict)
+	case rmeta.KeyValue:
+		return e.assignVal(val)
+	}
+
+	if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
+		return err
+	} else {
+		e.extra.Put(ver, val)
+	}
+
 	return nil
 }
 
@@ -174,4 +169,9 @@ func (e *ObjectExample) expand() bool {
 		e.annotations.Len() > 0 ||
 		e.extra.Len() > 0 ||
 		e.strict != rmeta.ExampleDefaultStrict
+}
+
+func (e *ObjectExample) assignVal(val *yaml.Node) error {
+	e.value = val
+	return nil
 }

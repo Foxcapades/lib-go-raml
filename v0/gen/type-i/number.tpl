@@ -1,4 +1,6 @@
-{{define "number"}}
+package x
+type x interface {
+	{{define "number" -}}
 	// Minimum returns an option which will contain the value
 	// of the "minimum" facet for the current number type
 	// definition if it is set.
@@ -50,4 +52,5 @@
 	// UnsetMultipleOf removes the "multipleOf" facet from the
 	// current number type definition.
 	UnsetMultipleOf() NumberType
-{{end}}
+	{{- end}}
+}

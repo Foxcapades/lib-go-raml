@@ -2,11 +2,11 @@ package raml
 
 import (
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
-func PropertySortingHat(val interface{}, log *logrus.Entry) (raml.Property, error) {
-	if val, err := TypeSortingHat(val, log); err != nil {
+func PropertySortingHat(val *yaml.Node) (raml.Property, error) {
+	if val, err := TypeSortingHat(val); err != nil {
 		return nil, err
 	} else {
 		return val.(raml.Property), nil

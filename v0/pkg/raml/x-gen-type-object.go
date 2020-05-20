@@ -1,7 +1,8 @@
 package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
-// ObjectType generated @ 2020-05-20T00:33:46.349824232-04:00
+
+// ObjectType generated @ 2020-05-20T18:40:13.095690448-04:00
 type ObjectType interface {
 	Unmarshaler
 	Marshaler
@@ -142,7 +143,6 @@ type ObjectType interface {
 	UnsetExtraFacets() ObjectType
 
 	SetRequired(bool) ObjectType
-
 	// Properties returns a mutable map of the properties
 	// defined on the current object type definition.
 	Properties() PropertyMap
@@ -229,5 +229,4 @@ type ObjectType interface {
 	// "discriminatorValue" facet from the current object type
 	// definition.
 	UnsetDiscriminatorValue() ObjectType
-
 }

@@ -1,6 +1,6 @@
 package raml
 
-import "gopkg.in/yaml.v2"
+import "gopkg.in/yaml.v3"
 
 // Library represents the contents of a RAML library file.
 type Library interface {

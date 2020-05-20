@@ -1,4 +1,7 @@
-{{define "integer"}}
+package x
+
+type x interface {
+	{{define "integer" -}}
 	// Minimum returns an option which will contain the value
 	// of the "minimum" facet for the current integer type
 	// definition if it is set.
@@ -50,4 +53,5 @@
 	// UnsetMultipleOf removes the "multipleOf" facet from the
 	// current integer type definition.
 	UnsetMultipleOf() IntegerType
-{{end}}
+	{{- end}}
+}

@@ -1,5 +1,10 @@
 package raml
 
+import (
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
+	"gopkg.in/yaml.v3"
+)
+
 type NumberFormat string
 
 const (
@@ -13,18 +18,38 @@ const (
 	NumberFormatDouble NumberFormat = "double"
 )
 
+var validNumForms = []NumberFormat{
+	NumberFormatInt,
+	NumberFormatInt8,
+	NumberFormatInt16,
+	NumberFormatInt32,
+	NumberFormatInt64,
+	NumberFormatLong,
+	NumberFormatFloat,
+	NumberFormatDouble,
+}
+
 func (d NumberFormat) String() string {
 	return string(d)
 }
 
-func (d *NumberFormat) UnmarshalYAML(fn func(interface{}) error) error {
-	return fn(d)
+func (d *NumberFormat) UnmarshalYAML(y *yaml.Node) error {
+	if err := xyml.RequireString(y); err != nil {
+		return err
+	}
+
+	f := NumberFormat(y.Value)
+	for _, v := range validNumForms {
+		if v == f {
+			*d = v
+		}
+	}
+
+	// TODO: validation point
+	*d = f
+	return nil
 }
 
 func (d NumberFormat) MarshalYAML() (interface{}, error) {
 	return string(d), nil
-}
-
-func (d NumberFormat) render() bool {
-	return true
 }

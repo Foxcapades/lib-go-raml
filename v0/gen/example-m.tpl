@@ -3,30 +3,23 @@
 package raml
 
 import (
-	{{if not (eq .Name "Custom" "File" "Object" "Union") -}}
-	"reflect"
-	{{- end}}
-
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-func New{{.Name}}Example(log *logrus.Entry) *{{.Name}}Example {
+func New{{.Name}}Example() *{{.Name}}Example {
 	return &{{.Name}}Example{
-		log:         xlog.WithType(log, "internal.{{.Name}}Example"),
-		annotations: NewAnnotationMap(log),
-		extra:       NewAnyMap(log),
+		annotations: NewAnnotationMap(),
+		extra:       NewAnyMap(),
 	}
 }
 
 type {{.Name}}Example struct {
-	log *logrus.Entry
-
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
@@ -76,7 +69,7 @@ func (e *{{.Name}}Example) SetAnnotations(ann raml.AnnotationMap) raml.{{.Name}}
 }
 
 func (e *{{.Name}}Example) UnsetAnnotations() raml.{{.Name}}Example {
-	e.annotations = NewAnnotationMap(e.log)
+	e.annotations = NewAnnotationMap()
 	return e
 }
 
@@ -102,29 +95,13 @@ func (e *{{.Name}}Example) ExtraFacets() raml.AnyMap {
 	return e.extra
 }
 
-func (e *{{.Name}}Example) UnmarshalRAML(val interface{}, log *logrus.Entry) error {
-	if tmp, ok := val.(yaml.MapSlice); ok {
-		for i := range tmp {
-			row := &tmp[i]
-			l2 := xlog.AddPath(e.log, row.Key)
+func (e *{{.Name}}Example) UnmarshalRAML(value *yaml.Node) error {
 
-			if err := e.assign(row.Key, row.Value, l2); err != nil {
-				return xlog.Error(l2, err)
-			}
-		}
-		return nil
+	if xyml.IsMap(value) {
+		return xyml.ForEachMap(value, e.assign)
 	}
 
-	{{if eq .Type "string" "bool" "int64" "float64" "[]interface{}" -}}
-	if tmp, ok := val.({{.Type}}); ok {
-		e.value = tmp
-		return nil
-	}
-	{{- else -}}
-	e.value = val
-	{{- end}}
-
-	return nil
+	return e.assignVal(value)
 }
 
 func (e *{{.Name}}Example) MarshalRAML(out raml.AnyMap) (bool, error) {
@@ -147,43 +124,44 @@ func (e *{{.Name}}Example) MarshalRAML(out raml.AnyMap) (bool, error) {
 	return true, nil
 }
 
-func (e *{{.Name}}Example) assign(key, val interface{}, log *logrus.Entry) error {
-	str, ok := key.(string)
+func (e *{{.Name}}Example) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.{{.Name}}Example.assign")
 
-	if !ok {
-		e.extra.Put(key, val)
-		return nil
-	}
-
-	if str[0] == '(' {
-		tmp := NewAnnotation(log)
-		if err := tmp.UnmarshalRAML(val, log); err != nil {
-			return xlog.Error(log, err)
+	if !xyml.IsString(key) {
+		if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
+			return err
+		} else {
+			e.extra.Put(ver, val)
 		}
-		e.annotations.Put(str, tmp)
 		return nil
 	}
 
-	switch str {
+	if key.Value[0] == '(' {
+		tmp := NewAnnotation()
+		if err := tmp.UnmarshalRAML(val); err != nil {
+			return err
+		}
+		e.annotations.Put(key.Value, tmp)
+		return nil
+	}
+
+	switch key.Value {
 	case rmeta.KeyDisplayName:
-		return assign.AsStringPtr(val, &e.displayName, log)
+		return assign.AsStringPtr(val, &e.displayName)
 	case rmeta.KeyDescription:
-		return assign.AsStringPtr(val, &e.description, log)
+		return assign.AsStringPtr(val, &e.description)
 	case rmeta.KeyStrict:
-		return assign.AsBool(val, &e.strict, log)
+		return assign.AsBool(val, &e.strict)
 	case rmeta.KeyValue:
-		{{if eq .Type "interface{}" -}}
-		e.value = val
-		{{- else -}}
-		if tmp, ok := val.({{.Type}}); ok{
-			e.value = tmp
-			return nil
-		}
-		return xlog.Errorf(log, "invalid example value for {{.Name}} types.  expected \"{{.Type}}\", got %s", reflect.TypeOf(val))
-		{{- end}}
+		return e.assignVal(val)
 	}
 
-	e.extra.Put(str, val)
+	if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
+		return err
+	} else {
+		e.extra.Put(ver, val)
+	}
+
 	return nil
 }
 
@@ -193,5 +171,45 @@ func (e *{{.Name}}Example) expand() bool {
 		e.annotations.Len() > 0 ||
 		e.extra.Len() > 0 ||
 		e.strict != rmeta.ExampleDefaultStrict
+}
+
+func (e *{{.Name}}Example) assignVal(val *yaml.Node) error {
+	{{if eq .Type "string" -}}
+	if err := xyml.RequireString(val); err != nil {
+		return err
+	}
+	e.value = val.Value
+	{{- else if eq .Type "bool" -}}
+	if tmp, err := xyml.ToBool(val); err != nil {
+		return err
+	} else {
+		e.value = tmp
+	}
+	{{- else if eq .Type "int64" -}}
+	if tmp, err := xyml.ToInt64(val); err != nil {
+		return err
+	} else {
+		e.value = tmp
+	}
+	{{- else if eq .Type "float64" -}}
+	if tmp, err := xyml.ToFloat64(val); err != nil {
+		return err
+	} else {
+		e.value = tmp
+	}
+	{{- else if eq .Type "[]interface{}" -}}
+	if err := xyml.RequireList(val); err != nil {
+		return err
+	} else {
+		e.value = make([]interface{}, 0, len(val.Content))
+		return xyml.ForEachList(val, func(v *yaml.Node) error {
+			e.value = append(e.value, v)
+			return nil
+		})
+	}
+	{{- else -}}
+	e.value = val
+	{{- end}}
+	return nil
 }
 {{end}}

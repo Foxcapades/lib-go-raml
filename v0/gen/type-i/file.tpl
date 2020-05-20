@@ -1,4 +1,7 @@
-{{define "file"}}
+package x
+
+type x interface {
+	{{define "file" -}}
 	// FileTypes returns a slice of the "fileTypes" facet set
 	// on the current file type definition.
 	FileTypes() []string
@@ -46,4 +49,5 @@
 	// set to its default value when rendered, it will not
 	// appear in the output RAML.
 	SetMaxLength(max uint) FileType
-{{end}}
+	{{- end}}
+}

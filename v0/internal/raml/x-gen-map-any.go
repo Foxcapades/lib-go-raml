@@ -1,47 +1,54 @@
 package raml
 
 import (
+	"fmt"
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"strings"
+
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-func NewAnyMap(log *logrus.Entry) *AnyMap {
+func NewAnyMap() *AnyMap {
 	return &AnyMap{
-		log:   xlog.WithType(log, "internal.AnyMap"),
 		index: make(map[interface{}]*interface{}),
 	}
 }
 
-// AnyMap generated @ 2020-05-20T01:05:35.571783841-04:00
+// AnyMap generated @ 2020-05-20T18:40:12.501365164-04:00
 type AnyMap struct {
-	log   *logrus.Entry
-	slice yaml.MapSlice
+	slice []mapPair
 	index map[interface{}]*interface{}
 }
 
 func (o *AnyMap) Len() uint {
+	logrus.Trace("internal.AnyMap.Len")
 	return uint(len(o.slice))
 }
 
 func (o *AnyMap) Put(key interface{}, value interface{}) raml.AnyMap {
+	logrus.Trace("internal.AnyMap.Put")
 	o.index[key] = &value
-	o.slice = append(o.slice, yaml.MapItem{Key: key, Value: value})
+	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
 }
 
 func (o *AnyMap) PutNonNil(key interface{}, value interface{}) raml.AnyMap {
+	logrus.Trace("internal.AnyMap.PutNonNil")
+
 	if !util.IsNil(value) {
 		return o.Put(key, value)
 	}
+
 	return o
 }
 
 func (o *AnyMap) Replace(key interface{}, value interface{}) option.Untyped {
+	logrus.Trace("internal.AnyMap.Replace")
+
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
@@ -51,26 +58,30 @@ func (o *AnyMap) Replace(key interface{}, value interface{}) option.Untyped {
 	out := option.NewMaybeUntyped(o.index[key])
 
 	o.index[key] = &value
-	o.slice[ind.Get()].Value = value
+	o.slice[ind.Get()].val = value
 	return out
 }
 
 func (o *AnyMap) ReplaceOrPut(key interface{}, value interface{}) option.Untyped {
+	logrus.Trace("internal.AnyMap.ReplaceOrPut")
+
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
 		o.index[key] = &value
-		o.slice = append(o.slice, yaml.MapItem{Key: key, Value: value})
+		o.slice = append(o.slice, mapPair{key: key, val: value})
 		return option.NewEmptyUntyped()
 	}
 
 	out := option.NewMaybeUntyped(o.index[key])
 	o.index[key] = &value
-	o.slice[ind.Get()].Value = value
+	o.slice[ind.Get()].val = value
 	return out
 }
 
 func (o *AnyMap) Get(key interface{}) option.Untyped {
+	logrus.Trace("internal.AnyMap.Get")
+
 	if !o.Has(key) {
 		return option.NewEmptyUntyped()
 	}
@@ -79,24 +90,28 @@ func (o *AnyMap) Get(key interface{}) option.Untyped {
 }
 
 func (o *AnyMap) At(index uint) (key option.Untyped, value option.Untyped) {
+
+	logrus.Trace("internal.AnyMap.At")
+
 	tmp := &o.slice[index]
-	key = option.NewUntyped(tmp.Key.(string))
-	
-	if util.IsNil(tmp.Value) {
+	key = option.NewUntyped(tmp.key.(string))
+
+	if util.IsNil(tmp.val) {
 		value = option.NewEmptyUntyped()
 	} else {
-		value = option.NewUntyped(tmp.Value.(interface{}))
+		value = option.NewUntyped(tmp.val.(interface{}))
 	}
 
 	return
 }
 
 func (o *AnyMap) IndexOf(key interface{}) option.Uint {
+	logrus.Trace("internal.AnyMap.IndexOf")
 	if !o.Has(key) {
 		return option.NewEmptyUint()
 	}
 	for i := range o.slice {
-		if o.slice[i].Key == key {
+		if o.slice[i].key == key {
 			return option.NewUint(uint(i))
 		}
 	}
@@ -104,11 +119,15 @@ func (o *AnyMap) IndexOf(key interface{}) option.Uint {
 }
 
 func (o *AnyMap) Has(key interface{}) bool {
+	logrus.Trace("internal.AnyMap.Has")
+
 	_, ok := o.index[key]
 	return ok
 }
 
 func (o *AnyMap) Delete(key interface{}) option.Untyped {
+	logrus.Trace("internal.AnyMap.Delete")
+
 	if !o.Has(key) {
 		return option.NewEmptyUntyped()
 	}
@@ -117,7 +136,7 @@ func (o *AnyMap) Delete(key interface{}) option.Untyped {
 	delete(o.index, key)
 
 	for i := range o.slice {
-		if o.slice[i].Key == key {
+		if o.slice[i].key == key {
 			o.slice = append(o.slice[:i], o.slice[i+1:]...)
 			return out
 		}
@@ -126,33 +145,56 @@ func (o *AnyMap) Delete(key interface{}) option.Untyped {
 }
 
 func (o AnyMap) ForEach(fn func(interface{}, interface{})) {
+	logrus.Trace("internal.AnyMap.ForEach")
+
 	for k, v := range o.index {
 		fn(k, *v)
 	}
 }
 
 func (o AnyMap) MarshalYAML() (interface{}, error) {
-	return o.slice, nil
+	logrus.Trace("internal.AnyMap.MarshalYAML")
+
+	out := xyml.MapNode(len(o.slice) * 2)
+	for i := range o.slice {
+		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
+			return nil, err
+		}
+	}
+	return out, nil
 }
 
-func (o *AnyMap) UnmarshalRAML(val interface{}, log *logrus.Entry) (err error) {
-	log.Trace("internal.AnyMap.UnmarshalRAML")
-	yml, err := assign.AsMapSlice(val)
+func (o *AnyMap) UnmarshalRAML(val *yaml.Node) (err error) {
+	logrus.Trace("internal.AnyMap.UnmarshalRAML")
 
-	if err != nil {
-		return xlog.Error(log, err)
+	if err := xyml.RequireMapping(val); err != nil {
+		return err
 	}
 
-	for i := range yml {
-		tmp := &yml[i]
-		
+	for i := 0; i < len(val.Content); i += 2 {
+		key := val.Content[i]
+		val := val.Content[i+1]
 
-		key := tmp.Key
+		altKey, err := xyml.CastScalarToYmlType(key)
+		if err != nil {
+			return err
+		}
 
-		tmpVal := tmp.Value
+		tmpVal := val
 
-		o.Put(key, tmpVal)
+		o.Put(altKey, tmpVal)
 	}
 
 	return nil
+}
+
+func (o *AnyMap) String() string {
+	tmp := strings.Builder{}
+	enc := yaml.NewEncoder(&tmp)
+	enc.SetIndent(2)
+	if err := enc.Encode(o.index); err != nil {
+		return fmt.Sprint(o.index)
+	} else {
+		return tmp.String()
+	}
 }

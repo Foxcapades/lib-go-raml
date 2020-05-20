@@ -1,7 +1,8 @@
 package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
-// BoolType generated @ 2020-05-20T00:33:46.349824232-04:00
+
+// BoolType generated @ 2020-05-20T18:40:13.095690448-04:00
 type BoolType interface {
 	Unmarshaler
 	Marshaler
@@ -142,5 +143,4 @@ type BoolType interface {
 	UnsetExtraFacets() BoolType
 
 	SetRequired(bool) BoolType
-
 }

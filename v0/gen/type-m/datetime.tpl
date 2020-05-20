@@ -4,7 +4,6 @@ package raml
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 )
@@ -51,9 +50,9 @@ func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 
 func (o {{.Name}}Type) assign(key, val interface{}) (err error) {
 {{define "datetime-assign"}}
-	switch key {
+	switch key.Value {
 	case rmeta.KeyFormat:
-		if val, err := DateFormatSortingHat(val, log); err != nil {
+		if val, err := DateFormatSortingHat(val); err != nil {
 			return err
 		} else {
 			o.format = val

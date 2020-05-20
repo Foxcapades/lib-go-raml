@@ -9,5 +9,5 @@ const (
 	ArrayDefaultUniqueItems = false
 
 	StringDefaultMinLength = uint(0)
-	ExampleDefaultStrict = true
+	ExampleDefaultStrict   = true
 )

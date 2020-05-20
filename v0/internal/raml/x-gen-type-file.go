@@ -1,31 +1,28 @@
 package raml
 
 import (
-	
-
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 // NewFileType returns a new internal implementation
 // of the raml.FileType interface.
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
-func NewFileType(log *logrus.Entry) *FileType {
-	log = xlog.WithType(log, "internal.FileType")
-
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
+func NewFileType() *FileType {
 	out := &FileType{
-		examples: NewFileExampleMap(log),
+		examples: NewFileExampleMap(),
 	}
-	
+
 	out.minLength = rmeta.FileDefaultMinLength
 	out.maxLength = rmeta.FileDefaultMaxLength
 
-	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeFile, log, out)
+	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeFile, out)
 
 	return out
 }
@@ -33,14 +30,14 @@ func NewFileType(log *logrus.Entry) *FileType {
 // FileType is a default generated implementation of
 // the raml.FileType interface
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
 type FileType struct {
 	*ExtendedDataType
 
-	def      *interface{}
-	example  raml.FileExample
-	examples raml.FileExampleMap
-	enum     []interface{}
+	def       *interface{}
+	example   raml.FileExample
+	examples  raml.FileExampleMap
+	enum      []interface{}
 	fileTypes []string
 	minLength uint
 	maxLength uint
@@ -92,7 +89,7 @@ func (o *FileType) SetExamples(examples raml.FileExampleMap) raml.FileType {
 }
 
 func (o *FileType) UnsetExamples() raml.FileType {
-	o.examples = NewFileExampleMap(o.DataType.log)
+	o.examples = NewFileExampleMap()
 	return o
 }
 
@@ -125,7 +122,7 @@ func (o *FileType) SetAnnotations(annotations raml.AnnotationMap) raml.FileType 
 }
 
 func (o *FileType) UnsetAnnotations() raml.FileType {
-	o.hasAnnotations.mp = NewAnnotationMap(o.DataType.log)
+	o.hasAnnotations.mp = NewAnnotationMap()
 	return o
 }
 
@@ -138,7 +135,7 @@ func (o *FileType) SetFacetDefinitions(facets raml.FacetMap) raml.FileType {
 }
 
 func (o *FileType) UnsetFacetDefinitions() raml.FileType {
-	o.facets = NewFacetMap(o.DataType.log)
+	o.facets = NewFacetMap()
 	return o
 }
 
@@ -175,7 +172,7 @@ func (o *FileType) SetExtraFacets(facets raml.AnyMap) raml.FileType {
 }
 
 func (o *FileType) UnsetExtraFacets() raml.FileType {
-	o.hasExtra.mp = NewAnyMap(o.DataType.log)
+	o.hasExtra.mp = NewAnyMap()
 	return o
 }
 
@@ -220,7 +217,7 @@ func (o FileType) render() bool {
 	return true
 }
 func (o *FileType) marshal(out raml.AnyMap) error {
-	o.DataType.log.Trace("internal.FileType.marshal")
+	logrus.Trace("internal.FileType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
@@ -243,44 +240,39 @@ func (o *FileType) marshal(out raml.AnyMap) error {
 	return nil
 }
 
-func (o *FileType) assign(key, val interface{}, log *logrus.Entry) error {
-	log.Trace("internal.FileType.assign")
-	switch key {
+func (o *FileType) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.FileType.assign")
+	switch key.Value {
 	case rmeta.KeyExample:
-		if ex, err := ExampleSortingHat(o.kind, log); err != nil {
-			return xlog.Error(log, err)
-		} else if err := ex.UnmarshalRAML(val, log); err != nil {
+		if ex, err := ExampleSortingHat(o.kind); err != nil {
+			return err
+		} else if err := ex.UnmarshalRAML(val); err != nil {
 			return err
 		} else {
 			o.example = ex.(raml.FileExample)
 		}
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val, log)
+		return o.examples.UnmarshalRAML(val)
 	case rmeta.KeyEnum:
-		arr, err := assign.AsAnyList(val, log)
-		if err != nil {
-			return xlog.Error(log, "the enum facet must be an array. " + err.Error())
-		}
-		for i := range arr {
-			
-			o.enum = append(o.enum, arr[i])
-			
-		}
+		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+			o.enum = append(o.enum, val)
+
+			return nil
+		})
 		return nil
 	case rmeta.KeyRequired:
-		return assign.AsBool(val, &o.required, log)
+		return assign.AsBool(val, &o.required)
 	}
-	
-	switch key {
+
+	switch key.Value {
 	case rmeta.KeyFileTypes:
-		return assign.AsStringList(val, &o.fileTypes, log)
+		return assign.AsStringList(val, &o.fileTypes)
 	case rmeta.KeyMinLength:
 		return assign.ToUint(val, &o.minLength)
 	case rmeta.KeyMaxLength:
 		return assign.ToUint(val, &o.maxLength)
 	}
 
-	return o.ExtendedDataType.assign(key, val, log)
+	return o.ExtendedDataType.assign(key, val)
 }
-

@@ -6,6 +6,6 @@ type Resource interface {
 	displayed
 	hasFacets
 
-	FullPath()    string
+	FullPath() string
 	PathSegment() string
 }

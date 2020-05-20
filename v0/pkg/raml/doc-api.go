@@ -2,7 +2,7 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type ApiSpec interface {

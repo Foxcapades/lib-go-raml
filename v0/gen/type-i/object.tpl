@@ -1,4 +1,7 @@
-{{define "object"}}
+package x
+
+type x interface {
+	{{define "object" -}}
 	// Properties returns a mutable map of the properties
 	// defined on the current object type definition.
 	Properties() PropertyMap
@@ -85,4 +88,5 @@
 	// "discriminatorValue" facet from the current object type
 	// definition.
 	UnsetDiscriminatorValue() ObjectType
-{{end}}
+	{{- end}}
+}

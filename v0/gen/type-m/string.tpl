@@ -4,7 +4,6 @@ package raml
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 )
@@ -79,11 +78,11 @@ func (o {{.Name}}Type) render() bool {
 	return true
 }
 {{end}}
-func (o {{.Name}}Type) assign(key, val interface{}) (err error) {
+func (o {{.Name}}Type) assign(key, val *yaml.Value) (err error) {
 {{define "string-assign"}}
-	switch key {
+	switch key.Value {
 	case rmeta.KeyPattern:
-		return assign.AsStringPtr(val, &o.pattern, log)
+		return assign.AsStringPtr(val, &o.pattern)
 	case rmeta.KeyMinLength:
 		return assign.ToUint(val, &o.minLength)
 	case rmeta.KeyMaxLength:

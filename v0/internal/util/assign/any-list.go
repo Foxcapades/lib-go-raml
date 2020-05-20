@@ -1,19 +1,25 @@
 package assign
 
 import (
-	"reflect"
-
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
-func AsAnyList(v interface{}, log *logrus.Entry) ([]interface{}, error) {
-	log.Trace("-> assign.AsAnyList")
-	defer log.Trace("<- assign.AsAnyList")
+func AnyList(v *yaml.Node, list *[]interface{}) error {
+	logrus.Trace("assign.AnyList")
 
-	if val, ok := v.([]interface{}); ok {
-		return val, nil
+	if err := xyml.RequireList(v); err != nil {
+		return err
 	}
 
-	return nil, xlog.Errorf(log, errReqType, "array", reflect.TypeOf(v))
+	out := make([]interface{}, len(v.Content))
+
+	for i, node := range v.Content {
+		out[i] = node
+	}
+
+	*list = out
+
+	return nil
 }

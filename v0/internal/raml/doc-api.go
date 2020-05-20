@@ -3,29 +3,27 @@ package raml
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-func NewApiSpec(log *logrus.Entry) *ApiSpec {
-	log = xlog.WithType(log, "internal.ApiSpec")
+func NewApiSpec() *ApiSpec {
 
 	return &ApiSpec{
-		log:               log,
-		baseUriParameters: NewUntypedMap(log),
-		resources:         NewUntypedMap(log),
+		baseUriParameters: NewUntypedMap(),
+		resources:         NewUntypedMap(),
 
-		hasAnnotations: makeAnnotations(log),
-		hasAnnTypes:    makeAnnTypes(log),
-		hasExtra:       makeExtra(log),
-		hasResTypes:    makeResTypes(log),
-		hasSecSchemes:  makeSecSchemes(log),
-		hasTraits:      makeHasTraits(log),
-		hasTypes:       makeHasTypes(log),
-		hasUses:        makeUses(log),
+		hasAnnotations: makeAnnotations(),
+		hasAnnTypes:    makeAnnTypes(),
+		hasExtra:       makeExtra(),
+		hasResTypes:    makeResTypes(),
+		hasSecSchemes:  makeSecSchemes(),
+		hasTraits:      makeHasTraits(),
+		hasTypes:       makeHasTypes(),
+		hasUses:        makeUses(),
 	}
 }
 
@@ -38,8 +36,6 @@ type ApiSpec struct {
 	hasTraits
 	hasTypes
 	hasUses
-
-	log *logrus.Entry
 
 	title             string
 	version           *string
@@ -54,8 +50,8 @@ type ApiSpec struct {
 }
 
 func (a ApiSpec) MarshalYAML() (interface{}, error) {
-	a.log.Trace("internal.ApiSpec.MarshalYAML")
-	out := NewAnyMap(a.log).
+	logrus.Trace("internal.ApiSpec.MarshalYAML")
+	out := NewAnyMap().
 		Put(rmeta.KeyTitle, a.title).
 		PutNonNil(rmeta.KeyVersion, a.version).
 		PutNonNil(rmeta.KeyBaseUri, a.baseUri).
@@ -78,26 +74,14 @@ func (a ApiSpec) MarshalYAML() (interface{}, error) {
 	a.hasAnnotations.out(out)
 	a.hasExtra.out(out)
 	a.resources.ForEach(func(k string, v interface{}) { out.Put(k, v) })
-	a.hasTypes.out(out, a.log)
+	a.hasTypes.out(out)
 
 	return out, nil
 }
 
-func (a *ApiSpec) UnmarshalYAML(fn func(interface{}) error) error {
-	a.log.Trace("internal.ApiSpec.UnmarshalYAML")
-	var raw yaml.MapSlice
-	if err := fn(&raw); err != nil {
-		return err
-	}
-
-	for i := range raw {
-		l2 := xlog.AddPath(a.log, raw[i].Key)
-		if err := a.assign(raw[i].Key, raw[i].Value, l2); err != nil {
-			return err
-		}
-	}
-
-	return nil
+func (a *ApiSpec) UnmarshalYAML(raw *yaml.Node) error {
+	logrus.Trace("internal.ApiSpec.UnmarshalYAML")
+	return xyml.ForEachMap(raw, a.assign)
 }
 
 func (a *ApiSpec) Description() option.String {
@@ -140,64 +124,58 @@ func (a *ApiSpec) Resources() raml.UntypedMap {
 	return a.resources
 }
 
-func (a *ApiSpec) assign(k, v interface{}, log *logrus.Entry) error {
-	log.Trace("internal.ApiSpec.assign")
-	key, ok := k.(string)
-
-	if !ok {
+func (a *ApiSpec) assign(k, v *yaml.Node) error {
+	logrus.Trace("internal.ApiSpec.assign")
+	if k.Tag != xyml.String {
 		a.hasExtra.in(k, v)
 		return nil
 	}
 
-	if used, err := a.hasAnnotations.in(key, v); err != nil {
+	if used, err := a.hasAnnotations.in(k.Value, v); err != nil {
 		return err
 	} else if used {
 		return nil
 	}
 
-	if key[0] == '/' {
-		a.resources.Put(key, v)
+	if k.Value[0] == '/' {
+		a.resources.Put(k.Value, v)
 	}
 
-	switch key {
+	switch k.Value {
 	case rmeta.KeyTitle:
-		return assign.AsString(v, &a.title, log)
+		return assign.AsString(v, &a.title)
 	case rmeta.KeyVersion:
-		return assign.AsStringPtr(v, &a.version, log)
+		return assign.AsStringPtr(v, &a.version)
 	case rmeta.KeyBaseUri:
-		return assign.AsStringPtr(v, &a.baseUri, log)
+		return assign.AsStringPtr(v, &a.baseUri)
 	case rmeta.KeyDescription:
-		return assign.AsStringPtr(v, &a.description, log)
+		return assign.AsStringPtr(v, &a.description)
 	case rmeta.KeyProtocols:
-		return assign.AsStringList(v, &a.protocols, log)
+		return assign.AsStringList(v, &a.protocols)
 	case rmeta.KeyMediaType:
-		if str, ok := v.(string); ok {
-			a.mediaType = append(a.mediaType, str)
+		if v.Tag == xyml.String {
+			a.mediaType = append(a.mediaType, v.Value)
 			return nil
 		}
-		return assign.AsStringList(v, &a.mediaType, log)
+		return assign.AsStringList(v, &a.mediaType)
 	case rmeta.KeyDocumentation:
-		if tmp, err := assign.AsAnyList(v, log); err != nil {
-			return xlog.Error(log, err)
-		} else {
-			a.documentation = tmp
-		}
+		return assign.AnyList(v, &a.documentation)
 	case rmeta.KeySecuredBy:
-		return assign.AsStringList(v, &a.securedBy, log)
+		return assign.AsStringList(v, &a.securedBy)
 	case rmeta.KeyUses:
-		return a.hasUses.in(v, log)
+		return a.hasUses.in(v)
 	case rmeta.KeySecuritySchemes:
-		return a.secSchemes.UnmarshalRAML(v, log)
+		return a.secSchemes.UnmarshalRAML(v)
 	case rmeta.KeyBaseUriParams:
-		return assign.ToUntypedMap(v, a.baseUriParameters, log)
+		return assign.ToUntypedMap(v, a.baseUriParameters)
 	case rmeta.KeyTraits:
-		return a.hasTraits.in(v, log)
+		return a.hasTraits.in(v)
 	case rmeta.KeyAnnotationTypes:
-		return a.hasAnnTypes.in(v, log)
+		return a.hasAnnTypes.in(v)
 	case rmeta.KeyResourceTypes:
-		return a.hasResTypes.in(v, log)
+		return a.hasResTypes.in(v)
 	case rmeta.KeyTypes, rmeta.KeySchemas:
-		return a.hasTypes.in(v, log)
+		return a.hasTypes.in(v)
 	}
 
 	a.hasExtra.in(k, v)

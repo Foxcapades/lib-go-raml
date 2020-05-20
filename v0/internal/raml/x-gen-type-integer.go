@@ -1,28 +1,25 @@
 package raml
 
 import (
-	"reflect"
-
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 // NewIntegerType returns a new internal implementation
 // of the raml.IntegerType interface.
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
-func NewIntegerType(log *logrus.Entry) *IntegerType {
-	log = xlog.WithType(log, "internal.IntegerType")
-
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
+func NewIntegerType() *IntegerType {
 	out := &IntegerType{
-		examples: NewIntegerExampleMap(log),
+		examples: NewIntegerExampleMap(),
 	}
-	
-	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeInteger, log, out)
+
+	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeInteger, out)
 
 	return out
 }
@@ -30,14 +27,14 @@ func NewIntegerType(log *logrus.Entry) *IntegerType {
 // IntegerType is a default generated implementation of
 // the raml.IntegerType interface
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
 type IntegerType struct {
 	*ExtendedDataType
 
-	def      *int64
-	example  raml.IntegerExample
-	examples raml.IntegerExampleMap
-	enum     []int64
+	def        *int64
+	example    raml.IntegerExample
+	examples   raml.IntegerExampleMap
+	enum       []int64
 	minimum    *int64
 	maximum    *int64
 	format     raml.NumberFormat
@@ -90,7 +87,7 @@ func (o *IntegerType) SetExamples(examples raml.IntegerExampleMap) raml.IntegerT
 }
 
 func (o *IntegerType) UnsetExamples() raml.IntegerType {
-	o.examples = NewIntegerExampleMap(o.DataType.log)
+	o.examples = NewIntegerExampleMap()
 	return o
 }
 
@@ -123,7 +120,7 @@ func (o *IntegerType) SetAnnotations(annotations raml.AnnotationMap) raml.Intege
 }
 
 func (o *IntegerType) UnsetAnnotations() raml.IntegerType {
-	o.hasAnnotations.mp = NewAnnotationMap(o.DataType.log)
+	o.hasAnnotations.mp = NewAnnotationMap()
 	return o
 }
 
@@ -136,7 +133,7 @@ func (o *IntegerType) SetFacetDefinitions(facets raml.FacetMap) raml.IntegerType
 }
 
 func (o *IntegerType) UnsetFacetDefinitions() raml.IntegerType {
-	o.facets = NewFacetMap(o.DataType.log)
+	o.facets = NewFacetMap()
 	return o
 }
 
@@ -173,7 +170,7 @@ func (o *IntegerType) SetExtraFacets(facets raml.AnyMap) raml.IntegerType {
 }
 
 func (o *IntegerType) UnsetExtraFacets() raml.IntegerType {
-	o.hasExtra.mp = NewAnyMap(o.DataType.log)
+	o.hasExtra.mp = NewAnyMap()
 	return o
 }
 
@@ -242,7 +239,7 @@ func (o IntegerType) render() bool {
 	return true
 }
 func (o *IntegerType) marshal(out raml.AnyMap) error {
-	o.DataType.log.Trace("internal.IntegerType.marshal")
+	logrus.Trace("internal.IntegerType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
@@ -262,59 +259,50 @@ func (o *IntegerType) marshal(out raml.AnyMap) error {
 	return nil
 }
 
-func (o *IntegerType) assign(key, val interface{}, log *logrus.Entry) error {
-	log.Trace("internal.IntegerType.assign")
-	switch key {
+func (o *IntegerType) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.IntegerType.assign")
+	switch key.Value {
 	case rmeta.KeyExample:
-		if ex, err := ExampleSortingHat(o.kind, log); err != nil {
-			return xlog.Error(log, err)
-		} else if err := ex.UnmarshalRAML(val, log); err != nil {
+		if ex, err := ExampleSortingHat(o.kind); err != nil {
+			return err
+		} else if err := ex.UnmarshalRAML(val); err != nil {
 			return err
 		} else {
 			o.example = ex.(raml.IntegerExample)
 		}
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val, log)
+		return o.examples.UnmarshalRAML(val)
 	case rmeta.KeyEnum:
-		arr, err := assign.AsAnyList(val, log)
-		if err != nil {
-			return xlog.Error(log, "the enum facet must be an array. " + err.Error())
-		}
-		for i := range arr {
-			
-			l2 := xlog.AddPath(log, i)
-			if tmp, ok := arr[i].(int64); ok{
-				o.enum = append(o.enum, tmp)
+		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+			if val, err := xyml.ToInt64(cur); err != nil {
+				return err
 			} else {
-				return xlog.Errorf(l2,
-					"enum entries for a(n) integer datatype must be of type " +
-						"integer.  expected int64, got %s",
-					reflect.TypeOf(arr[i]))
+				o.enum = append(o.enum, val)
 			}
-			
-		}
+
+			return nil
+		})
 		return nil
 	case rmeta.KeyRequired:
-		return assign.AsBool(val, &o.required, log)
+		return assign.AsBool(val, &o.required)
 	}
-	
-	switch key {
+
+	switch key.Value {
 	case rmeta.KeyMinimum:
-		return assign.AsInt64Ptr(val, &o.minimum, log)
+		return assign.AsInt64Ptr(val, &o.minimum)
 	case rmeta.KeyMaximum:
-		return assign.AsInt64Ptr(val, &o.maximum, log)
+		return assign.AsInt64Ptr(val, &o.maximum)
 	case rmeta.KeyFormat:
-		if val, err := IntegerFormatSortingHat(val, log); err != nil {
+		if val, err := IntegerFormatSortingHat(val); err != nil {
 			return err
 		} else {
 			o.format = val
 			return nil
 		}
 	case rmeta.KeyMultipleOf:
-		return assign.AsFloat64Ptr(val, &o.multipleOf, log)
+		return assign.AsFloat64Ptr(val, &o.multipleOf)
 	}
 
-	return o.ExtendedDataType.assign(key, val, log)
+	return o.ExtendedDataType.assign(key, val)
 }
-

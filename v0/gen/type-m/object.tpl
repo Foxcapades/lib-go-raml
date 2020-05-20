@@ -4,17 +4,17 @@ package raml
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 func Foo() {
 	out := &{{ .Name }}Type{}
 
 {{define "object-constructor"}}
-	out.properties = NewPropertyMap(log)
+	out.properties = NewPropertyMap()
 	out.addtlProps = true
 {{end}}
 }
@@ -64,7 +64,7 @@ func (o *{{.Name}}Type) SetProperties(props raml.PropertyMap) raml.{{.Name}}Type
 }
 
 func (o *{{.Name}}Type) UnsetProperties() raml.{{.Name}}Type {
-	o.properties = NewPropertyMap(o.DataType.log)
+	o.properties = NewPropertyMap()
 	return o
 }
 
@@ -137,21 +137,22 @@ func (o {{.Name}}Type) render() bool {
 	return true
 }
 {{end}}
-func (o {{.Name}}Type) assign(key, val interface{}, log *logrus.Entry) (err error) {
+func (o {{.Name}}Type) assign(key, val *yaml.Node) (err error) {
 {{define "object-assign"}}
-	switch key {
+	switch key.Value {
 	case rmeta.KeyProperties:
-		xlog.OptError(log, o.properties.UnmarshalRAML(val, log))
+		return o.properties.UnmarshalRAML(val)
 	case rmeta.KeyMinProperties:
 		return assign.AsUintPtr(val, &o.minProps)
 	case rmeta.KeyMaxProperties:
 		return assign.AsUintPtr(val, &o.maxProps)
 	case rmeta.KeyAddtlProps:
-		return assign.AsBool(val, &o.addtlProps, log)
+		return assign.AsBool(val, &o.addtlProps)
 	case rmeta.KeyDiscriminator:
-		return assign.AsStringPtr(val, &o.discrim, log)
+		return assign.AsStringPtr(val, &o.discrim)
 	case rmeta.KeyDiscriminatorVal:
-		o.discrimVal = &val
+		var foo interface{} = val
+		o.discrimVal = &foo
 		return nil
 	}
 {{end}}

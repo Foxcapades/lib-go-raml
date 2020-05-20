@@ -1,7 +1,7 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"fmt"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
@@ -9,38 +9,35 @@ import (
 
 // ExampleSortingHat returns a blank instance of the correct `raml.Example`
 // sub-type implementation for the given datatype kind.
-func ExampleSortingHat(
-	kind rmeta.DataTypeKind,
-	log *logrus.Entry,
-) (raml.Example, error) {
-	log.Trace("internal.ExampleSortingHat")
+func ExampleSortingHat(kind rmeta.DataTypeKind) (raml.Example, error) {
+	logrus.Trace("internal.ExampleSortingHat")
 
 	switch kind {
 	case rmeta.TypeString:
-		return NewStringExample(log), nil
+		return NewStringExample(), nil
 	case rmeta.TypeObject:
-		return NewObjectExample(log), nil
+		return NewObjectExample(), nil
 	case rmeta.TypeArray:
-		return NewArrayExample(log), nil
+		return NewArrayExample(), nil
 	case rmeta.TypeNumber:
-		return NewNumberExample(log), nil
+		return NewNumberExample(), nil
 	case rmeta.TypeInteger:
-		return NewIntegerExample(log), nil
+		return NewIntegerExample(), nil
 	case rmeta.TypeDateOnly:
-		return NewDateOnlyExample(log), nil
+		return NewDateOnlyExample(), nil
 	case rmeta.TypeDatetimeOnly:
-		return NewDatetimeOnlyExample(log), nil
+		return NewDatetimeOnlyExample(), nil
 	case rmeta.TypeFile:
-		return NewFileExample(log), nil
+		return NewFileExample(), nil
 	case rmeta.TypeBool:
-		return NewBoolExample(log), nil
+		return NewBoolExample(), nil
 	case rmeta.TypeCustom:
-		return NewCustomExample(log), nil
+		return NewCustomExample(), nil
 	case rmeta.TypeDatetime:
-		return NewDatetimeExample(log), nil
+		return NewDatetimeExample(), nil
 	case rmeta.TypeUnion:
-		return NewUnionExample(log), nil
+		return NewUnionExample(), nil
 	}
 
-	return nil, xlog.Errorf(log, "No example implementation available for type %s", kind)
+	return nil, fmt.Errorf("no example implementation available for type %s", kind)
 }

@@ -1,30 +1,27 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"errors"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-func NewLibrary(log *logrus.Entry) *Library {
-	log = xlog.WithType(log, "internal.Library")
+func NewLibrary() *Library {
 	return &Library{
-		log:            log,
-		hasAnnotations: makeAnnotations(log),
-		hasAnnTypes:    makeAnnTypes(log),
-		hasExtra:       makeExtra(log),
-		hasResTypes:    makeResTypes(log),
-		hasSecSchemes:  makeSecSchemes(log),
-		hasTraits:      makeHasTraits(log),
-		hasTypes:       makeHasTypes(log),
-		hasUsage:       makeUsage(log),
-		hasUses:        makeUses(log),
+		hasAnnotations: makeAnnotations(),
+		hasAnnTypes:    makeAnnTypes(),
+		hasExtra:       makeExtra(),
+		hasResTypes:    makeResTypes(),
+		hasSecSchemes:  makeSecSchemes(),
+		hasTraits:      makeHasTraits(),
+		hasTypes:       makeHasTypes(),
+		hasUsage:       makeUsage(),
+		hasUses:        makeUses(),
 	}
 }
 
 type Library struct {
-	log *logrus.Entry
 	hasAnnotations
 	hasAnnTypes
 	hasExtra
@@ -36,17 +33,24 @@ type Library struct {
 	hasUses
 }
 
-func (l *Library) UnmarshalYAML(fn func(interface{}) error) error {
-	l.log.Trace("internal.Library.UnmarshalYAML")
-	var slice yaml.MapSlice
+func (l *Library) UnmarshalYAML(root *yaml.Node) error {
+	logrus.Trace("internal.Library.UnmarshalYAML")
 
-	if err := fn(&slice); err != nil {
-		return err
+	if root.Kind != yaml.DocumentNode {
+		return errors.New("cannot unmarshal document from a non-root node")
 	}
 
-	for i := range slice {
-		log := xlog.AddPath(l.log, slice[i].Key)
-		if err := l.assign(slice[i].Key, slice[i].Value, log); err != nil {
+	root = root.Content[0]
+
+	if root.Kind != yaml.MappingNode {
+		return errors.New("invalid document structure, expected !!map, got " + root.Tag)
+	}
+
+	for i := 0; i < len(root.Content); i += 2 {
+		key := root.Content[i]
+		val := root.Content[i+1]
+
+		if err := l.assign(key, val); err != nil {
 			return err
 		}
 	}
@@ -55,8 +59,8 @@ func (l *Library) UnmarshalYAML(fn func(interface{}) error) error {
 }
 
 func (l Library) MarshalYAML() (interface{}, error) {
-	l.log.Trace("internal.Library.MarshalYAML")
-	out := NewAnyMap(l.log)
+	logrus.Trace("internal.Library.MarshalYAML")
+	out := NewAnyMap()
 	l.hasUsage.out(out)
 	l.hasUses.out(out)
 	l.hasSecSchemes.out(out)
@@ -65,35 +69,33 @@ func (l Library) MarshalYAML() (interface{}, error) {
 	l.hasAnnotations.out(out)
 	l.hasResTypes.out(out)
 	l.hasExtra.out(out)
-	l.hasTypes.out(out, l.log)
+	l.hasTypes.out(out)
 	return out, nil
 }
 
-func (l *Library) assign(k, v interface{}, log *logrus.Entry) error {
-	log.Trace("internal.Library.assign")
-	switch k {
+func (l *Library) assign(k, v *yaml.Node) error {
+	logrus.Trace("internal.Library.assign")
+	switch k.Value {
 	case rmeta.KeyAnnotationTypes:
-		return l.hasAnnTypes.in(v, l.log)
+		return l.hasAnnTypes.in(v)
 	case rmeta.KeyResourceTypes:
-		return l.hasResTypes.in(v, l.log)
+		return l.hasResTypes.in(v)
 	case rmeta.KeyTypes, rmeta.KeySchemas:
-		return l.hasTypes.in(v, l.log)
+		return l.hasTypes.in(v)
 	case rmeta.KeyTraits:
-		return l.hasTraits.in(v, l.log)
+		return l.hasTraits.in(v)
 	case rmeta.KeyUses:
-		return l.hasUses.in(v, l.log)
+		return l.hasUses.in(v)
 	case rmeta.KeyUsage:
 		return l.hasUsage.in(v)
 	case rmeta.KeySecuritySchemes:
-		return l.hasSecSchemes.in(v, l.log)
+		return l.hasSecSchemes.in(v)
 	}
 
-	if str, ok := k.(string); ok {
-		if used, err := l.hasAnnotations.in(str, v); err != nil {
-			return err
-		} else if used {
-			return nil
-		}
+	if used, err := l.hasAnnotations.in(k.Value, v); err != nil {
+		return err
+	} else if used {
+		return nil
 	}
 
 	l.hasExtra.in(k, v)

@@ -1,7 +1,8 @@
 package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
-// StringType generated @ 2020-05-20T00:33:46.349824232-04:00
+
+// StringType generated @ 2020-05-20T18:40:13.095690448-04:00
 type StringType interface {
 	Unmarshaler
 	Marshaler
@@ -142,7 +143,6 @@ type StringType interface {
 	UnsetExtraFacets() StringType
 
 	SetRequired(bool) StringType
-
 	// Pattern returns an option which will contain the regex
 	// pattern for the current string type definition if it is
 	// set.
@@ -181,5 +181,4 @@ type StringType interface {
 	SetMaxLength(ln uint) StringType
 
 	UnsetMaxLength() StringType
-
 }

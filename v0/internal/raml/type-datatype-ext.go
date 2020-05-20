@@ -3,21 +3,17 @@ package raml
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
-	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
-func NewExtendedDataType(
-	kind rmeta.DataTypeKind,
-	log *logrus.Entry,
-	self concreteType,
-) *ExtendedDataType {
+func NewExtendedDataType(kind rmeta.DataTypeKind, self concreteType) *ExtendedDataType {
 	return &ExtendedDataType{
-		DataType:       NewDataType(kind, log, self),
-		hasAnnotations: makeAnnotations(log),
-		facets:         NewFacetMap(log),
+		DataType:       NewDataType(kind, self),
+		hasAnnotations: makeAnnotations(),
+		facets:         NewFacetMap(),
 		required:       true,
 	}
 }
@@ -76,32 +72,32 @@ func (e *ExtendedDataType) marshal(out raml.AnyMap) error {
 	return nil
 }
 
-func (e *ExtendedDataType) assign(key, val interface{}, log *logrus.Entry) error {
-	switch key {
+func (e *ExtendedDataType) assign(key, val *yaml.Node) error {
+	switch key.Value {
 	case rmeta.KeyDisplayName:
-		return xlog.OptError(log, assign.AsStringPtr(val, &e.displayName, log))
+		return assign.AsStringPtr(val, &e.displayName)
 	case rmeta.KeyDescription:
-		return xlog.OptError(log, assign.AsStringPtr(val, &e.description, log))
+		return assign.AsStringPtr(val, &e.description)
 	case rmeta.KeyFacets:
-		return xlog.OptError(log, e.facets.UnmarshalRAML(val, log))
+		return e.facets.UnmarshalRAML(val)
 	case rmeta.KeyXml:
-		xml := NewXml(log)
-		if err := xml.UnmarshalRAML(val, log); err != nil {
-			return xlog.Error(log, err)
+		xml := NewXml()
+		if err := xml.UnmarshalRAML(val); err != nil {
+			return err
 		}
 		e.xml = xml
 		return nil
 	}
 
-	if str, ok := key.(string); ok {
-		if used, err := e.hasAnnotations.in(str, val); err != nil {
+	if xyml.IsString(key) {
+		if used, err := e.hasAnnotations.in(key.Value, val); err != nil {
 			return err
 		} else if used {
 			return nil
 		}
 	}
 
-	return e.DataType.assign(key, val, log)
+	return e.DataType.assign(key, val)
 }
 
 func (e *ExtendedDataType) render() bool {

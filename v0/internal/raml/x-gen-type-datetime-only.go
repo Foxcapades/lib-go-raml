@@ -1,28 +1,25 @@
 package raml
 
 import (
-	"reflect"
-
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 // NewDatetimeOnlyType returns a new internal implementation
 // of the raml.DatetimeOnlyType interface.
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
-func NewDatetimeOnlyType(log *logrus.Entry) *DatetimeOnlyType {
-	log = xlog.WithType(log, "internal.DatetimeOnlyType")
-
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
+func NewDatetimeOnlyType() *DatetimeOnlyType {
 	out := &DatetimeOnlyType{
-		examples: NewDatetimeOnlyExampleMap(log),
+		examples: NewDatetimeOnlyExampleMap(),
 	}
-	
-	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeDatetimeOnly, log, out)
+
+	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeDatetimeOnly, out)
 
 	return out
 }
@@ -30,7 +27,7 @@ func NewDatetimeOnlyType(log *logrus.Entry) *DatetimeOnlyType {
 // DatetimeOnlyType is a default generated implementation of
 // the raml.DatetimeOnlyType interface
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
 type DatetimeOnlyType struct {
 	*ExtendedDataType
 
@@ -38,7 +35,6 @@ type DatetimeOnlyType struct {
 	example  raml.DatetimeOnlyExample
 	examples raml.DatetimeOnlyExampleMap
 	enum     []string
-	
 }
 
 func (o *DatetimeOnlyType) SetType(s string) raml.DatetimeOnlyType {
@@ -87,7 +83,7 @@ func (o *DatetimeOnlyType) SetExamples(examples raml.DatetimeOnlyExampleMap) ram
 }
 
 func (o *DatetimeOnlyType) UnsetExamples() raml.DatetimeOnlyType {
-	o.examples = NewDatetimeOnlyExampleMap(o.DataType.log)
+	o.examples = NewDatetimeOnlyExampleMap()
 	return o
 }
 
@@ -120,7 +116,7 @@ func (o *DatetimeOnlyType) SetAnnotations(annotations raml.AnnotationMap) raml.D
 }
 
 func (o *DatetimeOnlyType) UnsetAnnotations() raml.DatetimeOnlyType {
-	o.hasAnnotations.mp = NewAnnotationMap(o.DataType.log)
+	o.hasAnnotations.mp = NewAnnotationMap()
 	return o
 }
 
@@ -133,7 +129,7 @@ func (o *DatetimeOnlyType) SetFacetDefinitions(facets raml.FacetMap) raml.Dateti
 }
 
 func (o *DatetimeOnlyType) UnsetFacetDefinitions() raml.DatetimeOnlyType {
-	o.facets = NewFacetMap(o.DataType.log)
+	o.facets = NewFacetMap()
 	return o
 }
 
@@ -170,7 +166,7 @@ func (o *DatetimeOnlyType) SetExtraFacets(facets raml.AnyMap) raml.DatetimeOnlyT
 }
 
 func (o *DatetimeOnlyType) UnsetExtraFacets() raml.DatetimeOnlyType {
-	o.hasExtra.mp = NewAnyMap(o.DataType.log)
+	o.hasExtra.mp = NewAnyMap()
 	return o
 }
 
@@ -180,13 +176,13 @@ func (o *DatetimeOnlyType) SetRequired(b bool) raml.DatetimeOnlyType {
 }
 
 func (o *DatetimeOnlyType) marshal(out raml.AnyMap) error {
-	o.DataType.log.Trace("internal.DatetimeOnlyType.marshal")
+	logrus.Trace("internal.DatetimeOnlyType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	
+
 	out.PutNonNil(rmeta.KeyEnum, o.enum).
 		PutNonNil(rmeta.KeyExample, o.example)
 
@@ -197,43 +193,34 @@ func (o *DatetimeOnlyType) marshal(out raml.AnyMap) error {
 	return nil
 }
 
-func (o *DatetimeOnlyType) assign(key, val interface{}, log *logrus.Entry) error {
-	log.Trace("internal.DatetimeOnlyType.assign")
-	switch key {
+func (o *DatetimeOnlyType) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.DatetimeOnlyType.assign")
+	switch key.Value {
 	case rmeta.KeyExample:
-		if ex, err := ExampleSortingHat(o.kind, log); err != nil {
-			return xlog.Error(log, err)
-		} else if err := ex.UnmarshalRAML(val, log); err != nil {
+		if ex, err := ExampleSortingHat(o.kind); err != nil {
+			return err
+		} else if err := ex.UnmarshalRAML(val); err != nil {
 			return err
 		} else {
 			o.example = ex.(raml.DatetimeOnlyExample)
 		}
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val, log)
+		return o.examples.UnmarshalRAML(val)
 	case rmeta.KeyEnum:
-		arr, err := assign.AsAnyList(val, log)
-		if err != nil {
-			return xlog.Error(log, "the enum facet must be an array. " + err.Error())
-		}
-		for i := range arr {
-			
-			l2 := xlog.AddPath(log, i)
-			if tmp, ok := arr[i].(string); ok{
-				o.enum = append(o.enum, tmp)
+		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+			if val, err := xyml.ToString(cur); err != nil {
+				return err
 			} else {
-				return xlog.Errorf(l2,
-					"enum entries for a(n) datetime-only datatype must be of type " +
-						"datetime-only.  expected string, got %s",
-					reflect.TypeOf(arr[i]))
+				o.enum = append(o.enum, val)
 			}
-			
-		}
+
+			return nil
+		})
 		return nil
 	case rmeta.KeyRequired:
-		return assign.AsBool(val, &o.required, log)
+		return assign.AsBool(val, &o.required)
 	}
-	
-	return o.ExtendedDataType.assign(key, val, log)
-}
 
+	return o.ExtendedDataType.assign(key, val)
+}

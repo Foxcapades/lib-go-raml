@@ -15,24 +15,33 @@ const (
 
 var now = time.Now().Format(time.RFC3339Nano)
 
-var types = []extTypeProps{
-	{Name: "Any",          Type: "any",           Time: now, Base: true},
-	{Name: "Include",      Type: "include",       Time: now, Base: true},
-	{Name: "Nil",          Type: "nil",           Time: now, Base: true},
+// Separated out to keep a clear list of all the enum types
+const (
+	enumAny    = "interface{}"
+	enumBool   = "bool"
+	enumFloat  = "float64"
+	enumInt    = "int64"
+	enumString = "string"
+)
 
-	{Name: "Array",        Type: "array",         Time: now, DefType: "[]interface{}", DefTypeName: "[]interface{}", EnumType: "interface{}"},
-	{Name: "Bool",         Type: "bool",          Time: now, DefType: "bool",          DefTypeName: "Bool",          EnumType: "bool",        DefIsOpt: true},
-	{Name: "Custom",       Type: "custom",        Time: now, DefType: "interface{}",   DefTypeName: "Untyped",       EnumType: "interface{}", DefIsOpt: true},
-	{Name: "DateOnly",     Type: "date-only",     Time: now, DefType: "string",        DefTypeName: "String",        EnumType: "string",      DefIsOpt: true},
-	{Name: "TimeOnly",     Type: "time-only",     Time: now, DefType: "string",        DefTypeName: "String",        EnumType: "string",      DefIsOpt: true},
-	{Name: "DatetimeOnly", Type: "datetime-only", Time: now, DefType: "string",        DefTypeName: "String",        EnumType: "string",      DefIsOpt: true},
-	{Name: "Datetime",     Type: "datetime",      Time: now, DefType: "string",        DefTypeName: "String",        EnumType: "string",      DefIsOpt: true},
-	{Name: "File",         Type: "file",          Time: now, DefType: "interface{}",   DefTypeName: "Untyped",       EnumType: "interface{}", DefIsOpt: true},
-	{Name: "Integer",      Type: "integer",       Time: now, DefType: "int64",         DefTypeName: "Int64",         EnumType: "int64",       DefIsOpt: true},
-	{Name: "Number",       Type: "number",        Time: now, DefType: "float64",       DefTypeName: "Float64",       EnumType: "float64",     DefIsOpt: true},
-	{Name: "Object",       Type: "object",        Time: now, DefType: "interface{}",   DefTypeName: "Untyped",       EnumType: "interface{}", DefIsOpt: true},
-	{Name: "String",       Type: "string",        Time: now, DefType: "string",        DefTypeName: "String",        EnumType: "string",      DefIsOpt: true},
-	{Name: "Union",        Type: "union",         Time: now, DefType: "interface{}",   DefTypeName: "Untyped",       EnumType: "interface{}", DefIsOpt: true},
+var types = []extTypeProps{
+	{Name: "Any", Type: "any", Time: now, Base: true},
+	{Name: "Include", Type: "include", Time: now, Base: true},
+	{Name: "Nil", Type: "nil", Time: now, Base: true},
+
+	{Name: "Array", Type: "array", Time: now, DefType: "[]interface{}", DefTypeName: "[]interface{}", EnumType: enumAny},
+	{Name: "Bool", Type: "bool", Time: now, DefType: "bool", DefTypeName: "Bool", EnumType: enumBool, DefIsOpt: true},
+	{Name: "Custom", Type: "custom", Time: now, DefType: "interface{}", DefTypeName: "Untyped", EnumType: enumAny, DefIsOpt: true},
+	{Name: "DateOnly", Type: "date-only", Time: now, DefType: "string", DefTypeName: "String", EnumType: enumString, DefIsOpt: true},
+	{Name: "TimeOnly", Type: "time-only", Time: now, DefType: "string", DefTypeName: "String", EnumType: enumString, DefIsOpt: true},
+	{Name: "DatetimeOnly", Type: "datetime-only", Time: now, DefType: "string", DefTypeName: "String", EnumType: enumString, DefIsOpt: true},
+	{Name: "Datetime", Type: "datetime", Time: now, DefType: "string", DefTypeName: "String", EnumType: enumString, DefIsOpt: true},
+	{Name: "File", Type: "file", Time: now, DefType: "interface{}", DefTypeName: "Untyped", EnumType: enumAny, DefIsOpt: true},
+	{Name: "Integer", Type: "integer", Time: now, DefType: "int64", DefTypeName: "Int64", EnumType: enumInt, DefIsOpt: true},
+	{Name: "Number", Type: "number", Time: now, DefType: "float64", DefTypeName: "Float64", EnumType: enumFloat, DefIsOpt: true},
+	{Name: "Object", Type: "object", Time: now, DefType: "interface{}", DefTypeName: "Untyped", EnumType: enumAny, DefIsOpt: true},
+	{Name: "String", Type: "string", Time: now, DefType: "string", DefTypeName: "String", EnumType: enumString, DefIsOpt: true},
+	{Name: "Union", Type: "union", Time: now, DefType: "interface{}", DefTypeName: "Untyped", EnumType: enumAny, DefIsOpt: true},
 }
 
 func main() {

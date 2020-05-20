@@ -1,9 +1,11 @@
 package raml
 
-import "github.com/sirupsen/logrus"
+import (
+	"gopkg.in/yaml.v3"
+)
 
 type Unmarshaler interface {
-	UnmarshalRAML(value interface{}, log *logrus.Entry) error
+	UnmarshalRAML(value *yaml.Node) error
 }
 
 type Marshaler interface {

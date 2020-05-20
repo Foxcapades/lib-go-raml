@@ -1,31 +1,28 @@
 package raml
 
 import (
-	
-
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 // NewObjectType returns a new internal implementation
 // of the raml.ObjectType interface.
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
-func NewObjectType(log *logrus.Entry) *ObjectType {
-	log = xlog.WithType(log, "internal.ObjectType")
-
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
+func NewObjectType() *ObjectType {
 	out := &ObjectType{
-		examples: NewObjectExampleMap(log),
+		examples: NewObjectExampleMap(),
 	}
-	
-	out.properties = NewPropertyMap(log)
+
+	out.properties = NewPropertyMap()
 	out.addtlProps = true
 
-	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeObject, log, out)
+	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeObject, out)
 
 	return out
 }
@@ -33,14 +30,14 @@ func NewObjectType(log *logrus.Entry) *ObjectType {
 // ObjectType is a default generated implementation of
 // the raml.ObjectType interface
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
 type ObjectType struct {
 	*ExtendedDataType
 
-	def      *interface{}
-	example  raml.ObjectExample
-	examples raml.ObjectExampleMap
-	enum     []interface{}
+	def        *interface{}
+	example    raml.ObjectExample
+	examples   raml.ObjectExampleMap
+	enum       []interface{}
 	properties raml.PropertyMap
 	minProps   *uint
 	maxProps   *uint
@@ -95,7 +92,7 @@ func (o *ObjectType) SetExamples(examples raml.ObjectExampleMap) raml.ObjectType
 }
 
 func (o *ObjectType) UnsetExamples() raml.ObjectType {
-	o.examples = NewObjectExampleMap(o.DataType.log)
+	o.examples = NewObjectExampleMap()
 	return o
 }
 
@@ -128,7 +125,7 @@ func (o *ObjectType) SetAnnotations(annotations raml.AnnotationMap) raml.ObjectT
 }
 
 func (o *ObjectType) UnsetAnnotations() raml.ObjectType {
-	o.hasAnnotations.mp = NewAnnotationMap(o.DataType.log)
+	o.hasAnnotations.mp = NewAnnotationMap()
 	return o
 }
 
@@ -141,7 +138,7 @@ func (o *ObjectType) SetFacetDefinitions(facets raml.FacetMap) raml.ObjectType {
 }
 
 func (o *ObjectType) UnsetFacetDefinitions() raml.ObjectType {
-	o.facets = NewFacetMap(o.DataType.log)
+	o.facets = NewFacetMap()
 	return o
 }
 
@@ -178,7 +175,7 @@ func (o *ObjectType) SetExtraFacets(facets raml.AnyMap) raml.ObjectType {
 }
 
 func (o *ObjectType) UnsetExtraFacets() raml.ObjectType {
-	o.hasExtra.mp = NewAnyMap(o.DataType.log)
+	o.hasExtra.mp = NewAnyMap()
 	return o
 }
 
@@ -201,7 +198,7 @@ func (o *ObjectType) SetProperties(props raml.PropertyMap) raml.ObjectType {
 }
 
 func (o *ObjectType) UnsetProperties() raml.ObjectType {
-	o.properties = NewPropertyMap(o.DataType.log)
+	o.properties = NewPropertyMap()
 	return o
 }
 
@@ -274,7 +271,7 @@ func (o ObjectType) render() bool {
 	return true
 }
 func (o *ObjectType) marshal(out raml.AnyMap) error {
-	o.DataType.log.Trace("internal.ObjectType.marshal")
+	logrus.Trace("internal.ObjectType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
@@ -302,51 +299,47 @@ func (o *ObjectType) marshal(out raml.AnyMap) error {
 	return nil
 }
 
-func (o *ObjectType) assign(key, val interface{}, log *logrus.Entry) error {
-	log.Trace("internal.ObjectType.assign")
-	switch key {
+func (o *ObjectType) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.ObjectType.assign")
+	switch key.Value {
 	case rmeta.KeyExample:
-		if ex, err := ExampleSortingHat(o.kind, log); err != nil {
-			return xlog.Error(log, err)
-		} else if err := ex.UnmarshalRAML(val, log); err != nil {
+		if ex, err := ExampleSortingHat(o.kind); err != nil {
+			return err
+		} else if err := ex.UnmarshalRAML(val); err != nil {
 			return err
 		} else {
 			o.example = ex.(raml.ObjectExample)
 		}
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val, log)
+		return o.examples.UnmarshalRAML(val)
 	case rmeta.KeyEnum:
-		arr, err := assign.AsAnyList(val, log)
-		if err != nil {
-			return xlog.Error(log, "the enum facet must be an array. " + err.Error())
-		}
-		for i := range arr {
-			
-			o.enum = append(o.enum, arr[i])
-			
-		}
+		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+			o.enum = append(o.enum, val)
+
+			return nil
+		})
 		return nil
 	case rmeta.KeyRequired:
-		return assign.AsBool(val, &o.required, log)
+		return assign.AsBool(val, &o.required)
 	}
-	
-	switch key {
+
+	switch key.Value {
 	case rmeta.KeyProperties:
-		xlog.OptError(log, o.properties.UnmarshalRAML(val, log))
+		return o.properties.UnmarshalRAML(val)
 	case rmeta.KeyMinProperties:
 		return assign.AsUintPtr(val, &o.minProps)
 	case rmeta.KeyMaxProperties:
 		return assign.AsUintPtr(val, &o.maxProps)
 	case rmeta.KeyAddtlProps:
-		return assign.AsBool(val, &o.addtlProps, log)
+		return assign.AsBool(val, &o.addtlProps)
 	case rmeta.KeyDiscriminator:
-		return assign.AsStringPtr(val, &o.discrim, log)
+		return assign.AsStringPtr(val, &o.discrim)
 	case rmeta.KeyDiscriminatorVal:
-		o.discrimVal = &val
+		var foo interface{} = val
+		o.discrimVal = &foo
 		return nil
 	}
 
-	return o.ExtendedDataType.assign(key, val, log)
+	return o.ExtendedDataType.assign(key, val)
 }
-

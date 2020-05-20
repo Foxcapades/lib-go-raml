@@ -1,141 +1,168 @@
 package raml
 
 import (
+	"fmt"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
-	"reflect"
+	"gopkg.in/yaml.v3"
 	"strings"
 )
 
 const (
-	multiTypeNotAllowed = "multi-type definitions are not currently supported"
+	multiTypeNotAllowed = "multi-type definitions are not currently supported " +
+		"%d:%d"
 	fullTypeKeyBadValue = "the type key in an expanded definition must be an " +
-		"array or a string. got %s"
+		"array or a string. got %s at %d:%d"
 	badTypeDefType = "a type definition should be empty, a string, an array, or" +
-		" a map.  instead got %s"
+		" a map.  instead got %s at %d:%d"
 )
 
-func TypeSortingHat(val interface{}, log *logrus.Entry) (out raml.DataType, err error) {
-	log.Trace("internal.TypeSortingHat")
+func TypeSortingHat(val *yaml.Node) (out raml.DataType, err error) {
+	logrus.Trace("internal.TypeSortingHat")
 
-	if str, ok := val.(string); ok {
-		return typeToKind(str, log), nil
+	if xyml.IsString(val) {
+		return typeToKind(val.Value), nil
 	}
 
-	if _, ok := val.([]interface{}); ok {
-		return nil, xlog.Error(log, multiTypeNotAllowed)
+	if xyml.IsList(val) {
+		return nil, fmt.Errorf(multiTypeNotAllowed, val.Line, val.Column)
 	}
 
-	if tmp, ok := val.(yaml.MapSlice); ok {
-		if kind, err := siftType(tmp, log); err != nil {
+	if xyml.IsMap(val) {
+		if kind, err := siftType(val); err != nil {
 			return nil, err
 		} else {
-			if err = kind.UnmarshalRAML(val, log); err != nil {
+			if err = kind.UnmarshalRAML(val); err != nil {
 				return nil, err
 			}
 			return kind, nil
 		}
 	}
 
-	if util.IsNil(val) {
-		return NewStringType(log), nil
+	if val.Tag == "!include" {
+		out := NewIncludeType()
+		out.schema = val.Value
+		return out, nil
 	}
 
-	return nil, xlog.Errorf(log, badTypeDefType, reflect.TypeOf(val))
+	if util.IsNil(val) {
+		return NewStringType(), nil
+	}
+
+	return nil, fmt.Errorf(badTypeDefType, val.Tag, val.Line, val.Column)
 }
 
-func typeToKind(val string, log *logrus.Entry) concreteType {
-	log.Trace("internal.typeToKind")
+func typeToKind(val string) concreteType {
+	logrus.Trace("internal.typeToKind")
 
 	tmp := rmeta.DataTypeKind(val)
 	switch tmp {
 	case rmeta.TypeAny:
-		return NewAnyType(log)
+		logrus.Debug("you go to house ", rmeta.TypeAny)
+		return NewAnyType()
 	case rmeta.TypeArray:
-		return NewArrayType(log)
+		logrus.Debug("you go to house ", rmeta.TypeArray)
+		return NewArrayType()
 	case rmeta.TypeBool:
-		return NewBoolType(log)
+		logrus.Debug("you go to house ", rmeta.TypeBool)
+		return NewBoolType()
 	case rmeta.TypeDateOnly:
-		return NewDateOnlyType(log)
+		logrus.Debug("you go to house ", rmeta.TypeDateOnly)
+		return NewDateOnlyType()
 	case rmeta.TypeDatetime:
-		return NewDatetimeType(log)
+		logrus.Debug("you go to house ", rmeta.TypeDatetime)
+		return NewDatetimeType()
 	case rmeta.TypeDatetimeOnly:
-		return NewDatetimeOnlyType(log)
+		logrus.Debug("you go to house ", rmeta.TypeDatetimeOnly)
+		return NewDatetimeOnlyType()
 	case rmeta.TypeFile:
-		return NewFileType(log)
+		logrus.Debug("you go to house ", rmeta.TypeFile)
+		return NewFileType()
 	case rmeta.TypeInteger:
-		return NewIntegerType(log)
+		logrus.Debug("you go to house ", rmeta.TypeInteger)
+		return NewIntegerType()
 	case rmeta.TypeNil:
-		return NewNilType(log)
+		logrus.Debug("you go to house ", rmeta.TypeNil)
+		return NewNilType()
 	case rmeta.TypeNumber:
-		return NewNumberType(log)
+		logrus.Debug("you go to house ", rmeta.TypeNumber)
+		return NewNumberType()
 	case rmeta.TypeObject:
-		return NewObjectType(log)
+		logrus.Debug("you go to house ", rmeta.TypeObject)
+		return NewObjectType()
 	case rmeta.TypeString:
-		return NewStringType(log)
+		logrus.Debug("you go to house ", rmeta.TypeString)
+		return NewStringType()
 	case rmeta.TypeTimeOnly:
-		return NewTimeOnlyType(log)
+		logrus.Debug("you go to house ", rmeta.TypeTimeOnly)
+		return NewTimeOnlyType()
 	}
 
-	trm := strings.TrimSpace(val)
-	if strings.HasPrefix(trm, "!include ") {
-		out := NewIncludeType(log)
+	if strings.HasPrefix(val, "!include ") {
+		logrus.Debug("you go to house ", rmeta.TypeInclude)
+		out := NewIncludeType()
 		out.schema = val
 		return out
 	}
 
-	if -1 < strings.IndexByte(trm, '|') {
-		tmp := NewUnionType(log)
+	if -1 < strings.IndexByte(val, '|') {
+		logrus.Debug("you go to house ", rmeta.TypeUnion)
+		tmp := NewUnionType()
 		tmp.schema = val
 		return tmp
 	}
 
-	out := NewCustomType(log)
+	logrus.Debug("you go to house ", rmeta.TypeCustom)
+	out := NewCustomType()
 	out.schema = val
 	return out
 }
 
-func siftType(val yaml.MapSlice, log *logrus.Entry) (concreteType, error) {
-	log.Trace("internal.siftType")
+func siftType(val *yaml.Node) (concreteType, error) {
+	logrus.Trace("internal.siftType")
 
 	schema := -1
 	props := false
 	items := false
 
-	for i := range val {
-		if val[i].Key == rmeta.KeyType || val[i].Key == rmeta.KeySchema {
-			schema = i
+	for i := 0; i < len(val.Content); i += 2 {
+		key := val.Content[i].Value
+
+		if key == rmeta.KeyType || key == rmeta.KeySchema {
+			schema = i + 1
 			break
 		}
-		if val[i].Key == rmeta.KeyProperties {
+
+		if key == rmeta.KeyProperties {
 			props = true
 		}
-		if val[i].Key == rmeta.KeyItems {
+
+		if key == rmeta.KeyItems {
 			items = true
 		}
 	}
 
 	if schema > -1 {
-		if str, ok := val[schema].Value.(string); ok {
-			return typeToKind(str, log), nil
-		} else if _, ok := val[schema].Value.([]interface{}); ok {
-			return nil, xlog.Error(log, multiTypeNotAllowed)
+		tmp := val.Content[schema]
+		if tmp.Tag == xyml.String {
+			return typeToKind(tmp.Value), nil
+		} else if tmp.Kind == yaml.SequenceNode {
+			return nil, fmt.Errorf(multiTypeNotAllowed, tmp.Line, tmp.Column)
 		} else {
-			return nil, xlog.Errorf(log, fullTypeKeyBadValue, reflect.TypeOf(val[schema].Value))
+			return nil, fmt.Errorf(fullTypeKeyBadValue, tmp.Tag, tmp.Line, tmp.Column)
 		}
 	}
 
 	if props {
-		return NewObjectType(log), nil
+		return NewObjectType(), nil
 	}
 
 	if items {
-		return NewArrayType(log), nil
+		return NewArrayType(), nil
 	}
 
-	return NewStringType(log), nil
+	return NewStringType(), nil
 }

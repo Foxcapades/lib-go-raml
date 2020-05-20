@@ -4,7 +4,6 @@ package raml
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 )
@@ -98,20 +97,20 @@ func (o {{.Name}}Type) render() bool {
 {{end}}
 func (o {{.Name}}Type) assign(key, val interface{}) (err error) {
 {{define "integer-assign"}}
-	switch key {
+	switch key.Value {
 	case rmeta.KeyMinimum:
-		return assign.AsInt64Ptr(val, &o.minimum, log)
+		return assign.AsInt64Ptr(val, &o.minimum)
 	case rmeta.KeyMaximum:
-		return assign.AsInt64Ptr(val, &o.maximum, log)
+		return assign.AsInt64Ptr(val, &o.maximum)
 	case rmeta.KeyFormat:
-		if val, err := IntegerFormatSortingHat(val, log); err != nil {
+		if val, err := IntegerFormatSortingHat(val); err != nil {
 			return err
 		} else {
 			o.format = val
 			return nil
 		}
 	case rmeta.KeyMultipleOf:
-		return assign.AsFloat64Ptr(val, &o.multipleOf, log)
+		return assign.AsFloat64Ptr(val, &o.multipleOf)
 	}
 {{end}}
 	return

@@ -1,7 +1,8 @@
 package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
-// TimeOnlyType generated @ 2020-05-20T00:33:46.349824232-04:00
+
+// TimeOnlyType generated @ 2020-05-20T18:40:13.095690448-04:00
 type TimeOnlyType interface {
 	Unmarshaler
 	Marshaler
@@ -142,5 +143,4 @@ type TimeOnlyType interface {
 	UnsetExtraFacets() TimeOnlyType
 
 	SetRequired(bool) TimeOnlyType
-
 }

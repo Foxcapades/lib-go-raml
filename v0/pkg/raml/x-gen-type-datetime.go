@@ -1,7 +1,8 @@
 package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
-// DatetimeType generated @ 2020-05-20T00:33:46.349824232-04:00
+
+// DatetimeType generated @ 2020-05-20T18:40:13.095690448-04:00
 type DatetimeType interface {
 	Unmarshaler
 	Marshaler
@@ -142,7 +143,6 @@ type DatetimeType interface {
 	UnsetExtraFacets() DatetimeType
 
 	SetRequired(bool) DatetimeType
-
 	// Format returns the value of the "format" facet on the
 	// current datetime type definition or nil if the facet is
 	// not set.
@@ -162,5 +162,4 @@ type DatetimeType interface {
 	// UnsetFormat removes the "format" facet from the current
 	// datetime type definition.
 	UnsetFormat() DatetimeType
-
 }

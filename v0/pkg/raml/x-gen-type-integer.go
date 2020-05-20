@@ -1,7 +1,8 @@
 package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
-// IntegerType generated @ 2020-05-20T00:33:46.349824232-04:00
+
+// IntegerType generated @ 2020-05-20T18:40:13.095690448-04:00
 type IntegerType interface {
 	Unmarshaler
 	Marshaler
@@ -142,7 +143,6 @@ type IntegerType interface {
 	UnsetExtraFacets() IntegerType
 
 	SetRequired(bool) IntegerType
-
 	// Minimum returns an option which will contain the value
 	// of the "minimum" facet for the current integer type
 	// definition if it is set.
@@ -194,5 +194,4 @@ type IntegerType interface {
 	// UnsetMultipleOf removes the "multipleOf" facet from the
 	// current integer type definition.
 	UnsetMultipleOf() IntegerType
-
 }

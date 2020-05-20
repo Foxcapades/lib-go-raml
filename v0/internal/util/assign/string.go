@@ -1,30 +1,33 @@
 package assign
 
 import (
+	"fmt"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/sirupsen/logrus"
-	"reflect"
-
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"gopkg.in/yaml.v3"
 )
 
-func AsString(v interface{}, ptr *string, log *logrus.Entry) error {
-	log.Trace("assign.AsString")
+func AsString(v *yaml.Node, ptr *string) error {
+	logrus.Trace("assign.AsString")
 
-	if val, ok := v.(string); ok {
-		*ptr = val
-		return nil
+	if err := xyml.RequireString(v); err != nil {
+		return err
 	}
 
-	return xlog.Errorf(log, errReqType, "string", reflect.TypeOf(v))
+	*ptr = v.Value
+
+	return nil
 }
 
-func AsStringPtr(v interface{}, ptr **string, log *logrus.Entry) error {
-	log.Trace("assign.AsStringPtr")
+func AsStringPtr(v *yaml.Node, ptr **string) error {
+	logrus.Trace("assign.AsStringPtr")
 
-	if val, ok := v.(string); ok {
-		*ptr = &val
-		return nil
+	if v.Tag != xyml.String {
+		return fmt.Errorf(errReqType, xyml.String, v.Tag, v.Line, v.Column)
 	}
 
-	return xlog.Errorf(log, errReqType, "string", reflect.TypeOf(v))
+	tmp := v.Value
+	*ptr = &tmp
+
+	return nil
 }

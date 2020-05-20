@@ -1,7 +1,8 @@
 package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
-// UnionType generated @ 2020-05-20T00:33:46.349824232-04:00
+
+// UnionType generated @ 2020-05-20T18:40:13.095690448-04:00
 type UnionType interface {
 	Unmarshaler
 	Marshaler
@@ -142,5 +143,4 @@ type UnionType interface {
 	UnsetExtraFacets() UnionType
 
 	SetRequired(bool) UnionType
-
 }

@@ -1,28 +1,25 @@
 package raml
 
 import (
-	
-
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 // NewUnionType returns a new internal implementation
 // of the raml.UnionType interface.
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
-func NewUnionType(log *logrus.Entry) *UnionType {
-	log = xlog.WithType(log, "internal.UnionType")
-
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
+func NewUnionType() *UnionType {
 	out := &UnionType{
-		examples: NewUnionExampleMap(log),
+		examples: NewUnionExampleMap(),
 	}
-	
-	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeUnion, log, out)
+
+	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeUnion, out)
 
 	return out
 }
@@ -30,7 +27,7 @@ func NewUnionType(log *logrus.Entry) *UnionType {
 // UnionType is a default generated implementation of
 // the raml.UnionType interface
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
 type UnionType struct {
 	*ExtendedDataType
 
@@ -38,7 +35,6 @@ type UnionType struct {
 	example  raml.UnionExample
 	examples raml.UnionExampleMap
 	enum     []interface{}
-	
 }
 
 func (o *UnionType) SetType(s string) raml.UnionType {
@@ -87,7 +83,7 @@ func (o *UnionType) SetExamples(examples raml.UnionExampleMap) raml.UnionType {
 }
 
 func (o *UnionType) UnsetExamples() raml.UnionType {
-	o.examples = NewUnionExampleMap(o.DataType.log)
+	o.examples = NewUnionExampleMap()
 	return o
 }
 
@@ -120,7 +116,7 @@ func (o *UnionType) SetAnnotations(annotations raml.AnnotationMap) raml.UnionTyp
 }
 
 func (o *UnionType) UnsetAnnotations() raml.UnionType {
-	o.hasAnnotations.mp = NewAnnotationMap(o.DataType.log)
+	o.hasAnnotations.mp = NewAnnotationMap()
 	return o
 }
 
@@ -133,7 +129,7 @@ func (o *UnionType) SetFacetDefinitions(facets raml.FacetMap) raml.UnionType {
 }
 
 func (o *UnionType) UnsetFacetDefinitions() raml.UnionType {
-	o.facets = NewFacetMap(o.DataType.log)
+	o.facets = NewFacetMap()
 	return o
 }
 
@@ -170,7 +166,7 @@ func (o *UnionType) SetExtraFacets(facets raml.AnyMap) raml.UnionType {
 }
 
 func (o *UnionType) UnsetExtraFacets() raml.UnionType {
-	o.hasExtra.mp = NewAnyMap(o.DataType.log)
+	o.hasExtra.mp = NewAnyMap()
 	return o
 }
 
@@ -180,13 +176,13 @@ func (o *UnionType) SetRequired(b bool) raml.UnionType {
 }
 
 func (o *UnionType) marshal(out raml.AnyMap) error {
-	o.DataType.log.Trace("internal.UnionType.marshal")
+	logrus.Trace("internal.UnionType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	
+
 	out.PutNonNil(rmeta.KeyEnum, o.enum).
 		PutNonNil(rmeta.KeyExample, o.example)
 
@@ -197,35 +193,30 @@ func (o *UnionType) marshal(out raml.AnyMap) error {
 	return nil
 }
 
-func (o *UnionType) assign(key, val interface{}, log *logrus.Entry) error {
-	log.Trace("internal.UnionType.assign")
-	switch key {
+func (o *UnionType) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.UnionType.assign")
+	switch key.Value {
 	case rmeta.KeyExample:
-		if ex, err := ExampleSortingHat(o.kind, log); err != nil {
-			return xlog.Error(log, err)
-		} else if err := ex.UnmarshalRAML(val, log); err != nil {
+		if ex, err := ExampleSortingHat(o.kind); err != nil {
+			return err
+		} else if err := ex.UnmarshalRAML(val); err != nil {
 			return err
 		} else {
 			o.example = ex.(raml.UnionExample)
 		}
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val, log)
+		return o.examples.UnmarshalRAML(val)
 	case rmeta.KeyEnum:
-		arr, err := assign.AsAnyList(val, log)
-		if err != nil {
-			return xlog.Error(log, "the enum facet must be an array. " + err.Error())
-		}
-		for i := range arr {
-			
-			o.enum = append(o.enum, arr[i])
-			
-		}
+		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+			o.enum = append(o.enum, val)
+
+			return nil
+		})
 		return nil
 	case rmeta.KeyRequired:
-		return assign.AsBool(val, &o.required, log)
+		return assign.AsBool(val, &o.required)
 	}
-	
-	return o.ExtendedDataType.assign(key, val, log)
-}
 
+	return o.ExtendedDataType.assign(key, val)
+}

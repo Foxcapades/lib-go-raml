@@ -1,4 +1,7 @@
-{{define "datetime"}}
+package x
+
+type x interface {
+	{{define "datetime" -}}
 	// Format returns the value of the "format" facet on the
 	// current datetime type definition or nil if the facet is
 	// not set.
@@ -18,4 +21,5 @@
 	// UnsetFormat removes the "format" facet from the current
 	// datetime type definition.
 	UnsetFormat() DatetimeType
-{{end}}
+	{{- end}}
+}

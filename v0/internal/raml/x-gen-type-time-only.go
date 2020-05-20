@@ -1,28 +1,25 @@
 package raml
 
 import (
-	"reflect"
-
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 // NewTimeOnlyType returns a new internal implementation
 // of the raml.TimeOnlyType interface.
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
-func NewTimeOnlyType(log *logrus.Entry) *TimeOnlyType {
-	log = xlog.WithType(log, "internal.TimeOnlyType")
-
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
+func NewTimeOnlyType() *TimeOnlyType {
 	out := &TimeOnlyType{
-		examples: NewTimeOnlyExampleMap(log),
+		examples: NewTimeOnlyExampleMap(),
 	}
-	
-	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeTimeOnly, log, out)
+
+	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeTimeOnly, out)
 
 	return out
 }
@@ -30,7 +27,7 @@ func NewTimeOnlyType(log *logrus.Entry) *TimeOnlyType {
 // TimeOnlyType is a default generated implementation of
 // the raml.TimeOnlyType interface
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
 type TimeOnlyType struct {
 	*ExtendedDataType
 
@@ -38,7 +35,6 @@ type TimeOnlyType struct {
 	example  raml.TimeOnlyExample
 	examples raml.TimeOnlyExampleMap
 	enum     []string
-	
 }
 
 func (o *TimeOnlyType) SetType(s string) raml.TimeOnlyType {
@@ -87,7 +83,7 @@ func (o *TimeOnlyType) SetExamples(examples raml.TimeOnlyExampleMap) raml.TimeOn
 }
 
 func (o *TimeOnlyType) UnsetExamples() raml.TimeOnlyType {
-	o.examples = NewTimeOnlyExampleMap(o.DataType.log)
+	o.examples = NewTimeOnlyExampleMap()
 	return o
 }
 
@@ -120,7 +116,7 @@ func (o *TimeOnlyType) SetAnnotations(annotations raml.AnnotationMap) raml.TimeO
 }
 
 func (o *TimeOnlyType) UnsetAnnotations() raml.TimeOnlyType {
-	o.hasAnnotations.mp = NewAnnotationMap(o.DataType.log)
+	o.hasAnnotations.mp = NewAnnotationMap()
 	return o
 }
 
@@ -133,7 +129,7 @@ func (o *TimeOnlyType) SetFacetDefinitions(facets raml.FacetMap) raml.TimeOnlyTy
 }
 
 func (o *TimeOnlyType) UnsetFacetDefinitions() raml.TimeOnlyType {
-	o.facets = NewFacetMap(o.DataType.log)
+	o.facets = NewFacetMap()
 	return o
 }
 
@@ -170,7 +166,7 @@ func (o *TimeOnlyType) SetExtraFacets(facets raml.AnyMap) raml.TimeOnlyType {
 }
 
 func (o *TimeOnlyType) UnsetExtraFacets() raml.TimeOnlyType {
-	o.hasExtra.mp = NewAnyMap(o.DataType.log)
+	o.hasExtra.mp = NewAnyMap()
 	return o
 }
 
@@ -180,13 +176,13 @@ func (o *TimeOnlyType) SetRequired(b bool) raml.TimeOnlyType {
 }
 
 func (o *TimeOnlyType) marshal(out raml.AnyMap) error {
-	o.DataType.log.Trace("internal.TimeOnlyType.marshal")
+	logrus.Trace("internal.TimeOnlyType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	
+
 	out.PutNonNil(rmeta.KeyEnum, o.enum).
 		PutNonNil(rmeta.KeyExample, o.example)
 
@@ -197,43 +193,34 @@ func (o *TimeOnlyType) marshal(out raml.AnyMap) error {
 	return nil
 }
 
-func (o *TimeOnlyType) assign(key, val interface{}, log *logrus.Entry) error {
-	log.Trace("internal.TimeOnlyType.assign")
-	switch key {
+func (o *TimeOnlyType) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.TimeOnlyType.assign")
+	switch key.Value {
 	case rmeta.KeyExample:
-		if ex, err := ExampleSortingHat(o.kind, log); err != nil {
-			return xlog.Error(log, err)
-		} else if err := ex.UnmarshalRAML(val, log); err != nil {
+		if ex, err := ExampleSortingHat(o.kind); err != nil {
+			return err
+		} else if err := ex.UnmarshalRAML(val); err != nil {
 			return err
 		} else {
 			o.example = ex.(raml.TimeOnlyExample)
 		}
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val, log)
+		return o.examples.UnmarshalRAML(val)
 	case rmeta.KeyEnum:
-		arr, err := assign.AsAnyList(val, log)
-		if err != nil {
-			return xlog.Error(log, "the enum facet must be an array. " + err.Error())
-		}
-		for i := range arr {
-			
-			l2 := xlog.AddPath(log, i)
-			if tmp, ok := arr[i].(string); ok{
-				o.enum = append(o.enum, tmp)
+		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+			if val, err := xyml.ToString(cur); err != nil {
+				return err
 			} else {
-				return xlog.Errorf(l2,
-					"enum entries for a(n) time-only datatype must be of type " +
-						"time-only.  expected string, got %s",
-					reflect.TypeOf(arr[i]))
+				o.enum = append(o.enum, val)
 			}
-			
-		}
+
+			return nil
+		})
 		return nil
 	case rmeta.KeyRequired:
-		return assign.AsBool(val, &o.required, log)
+		return assign.AsBool(val, &o.required)
 	}
-	
-	return o.ExtendedDataType.assign(key, val, log)
-}
 
+	return o.ExtendedDataType.assign(key, val)
+}

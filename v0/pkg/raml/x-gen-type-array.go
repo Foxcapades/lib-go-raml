@@ -1,5 +1,6 @@
 package raml
-// ArrayType generated @ 2020-05-20T00:33:46.349824232-04:00
+
+// ArrayType generated @ 2020-05-20T18:40:13.095690448-04:00
 type ArrayType interface {
 	Unmarshaler
 	Marshaler
@@ -140,7 +141,6 @@ type ArrayType interface {
 	UnsetExtraFacets() ArrayType
 
 	SetRequired(bool) ArrayType
-
 	// UniqueItems returns whether or not the current array
 	// type definition requires items in the defined array to
 	// be unique.
@@ -208,5 +208,4 @@ type ArrayType interface {
 	// that are allowed to appear in the array defined by the
 	// current type definition.
 	UnsetItems() ArrayType
-
 }

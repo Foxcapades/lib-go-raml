@@ -28,11 +28,11 @@ func Errorf(log *logrus.Entry, f string, i ...interface{}) error {
 	return errors.New(tmp)
 }
 
-func OptError(log *logrus.Entry, err error) error {
-	if err != nil {
-		return Error(log, err)
-	}
-	return nil
+// OptError is a bad bad boy
+//
+// Deprecated: remove me
+func OptError(err error) error {
+	return err
 }
 
 func AddPath(log *logrus.Entry, nxt interface{}) *logrus.Entry {

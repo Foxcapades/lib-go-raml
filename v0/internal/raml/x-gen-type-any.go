@@ -1,23 +1,17 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
-	"github.com/sirupsen/logrus"
 )
 
 // NewAnyType returns a new internal implementation of
 // the raml.AnyType interface.
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
-func NewAnyType(log *logrus.Entry) *AnyType {
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
+func NewAnyType() *AnyType {
 	out := &AnyType{}
 
-	out.DataType = NewDataType(
-		rmeta.TypeAny,
-		xlog.WithType(log, "internal.AnyType"),
-		out)
+	out.DataType = NewDataType(rmeta.TypeAny, out)
 
 	return out
 }
@@ -25,16 +19,7 @@ func NewAnyType(log *logrus.Entry) *AnyType {
 // AnyType is a generated internal implementation of
 // the raml.AnyType interface.
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
 type AnyType struct {
 	*DataType
 }
-
-func (a AnyType) render() bool {
-	return true
-}
-
-func (a AnyType) ExtraFacets() raml.AnyMap {
-	return NewAnyMap(a.log)
-}
-

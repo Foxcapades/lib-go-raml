@@ -2,19 +2,14 @@ package raml
 
 import (
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
-
-type renderable interface {
-	render() bool
-}
 
 type concreteType interface {
 	raml.Unmarshaler
 	raml.Marshaler
 	raml.DataType
-	renderable
 
-	assign(key, val interface{}, log *logrus.Entry) error
+	assign(key, val *yaml.Node) error
 	marshal(out raml.AnyMap) error
 }

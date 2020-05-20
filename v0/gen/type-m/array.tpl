@@ -4,9 +4,9 @@ package raml
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"gopkg.in/yaml.v3"
 )
 
 func Foo() {
@@ -92,21 +92,21 @@ func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 {{end}}
 }
 
-func (o {{.Name}}Type) assign(key, val interface{}) (err error) {
+func (o {{.Name}}Type) assign(key, val *yaml.Node) (err error) {
 {{define "array-assign"}}
-	switch key {
+	switch key.Value {
 	case rmeta.KeyUniqueItems:
-		return assign.AsBool(val, &o.uniqueItems, log)
+		return assign.AsBool(val, &o.uniqueItems)
 	case rmeta.KeyMinItems:
 		return assign.ToUint(val, &o.minItems)
 	case rmeta.KeyMaxItems:
 		return assign.ToUint(val, &o.maxItems)
 	case rmeta.KeyItems:
-		if val, err := TypeSortingHat(val, log); err == nil {
+		if val, err := TypeSortingHat(val); err == nil {
 			o.items = val
 			return nil
 		} else {
-			return xlog.Error(log, err)
+			return err
 		}
 	}
 {{end}}

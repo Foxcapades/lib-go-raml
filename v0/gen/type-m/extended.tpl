@@ -2,29 +2,24 @@
 package raml
 {{ define "extended" }}
 import (
-	{{if not (eq .Name "Array" "Custom" "File" "Object" "Union") -}}
-	"reflect"
-	{{- end}}
-
-	{{if not (eq .Name "Array") -}}
+{{if not (eq .Name "Array") -}}
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	{{- end}}
+{{- end}}
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 // New{{ .Name }}Type returns a new internal implementation
 // of the raml.{{ .Name }}Type interface.
 //
 // Generated @ {{ .Time }}
-func New{{ .Name }}Type(log *logrus.Entry) *{{ .Name }}Type {
-	log = xlog.WithType(log, "internal.{{ .Name }}Type")
-
+func New{{ .Name }}Type() *{{ .Name }}Type {
 	out := &{{.Name}}Type{
-		examples: New{{.Name}}ExampleMap(log),
+		examples: New{{.Name}}ExampleMap(),
 	}
 	{{if eq .Name "Object" -}}
 		{{template "object-constructor" $}}
@@ -41,7 +36,7 @@ func New{{ .Name }}Type(log *logrus.Entry) *{{ .Name }}Type {
 	{{- else if eq .Name "Datetime" -}}
 		{{template "datetime-constructor" $}}
 	{{- end }}
-	out.ExtendedDataType = NewExtendedDataType(rmeta.Type{{.Name}}, log, out)
+	out.ExtendedDataType = NewExtendedDataType(rmeta.Type{{.Name}}, out)
 
 	return out
 }
@@ -124,7 +119,7 @@ func (o *{{.Name}}Type) SetExamples(examples raml.{{.Name}}ExampleMap) raml.{{.N
 }
 
 func (o *{{.Name}}Type) UnsetExamples() raml.{{.Name}}Type {
-	o.examples = New{{.Name}}ExampleMap(o.DataType.log)
+	o.examples = New{{.Name}}ExampleMap()
 	return o
 }
 
@@ -157,7 +152,7 @@ func (o *{{.Name}}Type) SetAnnotations(annotations raml.AnnotationMap) raml.{{.N
 }
 
 func (o *{{.Name}}Type) UnsetAnnotations() raml.{{.Name}}Type {
-	o.hasAnnotations.mp = NewAnnotationMap(o.DataType.log)
+	o.hasAnnotations.mp = NewAnnotationMap()
 	return o
 }
 
@@ -170,7 +165,7 @@ func (o *{{.Name}}Type) SetFacetDefinitions(facets raml.FacetMap) raml.{{.Name}}
 }
 
 func (o *{{.Name}}Type) UnsetFacetDefinitions() raml.{{.Name}}Type {
-	o.facets = NewFacetMap(o.DataType.log)
+	o.facets = NewFacetMap()
 	return o
 }
 
@@ -207,7 +202,7 @@ func (o *{{.Name}}Type) SetExtraFacets(facets raml.AnyMap) raml.{{.Name}}Type {
 }
 
 func (o *{{.Name}}Type) UnsetExtraFacets() raml.{{.Name}}Type {
-	o.hasExtra.mp = NewAnyMap(o.DataType.log)
+	o.hasExtra.mp = NewAnyMap()
 	return o
 }
 
@@ -233,7 +228,7 @@ func (o *{{.Name}}Type) SetRequired(b bool) raml.{{.Name}}Type {
 {{- end -}}
 
 func (o *{{.Name}}Type) marshal(out raml.AnyMap) error {
-	o.DataType.log.Trace("internal.{{.Name}}Type.marshal")
+	logrus.Trace("internal.{{.Name}}Type.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
@@ -264,43 +259,37 @@ func (o *{{.Name}}Type) marshal(out raml.AnyMap) error {
 	return nil
 }
 
-func (o *{{.Name}}Type) assign(key, val interface{}, log *logrus.Entry) error {
-	log.Trace("internal.{{.Name}}Type.assign")
-	switch key {
+func (o *{{.Name}}Type) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.{{.Name}}Type.assign")
+	switch key.Value {
 	case rmeta.KeyExample:
-		if ex, err := ExampleSortingHat(o.kind, log); err != nil {
-			return xlog.Error(log, err)
-		} else if err := ex.UnmarshalRAML(val, log); err != nil {
+		if ex, err := ExampleSortingHat(o.kind); err != nil {
+			return err
+		} else if err := ex.UnmarshalRAML(val); err != nil {
 			return err
 		} else {
 			o.example = ex.(raml.{{.Name}}Example)
 		}
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val, log)
+		return o.examples.UnmarshalRAML(val)
 	case rmeta.KeyEnum:
-		arr, err := assign.AsAnyList(val, log)
-		if err != nil {
-			return xlog.Error(log, "the enum facet must be an array. " + err.Error())
-		}
-		for i := range arr {
-			{{if ne .EnumType "interface{}"}}
-			l2 := xlog.AddPath(log, i)
-			if tmp, ok := arr[i].({{.EnumType}}); ok{
-				o.enum = append(o.enum, tmp)
+		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+			{{if eq .DefTypeName "Bool" "Float64" "Int64" "String" -}}
+			if val, err := xyml.To{{.DefTypeName}}(cur); err != nil {
+				return err
 			} else {
-				return xlog.Errorf(l2,
-					"enum entries for a(n) {{.Type}} datatype must be of type " +
-						"{{.Type}}.  expected {{.EnumType}}, got %s",
-					reflect.TypeOf(arr[i]))
+				o.enum = append(o.enum, val)
 			}
-			{{else}}
-			o.enum = append(o.enum, arr[i])
-			{{end}}
-		}
+			{{- else if eq .DefTypeName "Untyped" -}}
+			o.enum = append(o.enum, val)
+			{{- end}}
+
+			return nil
+		})
 		return nil
 	case rmeta.KeyRequired:
-		return assign.AsBool(val, &o.required, log)
+		return assign.AsBool(val, &o.required)
 	}
 	{{if eq .Name "Object" -}}
 		{{template "object-assign" $}}
@@ -317,6 +306,6 @@ func (o *{{.Name}}Type) assign(key, val interface{}, log *logrus.Entry) error {
 	{{- else if eq .Name "Datetime" -}}
 		{{template "datetime-assign" $}}
 	{{- end}}
-	return o.ExtendedDataType.assign(key, val, log)
+	return o.ExtendedDataType.assign(key, val)
 }
 {{end}}

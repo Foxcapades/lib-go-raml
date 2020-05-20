@@ -1,4 +1,7 @@
-{{define "string"}}
+package x
+
+type x interface {
+	{{define "string" -}}
 	// Pattern returns an option which will contain the regex
 	// pattern for the current string type definition if it is
 	// set.
@@ -37,4 +40,5 @@
 	SetMaxLength(ln uint) StringType
 
 	UnsetMaxLength() StringType
-{{end}}
+	{{- end}}
+}

@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-// DatetimeOnlyExampleMap generated @ 2020-05-20T01:05:35.571783841-04:00
+// DatetimeOnlyExampleMap generated @ 2020-05-20T18:40:12.501365164-04:00
 type DatetimeOnlyExampleMap interface {
 	Unmarshaler
 	yaml.Marshaler

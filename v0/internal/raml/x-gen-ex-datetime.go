@@ -1,28 +1,23 @@
 package raml
 
 import (
-	"reflect"
-
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-func NewDatetimeExample(log *logrus.Entry) *DatetimeExample {
+func NewDatetimeExample() *DatetimeExample {
 	return &DatetimeExample{
-		log:         xlog.WithType(log, "internal.DatetimeExample"),
-		annotations: NewAnnotationMap(log),
-		extra:       NewAnyMap(log),
+		annotations: NewAnnotationMap(),
+		extra:       NewAnyMap(),
 	}
 }
 
 type DatetimeExample struct {
-	log *logrus.Entry
-
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
@@ -72,7 +67,7 @@ func (e *DatetimeExample) SetAnnotations(ann raml.AnnotationMap) raml.DatetimeEx
 }
 
 func (e *DatetimeExample) UnsetAnnotations() raml.DatetimeExample {
-	e.annotations = NewAnnotationMap(e.log)
+	e.annotations = NewAnnotationMap()
 	return e
 }
 
@@ -98,25 +93,13 @@ func (e *DatetimeExample) ExtraFacets() raml.AnyMap {
 	return e.extra
 }
 
-func (e *DatetimeExample) UnmarshalRAML(val interface{}, log *logrus.Entry) error {
-	if tmp, ok := val.(yaml.MapSlice); ok {
-		for i := range tmp {
-			row := &tmp[i]
-			l2 := xlog.AddPath(e.log, row.Key)
+func (e *DatetimeExample) UnmarshalRAML(value *yaml.Node) error {
 
-			if err := e.assign(row.Key, row.Value, l2); err != nil {
-				return xlog.Error(l2, err)
-			}
-		}
-		return nil
+	if xyml.IsMap(value) {
+		return xyml.ForEachMap(value, e.assign)
 	}
 
-	if tmp, ok := val.(string); ok {
-		e.value = tmp
-		return nil
-	}
-
-	return nil
+	return e.assignVal(value)
 }
 
 func (e *DatetimeExample) MarshalRAML(out raml.AnyMap) (bool, error) {
@@ -139,39 +122,44 @@ func (e *DatetimeExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	return true, nil
 }
 
-func (e *DatetimeExample) assign(key, val interface{}, log *logrus.Entry) error {
-	str, ok := key.(string)
+func (e *DatetimeExample) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.DatetimeExample.assign")
 
-	if !ok {
-		e.extra.Put(key, val)
-		return nil
-	}
-
-	if str[0] == '(' {
-		tmp := NewAnnotation(log)
-		if err := tmp.UnmarshalRAML(val, log); err != nil {
-			return xlog.Error(log, err)
+	if !xyml.IsString(key) {
+		if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
+			return err
+		} else {
+			e.extra.Put(ver, val)
 		}
-		e.annotations.Put(str, tmp)
 		return nil
 	}
 
-	switch str {
+	if key.Value[0] == '(' {
+		tmp := NewAnnotation()
+		if err := tmp.UnmarshalRAML(val); err != nil {
+			return err
+		}
+		e.annotations.Put(key.Value, tmp)
+		return nil
+	}
+
+	switch key.Value {
 	case rmeta.KeyDisplayName:
-		return assign.AsStringPtr(val, &e.displayName, log)
+		return assign.AsStringPtr(val, &e.displayName)
 	case rmeta.KeyDescription:
-		return assign.AsStringPtr(val, &e.description, log)
+		return assign.AsStringPtr(val, &e.description)
 	case rmeta.KeyStrict:
-		return assign.AsBool(val, &e.strict, log)
+		return assign.AsBool(val, &e.strict)
 	case rmeta.KeyValue:
-		if tmp, ok := val.(string); ok{
-			e.value = tmp
-			return nil
-		}
-		return xlog.Errorf(log, "invalid example value for Datetime types.  expected \"string\", got %s", reflect.TypeOf(val))
+		return e.assignVal(val)
 	}
 
-	e.extra.Put(str, val)
+	if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
+		return err
+	} else {
+		e.extra.Put(ver, val)
+	}
+
 	return nil
 }
 
@@ -181,4 +169,12 @@ func (e *DatetimeExample) expand() bool {
 		e.annotations.Len() > 0 ||
 		e.extra.Len() > 0 ||
 		e.strict != rmeta.ExampleDefaultStrict
+}
+
+func (e *DatetimeExample) assignVal(val *yaml.Node) error {
+	if err := xyml.RequireString(val); err != nil {
+		return err
+	}
+	e.value = val.Value
+	return nil
 }

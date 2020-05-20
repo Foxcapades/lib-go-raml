@@ -1,7 +1,8 @@
 package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
-// FileType generated @ 2020-05-20T00:33:46.349824232-04:00
+
+// FileType generated @ 2020-05-20T18:40:13.095690448-04:00
 type FileType interface {
 	Unmarshaler
 	Marshaler
@@ -142,7 +143,6 @@ type FileType interface {
 	UnsetExtraFacets() FileType
 
 	SetRequired(bool) FileType
-
 	// FileTypes returns a slice of the "fileTypes" facet set
 	// on the current file type definition.
 	FileTypes() []string
@@ -190,5 +190,4 @@ type FileType interface {
 	// set to its default value when rendered, it will not
 	// appear in the output RAML.
 	SetMaxLength(max uint) FileType
-
 }

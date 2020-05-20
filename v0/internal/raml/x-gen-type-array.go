@@ -1,32 +1,28 @@
 package raml
 
 import (
-	
-
-	
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 // NewArrayType returns a new internal implementation
 // of the raml.ArrayType interface.
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
-func NewArrayType(log *logrus.Entry) *ArrayType {
-	log = xlog.WithType(log, "internal.ArrayType")
-
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
+func NewArrayType() *ArrayType {
 	out := &ArrayType{
-		examples: NewArrayExampleMap(log),
+		examples: NewArrayExampleMap(),
 	}
-	
-	out.minItems    = rmeta.ArrayDefaultMinItems
-	out.maxItems    = rmeta.ArrayDefaultMaxItems
+
+	out.minItems = rmeta.ArrayDefaultMinItems
+	out.maxItems = rmeta.ArrayDefaultMaxItems
 	out.uniqueItems = rmeta.ArrayDefaultUniqueItems
 
-	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeArray, log, out)
+	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeArray, out)
 
 	return out
 }
@@ -34,14 +30,14 @@ func NewArrayType(log *logrus.Entry) *ArrayType {
 // ArrayType is a default generated implementation of
 // the raml.ArrayType interface
 //
-// Generated @ 2020-05-20T00:33:46.349824232-04:00
+// Generated @ 2020-05-20T18:40:13.095690448-04:00
 type ArrayType struct {
 	*ExtendedDataType
 
-	def      []interface{}
-	example  raml.ArrayExample
-	examples raml.ArrayExampleMap
-	enum     []interface{}
+	def         []interface{}
+	example     raml.ArrayExample
+	examples    raml.ArrayExampleMap
+	enum        []interface{}
 	uniqueItems bool
 	minItems    uint
 	maxItems    uint
@@ -94,7 +90,7 @@ func (o *ArrayType) SetExamples(examples raml.ArrayExampleMap) raml.ArrayType {
 }
 
 func (o *ArrayType) UnsetExamples() raml.ArrayType {
-	o.examples = NewArrayExampleMap(o.DataType.log)
+	o.examples = NewArrayExampleMap()
 	return o
 }
 
@@ -127,7 +123,7 @@ func (o *ArrayType) SetAnnotations(annotations raml.AnnotationMap) raml.ArrayTyp
 }
 
 func (o *ArrayType) UnsetAnnotations() raml.ArrayType {
-	o.hasAnnotations.mp = NewAnnotationMap(o.DataType.log)
+	o.hasAnnotations.mp = NewAnnotationMap()
 	return o
 }
 
@@ -140,7 +136,7 @@ func (o *ArrayType) SetFacetDefinitions(facets raml.FacetMap) raml.ArrayType {
 }
 
 func (o *ArrayType) UnsetFacetDefinitions() raml.ArrayType {
-	o.facets = NewFacetMap(o.DataType.log)
+	o.facets = NewFacetMap()
 	return o
 }
 
@@ -177,7 +173,7 @@ func (o *ArrayType) SetExtraFacets(facets raml.AnyMap) raml.ArrayType {
 }
 
 func (o *ArrayType) UnsetExtraFacets() raml.ArrayType {
-	o.hasExtra.mp = NewAnyMap(o.DataType.log)
+	o.hasExtra.mp = NewAnyMap()
 	return o
 }
 
@@ -231,13 +227,13 @@ func (o ArrayType) render() bool {
 	return true
 }
 func (o *ArrayType) marshal(out raml.AnyMap) error {
-	o.DataType.log.Trace("internal.ArrayType.marshal")
+	logrus.Trace("internal.ArrayType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	
+
 	if o.uniqueItems != rmeta.ArrayDefaultUniqueItems {
 		out.Put(rmeta.KeyUniqueItems, o.uniqueItems)
 	}
@@ -259,51 +255,45 @@ func (o *ArrayType) marshal(out raml.AnyMap) error {
 	return nil
 }
 
-func (o *ArrayType) assign(key, val interface{}, log *logrus.Entry) error {
-	log.Trace("internal.ArrayType.assign")
-	switch key {
+func (o *ArrayType) assign(key, val *yaml.Node) error {
+	logrus.Trace("internal.ArrayType.assign")
+	switch key.Value {
 	case rmeta.KeyExample:
-		if ex, err := ExampleSortingHat(o.kind, log); err != nil {
-			return xlog.Error(log, err)
-		} else if err := ex.UnmarshalRAML(val, log); err != nil {
+		if ex, err := ExampleSortingHat(o.kind); err != nil {
+			return err
+		} else if err := ex.UnmarshalRAML(val); err != nil {
 			return err
 		} else {
 			o.example = ex.(raml.ArrayExample)
 		}
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val, log)
+		return o.examples.UnmarshalRAML(val)
 	case rmeta.KeyEnum:
-		arr, err := assign.AsAnyList(val, log)
-		if err != nil {
-			return xlog.Error(log, "the enum facet must be an array. " + err.Error())
-		}
-		for i := range arr {
-			
-			o.enum = append(o.enum, arr[i])
-			
-		}
+		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+
+			return nil
+		})
 		return nil
 	case rmeta.KeyRequired:
-		return assign.AsBool(val, &o.required, log)
+		return assign.AsBool(val, &o.required)
 	}
-	
-	switch key {
+
+	switch key.Value {
 	case rmeta.KeyUniqueItems:
-		return assign.AsBool(val, &o.uniqueItems, log)
+		return assign.AsBool(val, &o.uniqueItems)
 	case rmeta.KeyMinItems:
 		return assign.ToUint(val, &o.minItems)
 	case rmeta.KeyMaxItems:
 		return assign.ToUint(val, &o.maxItems)
 	case rmeta.KeyItems:
-		if val, err := TypeSortingHat(val, log); err == nil {
+		if val, err := TypeSortingHat(val); err == nil {
 			o.items = val
 			return nil
 		} else {
-			return xlog.Error(log, err)
+			return err
 		}
 	}
 
-	return o.ExtendedDataType.assign(key, val, log)
+	return o.ExtendedDataType.assign(key, val)
 }
-

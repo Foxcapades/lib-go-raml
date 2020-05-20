@@ -1,23 +1,25 @@
 {{- /* gotype: github.com/Foxcapades/lib-go-raml-types/v0/tools/gen/type.extTypeProps */ -}}
-{{define "base" -}}{{if false}}package raml{{end}}
+package raml
+
+{{define "base" -}}
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/xlog"
+	{{if eq .Name "Include" -}}
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
+	{{- end}}
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	{{if not (eq .Name "Any" "Nil") -}}
 	"github.com/sirupsen/logrus"
+	{{- end}}
 )
 
 // New{{.Name}}Type returns a new internal implementation of
 // the raml.{{.Name}}Type interface.
 //
 // Generated @ {{.Time}}
-func New{{.Name}}Type(log *logrus.Entry) *{{.Name}}Type {
+func New{{.Name}}Type() *{{.Name}}Type {
 	out := &{{.Name}}Type{}
 
-	out.DataType = NewDataType(
-		rmeta.Type{{.Name}},
-		xlog.WithType(log, "internal.{{.Name}}Type"),
-		out)
+	out.DataType = NewDataType(rmeta.Type{{.Name}}, out)
 
 	return out
 }
@@ -29,12 +31,13 @@ func New{{.Name}}Type(log *logrus.Entry) *{{.Name}}Type {
 type {{.Name}}Type struct {
 	*DataType
 }
+{{if eq .Name "Include"}}
+func (a {{.Name}}Type) marshal(out raml.AnyMap) error {
+	logrus.Trace("internal.{{.Name}}Type.marshal")
 
-func (a {{.Name}}Type) render() bool {
-	return true
+	out.Put(rmeta.KeyType, "!include " + a.DataType.schema)
+	a.DataType.hasExtra.out(out)
+	return nil
 }
-
-func (a {{.Name}}Type) ExtraFacets() raml.AnyMap {
-	return NewAnyMap(a.log)
-}
+{{end}}
 {{end}}

@@ -1,4 +1,7 @@
-{{define "array"}}
+package f
+
+type f interface {
+	{{define "array" -}}
 	// UniqueItems returns whether or not the current array
 	// type definition requires items in the defined array to
 	// be unique.
@@ -66,4 +69,5 @@
 	// that are allowed to appear in the array defined by the
 	// current type definition.
 	UnsetItems() ArrayType
-{{end}}
+	{{- end}}
+}

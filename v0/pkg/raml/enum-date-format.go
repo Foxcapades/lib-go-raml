@@ -2,7 +2,7 @@ package raml
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type DateFormat interface {
@@ -10,4 +10,3 @@ type DateFormat interface {
 	yaml.Unmarshaler
 	yaml.Marshaler
 }
-

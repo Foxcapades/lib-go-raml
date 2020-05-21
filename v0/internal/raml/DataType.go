@@ -2,7 +2,6 @@ package raml
 
 import (
 	"errors"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/cast"
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
@@ -89,22 +88,18 @@ func (d *DataType) UnmarshalRAML(val *yaml.Node) error {
 }
 
 func (d *DataType) marshal(out raml.AnyMap) error {
-	logrus.Trace("internal.DataType.marshal")
-
 	out.Put(rmeta.KeyType, d.schema)
 	d.hasExtra.out(out)
 	return nil
 }
 
 func (d *DataType) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.DataType.assign")
-
 	switch key.Value {
 	case rmeta.KeyType, rmeta.KeySchema:
-		if str, err := cast.AsString(val); err != nil {
+		if err := xyml.RequireString(val); err != nil {
 			return err
 		} else {
-			d.schema = str
+			d.schema = val.Value
 		}
 		return nil
 	}

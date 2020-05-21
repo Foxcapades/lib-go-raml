@@ -1,6 +1,36 @@
 = RAML <--> Go
 
-Parser & serializer for https://raml.org/[RAML] documents from Go.
+Parser & serializer for https://raml.org/[RAML] documents to/from concrete Go
+types.
 
-.
-[]
+.cmd/example/main.go
+[source, go]
+----
+func main() {
+  res, err := simple.GetRequest("https://raw.githubusercontent.com/raml-org/raml-examples/master/others/tutorial-jukebox-api/jukebox-api.raml").
+    Submit().
+    GetRawResponse()
+  check(err)
+  defer res.Body.Close()
+
+  api, err := rparse.ParseApiDoc(res.Body)
+  check(err)
+
+  check(yaml.NewEncoder(os.Stdout).Encode(api.Types()))
+}
+
+func check(err error) {
+  if err != nil {
+    panic(err)
+  }
+}
+----
+
+.example output
+[source, shell-session]
+----
+$ go run v0/cmd/example/main.go
+song: !include jukebox-include-song.schema
+artist: !include jukebox-include-artist.schema
+album: !include jukebox-include-album.schema
+----

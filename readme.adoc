@@ -32,13 +32,37 @@ func check(err error) {
 $ go run v0/cmd/example/main.go
 #%RAML 1.0
 ---
-title: Jukebox API
-version: v1
-baseUri: http://jukebox.api.com
-traits:
-  searchable:
-    queryParameters:
-      query:
-        description: |
-          JSON array [{"field1","value1","operator1"},{"field2","value2","operator2"},...
+title: Illustrating annotations
+mediaType:
+  - application/json
+annotationTypes:
+  deprecated: nil
+  experimental: string | nil
+  feedbackRequested: string?
+  testHarness:
+    type: string # This line may be omitted as it's the default type
+  badge:
+  clearanceLevel:
+    properties:
+      level:
+        enum: [low, medium, high]
+        required: true
+      signature:
+        pattern: "\\d{3}-\\w{12}"
+        required: true
+/groups:
+  (experimental):
+  (feedbackRequested):
+/users:
+  (testHarness): usersTest
+  (badge): tested.gif
+  (clearanceLevel):
+    level: high
+    signature: 230-ghtwvfrs1itr
+  get:
+    (deprecated):
+    (experimental):
+    (feedbackRequested): Feedback committed!
+    responses:
+      200:
 ----

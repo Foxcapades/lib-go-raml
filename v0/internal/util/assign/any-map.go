@@ -6,6 +6,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// ToStringMap appends the values of the given YAML mapping to the given
+// StringMap.
 func ToStringMap(v *yaml.Node, ref raml.StringMap) error {
 	return xyml.ForEachMap(v, func(key, val *yaml.Node) error {
 		if err := xyml.RequireString(key); err != nil {
@@ -21,18 +23,14 @@ func ToStringMap(v *yaml.Node, ref raml.StringMap) error {
 }
 
 // TODO: decompose the yaml node further
-func ToUntypedMap(v *yaml.Node, ref raml.UntypedMap) error {
-	if err := xyml.RequireMapping(v); err != nil {
-		return err
-	}
-
-	for i := 0; i < len(v.Content); i += 2 {
-		if err := xyml.RequireString(v.Content[i]); err != nil {
+func ToUntypedMap(y *yaml.Node, ref raml.UntypedMap) error {
+	return xyml.ForEachMap(y, func(k, v *yaml.Node) error {
+		if err := xyml.RequireString(k); err != nil {
 			return err
 		}
 
-		ref.Put(v.Content[i].Value, v.Content[i+1])
-	}
+		ref.Put(k.Value, v)
 
-	return nil
+		return nil
+	})
 }

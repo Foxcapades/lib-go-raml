@@ -1,33 +1,28 @@
 package assign
 
 import (
-	"fmt"
-	"reflect"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
+	"gopkg.in/yaml.v3"
 )
 
 // Helper function for uint values in assign functions
-func ToUint(v interface{}, ptr *uint) error {
-	if val, ok := v.(uint); ok {
+func ToUint(v *yaml.Node, ptr *uint) error {
+	if val, err := xyml.ToUint(v); err != nil {
+		return err
+	} else {
 		*ptr = val
-		return nil
 	}
-	if val, ok := v.(int); ok {
-		*ptr = uint(val)
-		return nil
-	}
-	return fmt.Errorf(errReqType, "uint", reflect.TypeOf(v))
+
+	return nil
 }
 
 // Helper function for uint values in assign functions
-func AsUintPtr(v interface{}, ptr **uint) error {
-	if val, ok := v.(uint); ok {
+func AsUintPtr(v *yaml.Node, ptr **uint) error {
+	if val, err := xyml.ToUint(v); err != nil {
+		return err
+	} else {
 		*ptr = &val
-		return nil
 	}
-	if val, ok := v.(int); ok {
-		tmp := uint(val)
-		*ptr = &tmp
-		return nil
-	}
-	return fmt.Errorf(errReqType, "uint", reflect.TypeOf(v))
+
+	return nil
 }

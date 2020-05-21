@@ -8,7 +8,7 @@ import (
 	impl "github.com/Foxcapades/lib-go-raml-types/v0/internal/raml"
 )
 
-func ParseApiDoc(red io.Reader) (raml.ApiSpec, error) {
+func ParseApiDoc(red io.Reader) (raml.APISpec, error) {
 	out := impl.NewApiSpec()
 	dec := yaml.NewDecoder(red)
 

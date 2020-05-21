@@ -5,7 +5,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// CustomExampleMap generated @ 2020-05-20T18:40:12.501365164-04:00
+// CustomExampleMap generated @ 2020-05-20T20:54:25.054891636-04:00
 type CustomExampleMap interface {
 	Unmarshaler
 	yaml.Marshaler

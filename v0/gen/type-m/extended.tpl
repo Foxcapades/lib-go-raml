@@ -114,6 +114,7 @@ func (o *{{.Name}}Type) SetExamples(examples raml.{{.Name}}ExampleMap) raml.{{.N
 	if examples == nil {
 		return o.UnsetExamples()
 	}
+
 	o.examples = examples
 	return o
 }
@@ -147,6 +148,7 @@ func (o *{{.Name}}Type) SetAnnotations(annotations raml.AnnotationMap) raml.{{.N
 	if annotations == nil {
 		return o.UnsetAnnotations()
 	}
+
 	o.hasAnnotations.mp = annotations
 	return o
 }
@@ -160,6 +162,7 @@ func (o *{{.Name}}Type) SetFacetDefinitions(facets raml.FacetMap) raml.{{.Name}}
 	if facets == nil {
 		return o.UnsetFacetDefinitions()
 	}
+
 	o.facets = facets
 	return o
 }
@@ -169,12 +172,12 @@ func (o *{{.Name}}Type) UnsetFacetDefinitions() raml.{{.Name}}Type {
 	return o
 }
 
-func (o *{{.Name}}Type) SetXml(x raml.Xml) raml.{{.Name}}Type {
+func (o *{{.Name}}Type) SetXML(x raml.XML) raml.{{.Name}}Type {
 	o.xml = x
 	return o
 }
 
-func (o *{{.Name}}Type) UnsetXml() raml.{{.Name}}Type {
+func (o *{{.Name}}Type) UnsetXML() raml.{{.Name}}Type {
 	o.xml = nil
 	return o
 }
@@ -197,6 +200,7 @@ func (o *{{.Name}}Type) SetExtraFacets(facets raml.AnyMap) raml.{{.Name}}Type {
 	if facets == nil {
 		return o.UnsetExtraFacets()
 	}
+
 	o.hasExtra.mp = facets
 	return o
 }
@@ -260,7 +264,6 @@ func (o *{{.Name}}Type) marshal(out raml.AnyMap) error {
 }
 
 func (o *{{.Name}}Type) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.{{.Name}}Type.assign")
 	switch key.Value {
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
@@ -270,6 +273,7 @@ func (o *{{.Name}}Type) assign(key, val *yaml.Node) error {
 		} else {
 			o.example = ex.(raml.{{.Name}}Example)
 		}
+
 		return nil
 	case rmeta.KeyExamples:
 		return o.examples.UnmarshalRAML(val)
@@ -292,19 +296,19 @@ func (o *{{.Name}}Type) assign(key, val *yaml.Node) error {
 		return assign.AsBool(val, &o.required)
 	}
 	{{if eq .Name "Object" -}}
-		{{template "object-assign" $}}
+	{{template "object-assign" $}}
 	{{- else if eq .Name "Array" -}}
-		{{template "array-assign" $}}
+	{{template "array-assign" $}}
 	{{- else if eq .Name "String" -}}
-		{{template "string-assign" $}}
+	{{template "string-assign" $}}
 	{{- else if eq .Name "Number" -}}
-		{{template "number-assign" $}}
+	{{template "number-assign" $}}
 	{{- else if eq .Name "Integer" -}}
-		{{template "integer-assign" $}}
+	{{template "integer-assign" $}}
 	{{- else if eq .Name "File" -}}
-		{{template "file-assign" $}}
+	{{template "file-assign" $}}
 	{{- else if eq .Name "Datetime" -}}
-		{{template "datetime-assign" $}}
+	{{template "datetime-assign" $}}
 	{{- end}}
 	return o.ExtendedDataType.assign(key, val)
 }

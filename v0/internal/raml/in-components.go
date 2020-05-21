@@ -5,7 +5,6 @@ import (
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
 
@@ -100,15 +99,12 @@ func (h *hasTypes) Schemas() raml.DataTypeMap {
 }
 
 func (h *hasTypes) out(out raml.AnyMap) {
-	logrus.Trace("internal.hasTypes.out")
 	if h.mp.Len() > 0 {
-		logrus.Debug("appending types")
 		out.Put(rmeta.KeyTypes, h.mp)
 	}
 }
 
 func (h *hasTypes) in(v *yaml.Node) error {
-	logrus.Trace("internal.hasTypes.in")
 	return h.mp.UnmarshalRAML(v)
 }
 
@@ -231,7 +227,7 @@ func (h *hasExtra) ExtraFacets() raml.AnyMap {
 }
 
 func (h *hasExtra) out(out raml.AnyMap) {
-	h.mp.ForEach(func(k interface{}, v interface{}) { out.Put(k, v) })
+	h.mp.ForEach(func(k, v interface{}) { out.Put(k, v) })
 }
 
 func (h *hasExtra) in(k, v *yaml.Node) {

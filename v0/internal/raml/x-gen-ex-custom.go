@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewCustomExample returns a new internal implementation of the
+// raml.CustomExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewCustomExample() *CustomExample {
 	return &CustomExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewCustomExample() *CustomExample {
 	}
 }
 
+// CustomExample is a generated internal implementation of the
+// raml.CustomExample interface.
 type CustomExample struct {
 	displayName *string
 	description *string
@@ -173,5 +179,6 @@ func (e *CustomExample) expand() bool {
 
 func (e *CustomExample) assignVal(val *yaml.Node) error {
 	e.value = val
+
 	return nil
 }

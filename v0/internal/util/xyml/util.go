@@ -1,12 +1,10 @@
 package xyml
 
 import (
-	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
 
 func ForEachMap(y *yaml.Node, fn func(k, v *yaml.Node) error) error {
-	logrus.Trace("xyml.ForEachMap")
 	if err := RequireMapping(y); err != nil {
 		return err
 	}
@@ -21,7 +19,6 @@ func ForEachMap(y *yaml.Node, fn func(k, v *yaml.Node) error) error {
 }
 
 func ForEachList(y *yaml.Node, fn func(v *yaml.Node) error) error {
-	logrus.Trace("xyml.ForEachList")
 	if err := RequireList(y); err != nil {
 		return err
 	}

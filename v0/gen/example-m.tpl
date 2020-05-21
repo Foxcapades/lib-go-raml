@@ -12,6 +12,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// New{{.Name}}Example returns a new internal implementation of the
+// raml.{{.Name}}Example interface.
+//
+// Generated @ {{.Time}}
 func New{{.Name}}Example() *{{.Name}}Example {
 	return &{{.Name}}Example{
 		annotations: NewAnnotationMap(),
@@ -19,6 +23,8 @@ func New{{.Name}}Example() *{{.Name}}Example {
 	}
 }
 
+// {{.Name}}Example is a generated internal implementation of the
+// raml.{{.Name}}Example interface.
 type {{.Name}}Example struct {
 	displayName *string
 	description *string
@@ -125,8 +131,6 @@ func (e *{{.Name}}Example) MarshalRAML(out raml.AnyMap) (bool, error) {
 }
 
 func (e *{{.Name}}Example) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.{{.Name}}Example.assign")
-
 	if !xyml.IsString(key) {
 		if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
 			return err
@@ -210,6 +214,7 @@ func (e *{{.Name}}Example) assignVal(val *yaml.Node) error {
 	{{- else -}}
 	e.value = val
 	{{- end}}
+
 	return nil
 }
 {{end}}

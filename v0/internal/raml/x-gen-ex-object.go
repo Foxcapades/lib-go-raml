@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewObjectExample returns a new internal implementation of the
+// raml.ObjectExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewObjectExample() *ObjectExample {
 	return &ObjectExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewObjectExample() *ObjectExample {
 	}
 }
 
+// ObjectExample is a generated internal implementation of the
+// raml.ObjectExample interface.
 type ObjectExample struct {
 	displayName *string
 	description *string
@@ -173,5 +179,6 @@ func (e *ObjectExample) expand() bool {
 
 func (e *ObjectExample) assignVal(val *yaml.Node) error {
 	e.value = val
+
 	return nil
 }

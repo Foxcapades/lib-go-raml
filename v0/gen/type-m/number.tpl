@@ -91,9 +91,6 @@ func (o *{{.Name}}Type) UnsetMultipleOf() raml.{{.Name}}Type {
 	return o
 }
 
-func (o {{.Name}}Type) render() bool {
-	return true
-}
 {{end}}
 func (o {{.Name}}Type) assign(key, val interface{}) (err error) {
 {{define "number-assign"}}

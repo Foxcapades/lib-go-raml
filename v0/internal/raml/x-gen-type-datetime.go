@@ -13,7 +13,7 @@ import (
 // NewDatetimeType returns a new internal implementation
 // of the raml.DatetimeType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 func NewDatetimeType() *DatetimeType {
 	out := &DatetimeType{
 		examples: NewDatetimeExampleMap(),
@@ -27,7 +27,7 @@ func NewDatetimeType() *DatetimeType {
 // DatetimeType is a default generated implementation of
 // the raml.DatetimeType interface
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 type DatetimeType struct {
 	*ExtendedDataType
 
@@ -79,6 +79,7 @@ func (o *DatetimeType) SetExamples(examples raml.DatetimeExampleMap) raml.Dateti
 	if examples == nil {
 		return o.UnsetExamples()
 	}
+
 	o.examples = examples
 	return o
 }
@@ -112,6 +113,7 @@ func (o *DatetimeType) SetAnnotations(annotations raml.AnnotationMap) raml.Datet
 	if annotations == nil {
 		return o.UnsetAnnotations()
 	}
+
 	o.hasAnnotations.mp = annotations
 	return o
 }
@@ -125,6 +127,7 @@ func (o *DatetimeType) SetFacetDefinitions(facets raml.FacetMap) raml.DatetimeTy
 	if facets == nil {
 		return o.UnsetFacetDefinitions()
 	}
+
 	o.facets = facets
 	return o
 }
@@ -134,12 +137,12 @@ func (o *DatetimeType) UnsetFacetDefinitions() raml.DatetimeType {
 	return o
 }
 
-func (o *DatetimeType) SetXml(x raml.Xml) raml.DatetimeType {
+func (o *DatetimeType) SetXML(x raml.XML) raml.DatetimeType {
 	o.xml = x
 	return o
 }
 
-func (o *DatetimeType) UnsetXml() raml.DatetimeType {
+func (o *DatetimeType) UnsetXML() raml.DatetimeType {
 	o.xml = nil
 	return o
 }
@@ -162,6 +165,7 @@ func (o *DatetimeType) SetExtraFacets(facets raml.AnyMap) raml.DatetimeType {
 	if facets == nil {
 		return o.UnsetExtraFacets()
 	}
+
 	o.hasExtra.mp = facets
 	return o
 }
@@ -190,9 +194,6 @@ func (o *DatetimeType) UnsetFormat() raml.DatetimeType {
 	return o
 }
 
-func (o DatetimeType) render() bool {
-	return true
-}
 func (o *DatetimeType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.DatetimeType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
@@ -212,7 +213,6 @@ func (o *DatetimeType) marshal(out raml.AnyMap) error {
 }
 
 func (o *DatetimeType) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.DatetimeType.assign")
 	switch key.Value {
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
@@ -222,6 +222,7 @@ func (o *DatetimeType) assign(key, val *yaml.Node) error {
 		} else {
 			o.example = ex.(raml.DatetimeExample)
 		}
+
 		return nil
 	case rmeta.KeyExamples:
 		return o.examples.UnmarshalRAML(val)
@@ -240,14 +241,14 @@ func (o *DatetimeType) assign(key, val *yaml.Node) error {
 		return assign.AsBool(val, &o.required)
 	}
 
-	switch key.Value {
-	case rmeta.KeyFormat:
+	if key.Value == rmeta.KeyFormat {
 		if val, err := DateFormatSortingHat(val); err != nil {
 			return err
 		} else {
 			o.format = val
-			return nil
 		}
+
+		return nil
 	}
 
 	return o.ExtendedDataType.assign(key, val)

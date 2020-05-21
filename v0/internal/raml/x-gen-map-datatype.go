@@ -18,19 +18,17 @@ func NewDataTypeMap() *DataTypeMap {
 	}
 }
 
-// DataTypeMap generated @ 2020-05-20T18:40:12.501365164-04:00
+// DataTypeMap generated @ 2020-05-20T20:54:25.054891636-04:00
 type DataTypeMap struct {
 	slice []mapPair
 	index map[string]*raml.DataType
 }
 
 func (o *DataTypeMap) Len() uint {
-	logrus.Trace("internal.DataTypeMap.Len")
 	return uint(len(o.slice))
 }
 
 func (o *DataTypeMap) Put(key string, value raml.DataType) raml.DataTypeMap {
-	logrus.Trace("internal.DataTypeMap.Put")
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
@@ -47,8 +45,6 @@ func (o *DataTypeMap) PutNonNil(key string, value raml.DataType) raml.DataTypeMa
 }
 
 func (o *DataTypeMap) Replace(key string, value raml.DataType) raml.DataType {
-	logrus.Trace("internal.DataTypeMap.Replace")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
@@ -63,13 +59,12 @@ func (o *DataTypeMap) Replace(key string, value raml.DataType) raml.DataType {
 }
 
 func (o *DataTypeMap) ReplaceOrPut(key string, value raml.DataType) raml.DataType {
-	logrus.Trace("internal.DataTypeMap.ReplaceOrPut")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
 		o.index[key] = &value
 		o.slice = append(o.slice, mapPair{key: key, val: value})
+
 		return nil
 	}
 
@@ -91,8 +86,6 @@ func (o *DataTypeMap) Get(key string) raml.DataType {
 
 func (o *DataTypeMap) At(index uint) (key option.String, value raml.DataType) {
 
-	logrus.Trace("internal.DataTypeMap.At")
-
 	tmp := &o.slice[index]
 	key = option.NewString(tmp.key.(string))
 
@@ -102,15 +95,16 @@ func (o *DataTypeMap) At(index uint) (key option.String, value raml.DataType) {
 }
 
 func (o *DataTypeMap) IndexOf(key string) option.Uint {
-	logrus.Trace("internal.DataTypeMap.IndexOf")
 	if !o.Has(key) {
 		return option.NewEmptyUint()
 	}
+
 	for i := range o.slice {
 		if o.slice[i].key == key {
 			return option.NewUint(uint(i))
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
@@ -122,8 +116,6 @@ func (o *DataTypeMap) Has(key string) bool {
 }
 
 func (o *DataTypeMap) Delete(key string) raml.DataType {
-	logrus.Trace("internal.DataTypeMap.Delete")
-
 	if !o.Has(key) {
 		return nil
 	}
@@ -137,57 +129,48 @@ func (o *DataTypeMap) Delete(key string) raml.DataType {
 			return out
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
 func (o DataTypeMap) ForEach(fn func(string, raml.DataType)) {
-	logrus.Trace("internal.DataTypeMap.ForEach")
-
 	for k, v := range o.index {
 		fn(k, *v)
 	}
 }
 
 func (o DataTypeMap) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.DataTypeMap.MarshalYAML")
-
-	out := xyml.MapNode(len(o.slice) * 2)
+	out := xyml.MapNode(len(o.slice))
 	for i := range o.slice {
 		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
 			return nil, err
 		}
 	}
+
 	return out, nil
 }
 
 func (o *DataTypeMap) UnmarshalRAML(val *yaml.Node) (err error) {
-	logrus.Trace("internal.DataTypeMap.UnmarshalRAML")
-
-	if err := xyml.RequireMapping(val); err != nil {
-		return err
-	}
-
-	for i := 0; i < len(val.Content); i += 2 {
-		key := val.Content[i]
-		val := val.Content[i+1]
-
+	return xyml.ForEachMap(val, func(key, val *yaml.Node) error {
 		altKey := key.Value
 
 		tmpVal, err := TypeSortingHat(val)
+
 		if err != nil {
 			return err
 		}
 
 		o.Put(altKey, tmpVal)
-	}
 
-	return nil
+		return nil
+	})
 }
 
 func (o *DataTypeMap) String() string {
 	tmp := strings.Builder{}
 	enc := yaml.NewEncoder(&tmp)
-	enc.SetIndent(2)
+	enc.SetIndent(xyml.Indent)
+
 	if err := enc.Encode(o.index); err != nil {
 		return fmt.Sprint(o.index)
 	} else {

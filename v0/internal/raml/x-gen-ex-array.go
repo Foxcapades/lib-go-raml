@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewArrayExample returns a new internal implementation of the
+// raml.ArrayExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewArrayExample() *ArrayExample {
 	return &ArrayExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewArrayExample() *ArrayExample {
 	}
 }
 
+// ArrayExample is a generated internal implementation of the
+// raml.ArrayExample interface.
 type ArrayExample struct {
 	displayName *string
 	description *string
@@ -181,5 +187,6 @@ func (e *ArrayExample) assignVal(val *yaml.Node) error {
 			return nil
 		})
 	}
+
 	return nil
 }

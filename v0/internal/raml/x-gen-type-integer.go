@@ -13,7 +13,7 @@ import (
 // NewIntegerType returns a new internal implementation
 // of the raml.IntegerType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 func NewIntegerType() *IntegerType {
 	out := &IntegerType{
 		examples: NewIntegerExampleMap(),
@@ -27,7 +27,7 @@ func NewIntegerType() *IntegerType {
 // IntegerType is a default generated implementation of
 // the raml.IntegerType interface
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 type IntegerType struct {
 	*ExtendedDataType
 
@@ -82,6 +82,7 @@ func (o *IntegerType) SetExamples(examples raml.IntegerExampleMap) raml.IntegerT
 	if examples == nil {
 		return o.UnsetExamples()
 	}
+
 	o.examples = examples
 	return o
 }
@@ -115,6 +116,7 @@ func (o *IntegerType) SetAnnotations(annotations raml.AnnotationMap) raml.Intege
 	if annotations == nil {
 		return o.UnsetAnnotations()
 	}
+
 	o.hasAnnotations.mp = annotations
 	return o
 }
@@ -128,6 +130,7 @@ func (o *IntegerType) SetFacetDefinitions(facets raml.FacetMap) raml.IntegerType
 	if facets == nil {
 		return o.UnsetFacetDefinitions()
 	}
+
 	o.facets = facets
 	return o
 }
@@ -137,12 +140,12 @@ func (o *IntegerType) UnsetFacetDefinitions() raml.IntegerType {
 	return o
 }
 
-func (o *IntegerType) SetXml(x raml.Xml) raml.IntegerType {
+func (o *IntegerType) SetXML(x raml.XML) raml.IntegerType {
 	o.xml = x
 	return o
 }
 
-func (o *IntegerType) UnsetXml() raml.IntegerType {
+func (o *IntegerType) UnsetXML() raml.IntegerType {
 	o.xml = nil
 	return o
 }
@@ -165,6 +168,7 @@ func (o *IntegerType) SetExtraFacets(facets raml.AnyMap) raml.IntegerType {
 	if facets == nil {
 		return o.UnsetExtraFacets()
 	}
+
 	o.hasExtra.mp = facets
 	return o
 }
@@ -235,9 +239,6 @@ func (o *IntegerType) UnsetMultipleOf() raml.IntegerType {
 	return o
 }
 
-func (o IntegerType) render() bool {
-	return true
-}
 func (o *IntegerType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.IntegerType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
@@ -260,7 +261,6 @@ func (o *IntegerType) marshal(out raml.AnyMap) error {
 }
 
 func (o *IntegerType) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.IntegerType.assign")
 	switch key.Value {
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
@@ -270,6 +270,7 @@ func (o *IntegerType) assign(key, val *yaml.Node) error {
 		} else {
 			o.example = ex.(raml.IntegerExample)
 		}
+
 		return nil
 	case rmeta.KeyExamples:
 		return o.examples.UnmarshalRAML(val)

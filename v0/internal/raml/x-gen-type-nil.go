@@ -7,7 +7,7 @@ import (
 // NewNilType returns a new internal implementation of
 // the raml.NilType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 func NewNilType() *NilType {
 	out := &NilType{}
 
@@ -19,7 +19,7 @@ func NewNilType() *NilType {
 // NilType is a generated internal implementation of
 // the raml.NilType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 type NilType struct {
 	*DataType
 }

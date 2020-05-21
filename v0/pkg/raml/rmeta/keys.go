@@ -4,8 +4,8 @@ const (
 	KeyAddtlProps       = "additionalProperties"
 	KeyAnnotationTypes  = "annotationTypes"
 	KeyAttribute        = "attribute"
-	KeyBaseUri          = "baseUri"
-	KeyBaseUriParams    = "baseUriParameters"
+	KeyBaseURI          = "baseUri"
+	KeyBaseURIParams    = "baseUriParameters"
 	KeyDefault          = "default"
 	KeyDescription      = "description"
 	KeyDiscriminator    = "discriminator"
@@ -52,5 +52,5 @@ const (
 	KeyValue            = "value"
 	KeyVersion          = "version"
 	KeyWrapped          = "wrapped"
-	KeyXml              = "xml"
+	KeyXML              = "xml"
 )

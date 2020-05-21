@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewNumberExample returns a new internal implementation of the
+// raml.NumberExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewNumberExample() *NumberExample {
 	return &NumberExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewNumberExample() *NumberExample {
 	}
 }
 
+// NumberExample is a generated internal implementation of the
+// raml.NumberExample interface.
 type NumberExample struct {
 	displayName *string
 	description *string
@@ -177,5 +183,6 @@ func (e *NumberExample) assignVal(val *yaml.Node) error {
 	} else {
 		e.value = tmp
 	}
+
 	return nil
 }

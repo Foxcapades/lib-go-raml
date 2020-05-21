@@ -17,3 +17,8 @@ const (
 	Timestamp  = "!!timestamp"
 	Yaml       = "!!yaml"
 )
+
+const (
+	Indent  = 2
+	MapSkip = 2
+)

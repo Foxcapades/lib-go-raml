@@ -37,9 +37,6 @@ func (o *{{.Name}}Type) UnsetFormat() raml.{{.Name}}Type {
 	return o
 }
 
-func (o {{.Name}}Type) render() bool {
-	return true
-}
 {{end}}
 
 func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
@@ -50,14 +47,14 @@ func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 
 func (o {{.Name}}Type) assign(key, val interface{}) (err error) {
 {{define "datetime-assign"}}
-	switch key.Value {
-	case rmeta.KeyFormat:
+	if key.Value == rmeta.KeyFormat {
 		if val, err := DateFormatSortingHat(val); err != nil {
 			return err
 		} else {
 			o.format = val
-			return nil
 		}
+
+		return nil
 	}
 {{end}}
 }

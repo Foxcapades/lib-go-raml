@@ -13,7 +13,7 @@ import (
 // NewCustomType returns a new internal implementation
 // of the raml.CustomType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 func NewCustomType() *CustomType {
 	out := &CustomType{
 		examples: NewCustomExampleMap(),
@@ -27,7 +27,7 @@ func NewCustomType() *CustomType {
 // CustomType is a default generated implementation of
 // the raml.CustomType interface
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 type CustomType struct {
 	*ExtendedDataType
 
@@ -78,6 +78,7 @@ func (o *CustomType) SetExamples(examples raml.CustomExampleMap) raml.CustomType
 	if examples == nil {
 		return o.UnsetExamples()
 	}
+
 	o.examples = examples
 	return o
 }
@@ -111,6 +112,7 @@ func (o *CustomType) SetAnnotations(annotations raml.AnnotationMap) raml.CustomT
 	if annotations == nil {
 		return o.UnsetAnnotations()
 	}
+
 	o.hasAnnotations.mp = annotations
 	return o
 }
@@ -124,6 +126,7 @@ func (o *CustomType) SetFacetDefinitions(facets raml.FacetMap) raml.CustomType {
 	if facets == nil {
 		return o.UnsetFacetDefinitions()
 	}
+
 	o.facets = facets
 	return o
 }
@@ -133,12 +136,12 @@ func (o *CustomType) UnsetFacetDefinitions() raml.CustomType {
 	return o
 }
 
-func (o *CustomType) SetXml(x raml.Xml) raml.CustomType {
+func (o *CustomType) SetXML(x raml.XML) raml.CustomType {
 	o.xml = x
 	return o
 }
 
-func (o *CustomType) UnsetXml() raml.CustomType {
+func (o *CustomType) UnsetXML() raml.CustomType {
 	o.xml = nil
 	return o
 }
@@ -161,6 +164,7 @@ func (o *CustomType) SetExtraFacets(facets raml.AnyMap) raml.CustomType {
 	if facets == nil {
 		return o.UnsetExtraFacets()
 	}
+
 	o.hasExtra.mp = facets
 	return o
 }
@@ -194,7 +198,6 @@ func (o *CustomType) marshal(out raml.AnyMap) error {
 }
 
 func (o *CustomType) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.CustomType.assign")
 	switch key.Value {
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
@@ -204,6 +207,7 @@ func (o *CustomType) assign(key, val *yaml.Node) error {
 		} else {
 			o.example = ex.(raml.CustomExample)
 		}
+
 		return nil
 	case rmeta.KeyExamples:
 		return o.examples.UnmarshalRAML(val)

@@ -39,12 +39,10 @@ type {{.Name}}Map struct {
 }
 
 func (o *{{.Name}}Map) Len() uint {
-	logrus.Trace("internal.{{.Name}}Map.Len")
 	return uint(len(o.slice))
 }
 
 func (o *{{.Name}}Map) Put(key {{.KType}}, value {{if .Raml}}raml.{{end}}{{.Type}}) raml.{{.Name}}Map {
-	logrus.Trace("internal.{{.Name}}Map.Put")
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
@@ -71,8 +69,6 @@ func (o *{{.Name}}Map) Put(key {{.KType}}, value {{if .Raml}}raml.{{end}}{{.Type
 {{- else -}}
 	func (o *{{.Name}}Map) Replace(key {{.KType}}, value {{.Type}}) option.{{.Kind}}
 {{- end }} {
-	logrus.Trace("internal.{{.Name}}Map.Replace")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
@@ -99,14 +95,17 @@ func (o *{{.Name}}Map) Put(key {{.KType}}, value {{if .Raml}}raml.{{end}}{{.Type
 {{- else -}}
 	func (o *{{.Name}}Map) ReplaceOrPut(key {{.KType}}, value {{.Type}}) option.{{.Kind}}
 {{- end }} {
-	logrus.Trace("internal.{{.Name}}Map.ReplaceOrPut")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
 		o.index[key] = &value
 		o.slice = append(o.slice, mapPair{key: key, val: value})
-		return {{if .Raml}}nil{{else}}option.NewEmpty{{.Kind}}(){{end}}
+
+		{{if .Raml -}}
+		return nil
+		{{- else -}}
+		return option.NewEmpty{{.Kind}}()
+		{{- end}}
 	}
 
 	out := {{if .Raml}}*o.index[key]{{else}}option.NewMaybe{{.Kind}}(o.index[key]){{end}}
@@ -130,8 +129,6 @@ func (o *{{.Name}}Map) At(index uint) (key option.{{.KName}}, value raml.{{.Kind
 {{else}}
 func (o *{{.Name}}Map) At(index uint) (key option.{{.KName}}, value option.{{.Kind}}) {
 {{end}}
-	logrus.Trace("internal.{{.Name}}Map.At")
-
 	tmp := &o.slice[index]
 	key = option.New{{.KName}}(tmp.key.(string))
 
@@ -149,15 +146,16 @@ func (o *{{.Name}}Map) At(index uint) (key option.{{.KName}}, value option.{{.Ki
 }
 
 func (o *{{.Name}}Map) IndexOf(key {{.KType}}) option.Uint {
-	logrus.Trace("internal.{{.Name}}Map.IndexOf")
 	if !o.Has(key) {
 		return option.NewEmptyUint()
 	}
+
 	for i := range o.slice {
 		if o.slice[i].key == key {
 			return option.NewUint(uint(i))
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
@@ -173,16 +171,14 @@ func (o *{{.Name}}Map) Has(key {{.KType}}) bool {
 {{- else -}}
 	func (o *{{.Name}}Map) Delete(key {{.KType}}) option.{{.Kind}} {
 {{- end }}
-	logrus.Trace("internal.{{.Name}}Map.Delete")
-
 	if !o.Has(key) {
 		return {{if .Raml}}nil{{else}}option.NewEmpty{{.Kind}}(){{end}}
 	}
 
 	{{ if .Raml -}}
-		out := *o.index[key]
+	out := *o.index[key]
 	{{- else -}}
-		out := option.NewMaybe{{.Kind}}(o.index[key])
+	out := option.NewMaybe{{.Kind}}(o.index[key])
 	{{- end }}
 	delete(o.index, key)
 
@@ -192,87 +188,83 @@ func (o *{{.Name}}Map) Has(key {{.KType}}) bool {
 			return out
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
 func (o {{.Name}}Map) ForEach(fn func({{.KType}}, {{if .Raml}}raml.{{end}}{{.Type}})) {
-	logrus.Trace("internal.{{.Name}}Map.ForEach")
-
 	for k, v := range o.index {
 		fn(k, *v)
 	}
 }
 
 func (o {{.Name}}Map) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.{{.Name}}Map.MarshalYAML")
-
-	out := xyml.MapNode(len(o.slice)*2)
+	out := xyml.MapNode(len(o.slice))
 	for i := range o.slice {
 		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
 			return nil, err
 		}
 	}
+
 	return out, nil
 }
 
 func (o *{{.Name}}Map) UnmarshalRAML(val *yaml.Node) (err error) {
-	logrus.Trace("internal.{{.Name}}Map.UnmarshalRAML")
-
-	if err := xyml.RequireMapping(val); err != nil {
-		return err
-	}
-
-	for i := 0; i < len(val.Content); i += 2 {
-		key := val.Content[i]
-		val := val.Content[i+1]
-
+	return xyml.ForEachMap(val, func(key, val *yaml.Node) error {
 		{{if eq .KType "interface{}" -}}
-			altKey, err := xyml.CastScalarToYmlType(key)
-			if err != nil {
-				return err
-			}
+		altKey, err := xyml.CastScalarToYmlType(key)
+		if err != nil {
+			return err
+		}
 		{{- else -}}
-			altKey := key.Value
+		altKey := key.Value
 		{{- end}}
 
-		{{if .Raml}}
-			{{if eq .Kind "Example"}}
-				tmpVal := ExampleSortingHat(val)
-			{{else if eq .Kind "DataType"}}
-				tmpVal, err := TypeSortingHat(val)
-				if err != nil {
-					return err
-				}
-			{{else if eq .Kind "Property"}}
-				tmpVal, err := PropertySortingHat(val)
-				if err != nil {
-					return err
-				}
-			{{else}}
-				tmpVal := New{{.Name}}()
-				if err = tmpVal.UnmarshalRAML(val); err != nil {
-					return err
-				}
-			{{end}}
-		{{else if eq .Kind "Untyped"}}
-			tmpVal := val
-		{{else}}
-			var tmpVal {{ .Type }}
-			if err = assign.As{{ .Name }}(val, &tmpVal); err != nil {
-				return err
-			}
-		{{end}}
+		{{if .Raml -}}
+
+		{{if eq .Kind "Example" -}}
+		tmpVal := ExampleSortingHat(val)
+		{{- else if eq .Kind "DataType" -}}
+		tmpVal, err := TypeSortingHat(val)
+
+		if err != nil {
+			return err
+		}
+		{{- else if eq .Kind "Property" -}}
+		tmpVal, err := PropertySortingHat(val)
+
+		if err != nil {
+			return err
+		}
+		{{- else -}}
+		tmpVal := New{{.Name}}()
+
+		if err = tmpVal.UnmarshalRAML(val); err != nil {
+			return err
+		}
+		{{- end}}
+
+		{{- else if eq .Kind "Untyped" -}}
+		tmpVal := val
+		{{- else -}}
+		var tmpVal {{ .Type }}
+
+		if err = assign.As{{ .Name }}(val, &tmpVal); err != nil {
+			return err
+		}
+		{{- end}}
 
 		o.Put(altKey, tmpVal)
-	}
 
-	return nil
+		return nil
+	})
 }
 
 func (o *{{.Name}}Map) String() string {
 	tmp := strings.Builder{}
 	enc := yaml.NewEncoder(&tmp)
-	enc.SetIndent(2)
+	enc.SetIndent(xyml.Indent)
+
 	if err := enc.Encode(o.index); err != nil {
 		return fmt.Sprint(o.index)
 	} else {

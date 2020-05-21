@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewDatetimeExample returns a new internal implementation of the
+// raml.DatetimeExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewDatetimeExample() *DatetimeExample {
 	return &DatetimeExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewDatetimeExample() *DatetimeExample {
 	}
 }
 
+// DatetimeExample is a generated internal implementation of the
+// raml.DatetimeExample interface.
 type DatetimeExample struct {
 	displayName *string
 	description *string
@@ -176,5 +182,6 @@ func (e *DatetimeExample) assignVal(val *yaml.Node) error {
 		return err
 	}
 	e.value = val.Value
+
 	return nil
 }

@@ -13,7 +13,7 @@ import (
 // NewUnionType returns a new internal implementation
 // of the raml.UnionType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 func NewUnionType() *UnionType {
 	out := &UnionType{
 		examples: NewUnionExampleMap(),
@@ -27,7 +27,7 @@ func NewUnionType() *UnionType {
 // UnionType is a default generated implementation of
 // the raml.UnionType interface
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 type UnionType struct {
 	*ExtendedDataType
 
@@ -78,6 +78,7 @@ func (o *UnionType) SetExamples(examples raml.UnionExampleMap) raml.UnionType {
 	if examples == nil {
 		return o.UnsetExamples()
 	}
+
 	o.examples = examples
 	return o
 }
@@ -111,6 +112,7 @@ func (o *UnionType) SetAnnotations(annotations raml.AnnotationMap) raml.UnionTyp
 	if annotations == nil {
 		return o.UnsetAnnotations()
 	}
+
 	o.hasAnnotations.mp = annotations
 	return o
 }
@@ -124,6 +126,7 @@ func (o *UnionType) SetFacetDefinitions(facets raml.FacetMap) raml.UnionType {
 	if facets == nil {
 		return o.UnsetFacetDefinitions()
 	}
+
 	o.facets = facets
 	return o
 }
@@ -133,12 +136,12 @@ func (o *UnionType) UnsetFacetDefinitions() raml.UnionType {
 	return o
 }
 
-func (o *UnionType) SetXml(x raml.Xml) raml.UnionType {
+func (o *UnionType) SetXML(x raml.XML) raml.UnionType {
 	o.xml = x
 	return o
 }
 
-func (o *UnionType) UnsetXml() raml.UnionType {
+func (o *UnionType) UnsetXML() raml.UnionType {
 	o.xml = nil
 	return o
 }
@@ -161,6 +164,7 @@ func (o *UnionType) SetExtraFacets(facets raml.AnyMap) raml.UnionType {
 	if facets == nil {
 		return o.UnsetExtraFacets()
 	}
+
 	o.hasExtra.mp = facets
 	return o
 }
@@ -194,7 +198,6 @@ func (o *UnionType) marshal(out raml.AnyMap) error {
 }
 
 func (o *UnionType) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.UnionType.assign")
 	switch key.Value {
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
@@ -204,6 +207,7 @@ func (o *UnionType) assign(key, val *yaml.Node) error {
 		} else {
 			o.example = ex.(raml.UnionExample)
 		}
+
 		return nil
 	case rmeta.KeyExamples:
 		return o.examples.UnmarshalRAML(val)

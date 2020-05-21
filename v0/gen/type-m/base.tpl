@@ -7,9 +7,6 @@ import (
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	{{- end}}
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
-	{{if not (eq .Name "Any" "Nil") -}}
-	"github.com/sirupsen/logrus"
-	{{- end}}
 )
 
 // New{{.Name}}Type returns a new internal implementation of
@@ -33,10 +30,9 @@ type {{.Name}}Type struct {
 }
 {{if eq .Name "Include"}}
 func (a {{.Name}}Type) marshal(out raml.AnyMap) error {
-	logrus.Trace("internal.{{.Name}}Type.marshal")
-
 	out.Put(rmeta.KeyType, "!include " + a.DataType.schema)
 	a.DataType.hasExtra.out(out)
+
 	return nil
 }
 {{end}}

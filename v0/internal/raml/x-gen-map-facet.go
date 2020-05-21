@@ -18,19 +18,17 @@ func NewFacetMap() *FacetMap {
 	}
 }
 
-// FacetMap generated @ 2020-05-20T18:40:12.501365164-04:00
+// FacetMap generated @ 2020-05-20T20:54:25.054891636-04:00
 type FacetMap struct {
 	slice []mapPair
 	index map[string]*raml.Facet
 }
 
 func (o *FacetMap) Len() uint {
-	logrus.Trace("internal.FacetMap.Len")
 	return uint(len(o.slice))
 }
 
 func (o *FacetMap) Put(key string, value raml.Facet) raml.FacetMap {
-	logrus.Trace("internal.FacetMap.Put")
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
@@ -47,8 +45,6 @@ func (o *FacetMap) PutNonNil(key string, value raml.Facet) raml.FacetMap {
 }
 
 func (o *FacetMap) Replace(key string, value raml.Facet) raml.Facet {
-	logrus.Trace("internal.FacetMap.Replace")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
@@ -63,13 +59,12 @@ func (o *FacetMap) Replace(key string, value raml.Facet) raml.Facet {
 }
 
 func (o *FacetMap) ReplaceOrPut(key string, value raml.Facet) raml.Facet {
-	logrus.Trace("internal.FacetMap.ReplaceOrPut")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
 		o.index[key] = &value
 		o.slice = append(o.slice, mapPair{key: key, val: value})
+
 		return nil
 	}
 
@@ -91,8 +86,6 @@ func (o *FacetMap) Get(key string) raml.Facet {
 
 func (o *FacetMap) At(index uint) (key option.String, value raml.Facet) {
 
-	logrus.Trace("internal.FacetMap.At")
-
 	tmp := &o.slice[index]
 	key = option.NewString(tmp.key.(string))
 
@@ -102,15 +95,16 @@ func (o *FacetMap) At(index uint) (key option.String, value raml.Facet) {
 }
 
 func (o *FacetMap) IndexOf(key string) option.Uint {
-	logrus.Trace("internal.FacetMap.IndexOf")
 	if !o.Has(key) {
 		return option.NewEmptyUint()
 	}
+
 	for i := range o.slice {
 		if o.slice[i].key == key {
 			return option.NewUint(uint(i))
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
@@ -122,8 +116,6 @@ func (o *FacetMap) Has(key string) bool {
 }
 
 func (o *FacetMap) Delete(key string) raml.Facet {
-	logrus.Trace("internal.FacetMap.Delete")
-
 	if !o.Has(key) {
 		return nil
 	}
@@ -137,57 +129,48 @@ func (o *FacetMap) Delete(key string) raml.Facet {
 			return out
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
 func (o FacetMap) ForEach(fn func(string, raml.Facet)) {
-	logrus.Trace("internal.FacetMap.ForEach")
-
 	for k, v := range o.index {
 		fn(k, *v)
 	}
 }
 
 func (o FacetMap) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.FacetMap.MarshalYAML")
-
-	out := xyml.MapNode(len(o.slice) * 2)
+	out := xyml.MapNode(len(o.slice))
 	for i := range o.slice {
 		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
 			return nil, err
 		}
 	}
+
 	return out, nil
 }
 
 func (o *FacetMap) UnmarshalRAML(val *yaml.Node) (err error) {
-	logrus.Trace("internal.FacetMap.UnmarshalRAML")
-
-	if err := xyml.RequireMapping(val); err != nil {
-		return err
-	}
-
-	for i := 0; i < len(val.Content); i += 2 {
-		key := val.Content[i]
-		val := val.Content[i+1]
-
+	return xyml.ForEachMap(val, func(key, val *yaml.Node) error {
 		altKey := key.Value
 
 		tmpVal := NewFacet()
+
 		if err = tmpVal.UnmarshalRAML(val); err != nil {
 			return err
 		}
 
 		o.Put(altKey, tmpVal)
-	}
 
-	return nil
+		return nil
+	})
 }
 
 func (o *FacetMap) String() string {
 	tmp := strings.Builder{}
 	enc := yaml.NewEncoder(&tmp)
-	enc.SetIndent(2)
+	enc.SetIndent(xyml.Indent)
+
 	if err := enc.Encode(o.index); err != nil {
 		return fmt.Sprint(o.index)
 	} else {

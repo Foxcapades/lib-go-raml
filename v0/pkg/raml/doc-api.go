@@ -5,7 +5,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type ApiSpec interface {
+type APISpec interface {
 	yaml.Marshaler
 	yaml.Unmarshaler
 
@@ -21,13 +21,13 @@ type ApiSpec interface {
 
 	Title() string
 	Version() option.String
-	BaseUri() option.String
+	BaseURI() option.String
 
 	Protocols() []string
 	MediaTypes() []string
 	Documentation() []interface{}
 	SecuredBy() []string
-	BaseUriParameters() UntypedMap
+	BaseURIParameters() UntypedMap
 
 	Resources() UntypedMap
 }

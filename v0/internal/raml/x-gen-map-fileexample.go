@@ -18,19 +18,17 @@ func NewFileExampleMap() *FileExampleMap {
 	}
 }
 
-// FileExampleMap generated @ 2020-05-20T18:40:12.501365164-04:00
+// FileExampleMap generated @ 2020-05-20T20:54:25.054891636-04:00
 type FileExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.FileExample
 }
 
 func (o *FileExampleMap) Len() uint {
-	logrus.Trace("internal.FileExampleMap.Len")
 	return uint(len(o.slice))
 }
 
 func (o *FileExampleMap) Put(key string, value raml.FileExample) raml.FileExampleMap {
-	logrus.Trace("internal.FileExampleMap.Put")
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
@@ -47,8 +45,6 @@ func (o *FileExampleMap) PutNonNil(key string, value raml.FileExample) raml.File
 }
 
 func (o *FileExampleMap) Replace(key string, value raml.FileExample) raml.FileExample {
-	logrus.Trace("internal.FileExampleMap.Replace")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
@@ -63,13 +59,12 @@ func (o *FileExampleMap) Replace(key string, value raml.FileExample) raml.FileEx
 }
 
 func (o *FileExampleMap) ReplaceOrPut(key string, value raml.FileExample) raml.FileExample {
-	logrus.Trace("internal.FileExampleMap.ReplaceOrPut")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
 		o.index[key] = &value
 		o.slice = append(o.slice, mapPair{key: key, val: value})
+
 		return nil
 	}
 
@@ -91,8 +86,6 @@ func (o *FileExampleMap) Get(key string) raml.FileExample {
 
 func (o *FileExampleMap) At(index uint) (key option.String, value raml.FileExample) {
 
-	logrus.Trace("internal.FileExampleMap.At")
-
 	tmp := &o.slice[index]
 	key = option.NewString(tmp.key.(string))
 
@@ -102,15 +95,16 @@ func (o *FileExampleMap) At(index uint) (key option.String, value raml.FileExamp
 }
 
 func (o *FileExampleMap) IndexOf(key string) option.Uint {
-	logrus.Trace("internal.FileExampleMap.IndexOf")
 	if !o.Has(key) {
 		return option.NewEmptyUint()
 	}
+
 	for i := range o.slice {
 		if o.slice[i].key == key {
 			return option.NewUint(uint(i))
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
@@ -122,8 +116,6 @@ func (o *FileExampleMap) Has(key string) bool {
 }
 
 func (o *FileExampleMap) Delete(key string) raml.FileExample {
-	logrus.Trace("internal.FileExampleMap.Delete")
-
 	if !o.Has(key) {
 		return nil
 	}
@@ -137,57 +129,48 @@ func (o *FileExampleMap) Delete(key string) raml.FileExample {
 			return out
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
 func (o FileExampleMap) ForEach(fn func(string, raml.FileExample)) {
-	logrus.Trace("internal.FileExampleMap.ForEach")
-
 	for k, v := range o.index {
 		fn(k, *v)
 	}
 }
 
 func (o FileExampleMap) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.FileExampleMap.MarshalYAML")
-
-	out := xyml.MapNode(len(o.slice) * 2)
+	out := xyml.MapNode(len(o.slice))
 	for i := range o.slice {
 		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
 			return nil, err
 		}
 	}
+
 	return out, nil
 }
 
 func (o *FileExampleMap) UnmarshalRAML(val *yaml.Node) (err error) {
-	logrus.Trace("internal.FileExampleMap.UnmarshalRAML")
-
-	if err := xyml.RequireMapping(val); err != nil {
-		return err
-	}
-
-	for i := 0; i < len(val.Content); i += 2 {
-		key := val.Content[i]
-		val := val.Content[i+1]
-
+	return xyml.ForEachMap(val, func(key, val *yaml.Node) error {
 		altKey := key.Value
 
 		tmpVal := NewFileExample()
+
 		if err = tmpVal.UnmarshalRAML(val); err != nil {
 			return err
 		}
 
 		o.Put(altKey, tmpVal)
-	}
 
-	return nil
+		return nil
+	})
 }
 
 func (o *FileExampleMap) String() string {
 	tmp := strings.Builder{}
 	enc := yaml.NewEncoder(&tmp)
-	enc.SetIndent(2)
+	enc.SetIndent(xyml.Indent)
+
 	if err := enc.Encode(o.index); err != nil {
 		return fmt.Sprint(o.index)
 	} else {

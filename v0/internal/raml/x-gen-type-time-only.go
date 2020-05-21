@@ -13,7 +13,7 @@ import (
 // NewTimeOnlyType returns a new internal implementation
 // of the raml.TimeOnlyType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 func NewTimeOnlyType() *TimeOnlyType {
 	out := &TimeOnlyType{
 		examples: NewTimeOnlyExampleMap(),
@@ -27,7 +27,7 @@ func NewTimeOnlyType() *TimeOnlyType {
 // TimeOnlyType is a default generated implementation of
 // the raml.TimeOnlyType interface
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 type TimeOnlyType struct {
 	*ExtendedDataType
 
@@ -78,6 +78,7 @@ func (o *TimeOnlyType) SetExamples(examples raml.TimeOnlyExampleMap) raml.TimeOn
 	if examples == nil {
 		return o.UnsetExamples()
 	}
+
 	o.examples = examples
 	return o
 }
@@ -111,6 +112,7 @@ func (o *TimeOnlyType) SetAnnotations(annotations raml.AnnotationMap) raml.TimeO
 	if annotations == nil {
 		return o.UnsetAnnotations()
 	}
+
 	o.hasAnnotations.mp = annotations
 	return o
 }
@@ -124,6 +126,7 @@ func (o *TimeOnlyType) SetFacetDefinitions(facets raml.FacetMap) raml.TimeOnlyTy
 	if facets == nil {
 		return o.UnsetFacetDefinitions()
 	}
+
 	o.facets = facets
 	return o
 }
@@ -133,12 +136,12 @@ func (o *TimeOnlyType) UnsetFacetDefinitions() raml.TimeOnlyType {
 	return o
 }
 
-func (o *TimeOnlyType) SetXml(x raml.Xml) raml.TimeOnlyType {
+func (o *TimeOnlyType) SetXML(x raml.XML) raml.TimeOnlyType {
 	o.xml = x
 	return o
 }
 
-func (o *TimeOnlyType) UnsetXml() raml.TimeOnlyType {
+func (o *TimeOnlyType) UnsetXML() raml.TimeOnlyType {
 	o.xml = nil
 	return o
 }
@@ -161,6 +164,7 @@ func (o *TimeOnlyType) SetExtraFacets(facets raml.AnyMap) raml.TimeOnlyType {
 	if facets == nil {
 		return o.UnsetExtraFacets()
 	}
+
 	o.hasExtra.mp = facets
 	return o
 }
@@ -194,7 +198,6 @@ func (o *TimeOnlyType) marshal(out raml.AnyMap) error {
 }
 
 func (o *TimeOnlyType) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.TimeOnlyType.assign")
 	switch key.Value {
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
@@ -204,6 +207,7 @@ func (o *TimeOnlyType) assign(key, val *yaml.Node) error {
 		} else {
 			o.example = ex.(raml.TimeOnlyExample)
 		}
+
 		return nil
 	case rmeta.KeyExamples:
 		return o.examples.UnmarshalRAML(val)

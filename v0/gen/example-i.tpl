@@ -1,7 +1,9 @@
-{{define "example"}}package raml
+{{define "example" -}}
+package raml
 
 // {{.Name}}Example defines a single example attached to a DataType
 // or Property definition.
+//
 // Generated @ {{.Time}}
 type {{.Name}}Example interface {
 	Example

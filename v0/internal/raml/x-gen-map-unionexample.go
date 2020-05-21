@@ -18,19 +18,17 @@ func NewUnionExampleMap() *UnionExampleMap {
 	}
 }
 
-// UnionExampleMap generated @ 2020-05-20T18:40:12.501365164-04:00
+// UnionExampleMap generated @ 2020-05-20T20:54:25.054891636-04:00
 type UnionExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.UnionExample
 }
 
 func (o *UnionExampleMap) Len() uint {
-	logrus.Trace("internal.UnionExampleMap.Len")
 	return uint(len(o.slice))
 }
 
 func (o *UnionExampleMap) Put(key string, value raml.UnionExample) raml.UnionExampleMap {
-	logrus.Trace("internal.UnionExampleMap.Put")
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
@@ -47,8 +45,6 @@ func (o *UnionExampleMap) PutNonNil(key string, value raml.UnionExample) raml.Un
 }
 
 func (o *UnionExampleMap) Replace(key string, value raml.UnionExample) raml.UnionExample {
-	logrus.Trace("internal.UnionExampleMap.Replace")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
@@ -63,13 +59,12 @@ func (o *UnionExampleMap) Replace(key string, value raml.UnionExample) raml.Unio
 }
 
 func (o *UnionExampleMap) ReplaceOrPut(key string, value raml.UnionExample) raml.UnionExample {
-	logrus.Trace("internal.UnionExampleMap.ReplaceOrPut")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
 		o.index[key] = &value
 		o.slice = append(o.slice, mapPair{key: key, val: value})
+
 		return nil
 	}
 
@@ -91,8 +86,6 @@ func (o *UnionExampleMap) Get(key string) raml.UnionExample {
 
 func (o *UnionExampleMap) At(index uint) (key option.String, value raml.UnionExample) {
 
-	logrus.Trace("internal.UnionExampleMap.At")
-
 	tmp := &o.slice[index]
 	key = option.NewString(tmp.key.(string))
 
@@ -102,15 +95,16 @@ func (o *UnionExampleMap) At(index uint) (key option.String, value raml.UnionExa
 }
 
 func (o *UnionExampleMap) IndexOf(key string) option.Uint {
-	logrus.Trace("internal.UnionExampleMap.IndexOf")
 	if !o.Has(key) {
 		return option.NewEmptyUint()
 	}
+
 	for i := range o.slice {
 		if o.slice[i].key == key {
 			return option.NewUint(uint(i))
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
@@ -122,8 +116,6 @@ func (o *UnionExampleMap) Has(key string) bool {
 }
 
 func (o *UnionExampleMap) Delete(key string) raml.UnionExample {
-	logrus.Trace("internal.UnionExampleMap.Delete")
-
 	if !o.Has(key) {
 		return nil
 	}
@@ -137,57 +129,48 @@ func (o *UnionExampleMap) Delete(key string) raml.UnionExample {
 			return out
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
 func (o UnionExampleMap) ForEach(fn func(string, raml.UnionExample)) {
-	logrus.Trace("internal.UnionExampleMap.ForEach")
-
 	for k, v := range o.index {
 		fn(k, *v)
 	}
 }
 
 func (o UnionExampleMap) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.UnionExampleMap.MarshalYAML")
-
-	out := xyml.MapNode(len(o.slice) * 2)
+	out := xyml.MapNode(len(o.slice))
 	for i := range o.slice {
 		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
 			return nil, err
 		}
 	}
+
 	return out, nil
 }
 
 func (o *UnionExampleMap) UnmarshalRAML(val *yaml.Node) (err error) {
-	logrus.Trace("internal.UnionExampleMap.UnmarshalRAML")
-
-	if err := xyml.RequireMapping(val); err != nil {
-		return err
-	}
-
-	for i := 0; i < len(val.Content); i += 2 {
-		key := val.Content[i]
-		val := val.Content[i+1]
-
+	return xyml.ForEachMap(val, func(key, val *yaml.Node) error {
 		altKey := key.Value
 
 		tmpVal := NewUnionExample()
+
 		if err = tmpVal.UnmarshalRAML(val); err != nil {
 			return err
 		}
 
 		o.Put(altKey, tmpVal)
-	}
 
-	return nil
+		return nil
+	})
 }
 
 func (o *UnionExampleMap) String() string {
 	tmp := strings.Builder{}
 	enc := yaml.NewEncoder(&tmp)
-	enc.SetIndent(2)
+	enc.SetIndent(xyml.Indent)
+
 	if err := enc.Encode(o.index); err != nil {
 		return fmt.Sprint(o.index)
 	} else {

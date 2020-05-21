@@ -2,24 +2,24 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-type Xml interface {
+type XML interface {
 	IsAttribute() option.Bool
-	SetIsAttribute(bool) Xml
-	UnsetIsAttribute() Xml
+	SetIsAttribute(bool) XML
+	UnsetIsAttribute() XML
 
 	IsWrapped() option.Bool
-	SetIsWrapped(bool) Xml
-	UnsetIsWrapped() Xml
+	SetIsWrapped(bool) XML
+	UnsetIsWrapped() XML
 
 	Name() option.String
-	SetName(string) Xml
-	UnsetName() Xml
+	SetName(string) XML
+	UnsetName() XML
 
 	Namespace() option.String
-	SetNamespace(string) Xml
-	UnsetNamespace() Xml
+	SetNamespace(string) XML
+	UnsetNamespace() XML
 
 	Prefix() option.String
-	SetPrefix(string) Xml
-	UnsetPrefix() Xml
+	SetPrefix(string) XML
+	UnsetPrefix() XML
 }

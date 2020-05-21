@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewTimeOnlyExample returns a new internal implementation of the
+// raml.TimeOnlyExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewTimeOnlyExample() *TimeOnlyExample {
 	return &TimeOnlyExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewTimeOnlyExample() *TimeOnlyExample {
 	}
 }
 
+// TimeOnlyExample is a generated internal implementation of the
+// raml.TimeOnlyExample interface.
 type TimeOnlyExample struct {
 	displayName *string
 	description *string
@@ -176,5 +182,6 @@ func (e *TimeOnlyExample) assignVal(val *yaml.Node) error {
 		return err
 	}
 	e.value = val.Value
+
 	return nil
 }

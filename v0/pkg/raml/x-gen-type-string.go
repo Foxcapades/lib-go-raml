@@ -2,7 +2,7 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// StringType generated @ 2020-05-20T18:40:13.095690448-04:00
+// StringType generated @ 2020-05-20T20:54:26.833516016-04:00
 type StringType interface {
 	Unmarshaler
 	Marshaler
@@ -105,16 +105,16 @@ type StringType interface {
 	// on the current DataType definition.
 	UnsetFacetDefinitions() StringType
 
-	// SetXml sets the current DataType definition's xml
-	// serialization settings object to the given value.
+	// SetXML sets the current DataType definition's xml serialization settings
+	// object to the given value.
 	//
-	// Passing this method a nil value is effectively the same
-	// as calling UnsetXml.
-	SetXml(Xml) StringType
+	// Passing this method a nil value is effectively the same as calling
+	// UnsetXML.
+	SetXML(XML) StringType
 
-	// Removes the xml serialization settings object from the
-	// current DataType definition.
-	UnsetXml() StringType
+	// UnsetXML removes the xml serialization settings object from the current
+	// DataType definition.
+	UnsetXML() StringType
 
 	// Enum returns a slice of the enum values assigned to the
 	// current DataType definition.

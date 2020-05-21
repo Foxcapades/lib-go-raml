@@ -8,15 +8,19 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
+)
+
+const (
+	errBadBool    = "unrecognized boolean value '%s' at %d:%d"
+	errCantCast   = "cannot cast %s to a scalar value at %d:%d"
+	errUintTooBig = "uint value would overflow int64"
+	errCantBeYaml = "cannot convert type %s to a YAML node"
 )
 
 // ToBool attempts to parse the given raw YAML value as a bool.
 // If the value cannot be parsed as a bool, returns an error.
 func ToBool(y *yaml.Node) (bool, error) {
-	logrus.Trace("xyml.ToBool")
-
 	if err := RequireBool(y); err != nil {
 		return false, err
 	}
@@ -28,15 +32,12 @@ func ToBool(y *yaml.Node) (bool, error) {
 		return false, nil
 	}
 
-	return false, fmt.Errorf("unrecognized boolean value '%s' at %d:%d",
-		y.Value, y.Line, y.Column)
+	return false, fmt.Errorf(errBadBool, y.Value, y.Line, y.Column)
 }
 
 // ToFloat64 attempts to parse the given raw YAML value as a float.
 // If the value cannot be parsed as a float, returns an error.
 func ToFloat64(y *yaml.Node) (float64, error) {
-	logrus.Trace("xyml.ToFloat64")
-
 	if err := RequireFloat(y); err != nil {
 		return 0, err
 	}
@@ -51,8 +52,6 @@ func ToFloat64(y *yaml.Node) (float64, error) {
 // ToFloat64 attempts to parse the given raw YAML value as an int.
 // If the value cannot be parsed as an int, returns an error.
 func ToInt64(y *yaml.Node) (int64, error) {
-	logrus.Trace("xyml.ToInt64")
-
 	if err := RequireInt(y); err != nil {
 		return 0, err
 	}
@@ -67,13 +66,25 @@ func ToInt64(y *yaml.Node) (int64, error) {
 // ToString attempts to parse the given raw YAML value as a string.
 // If the value cannot be parsed as a string, returns an error.
 func ToString(y *yaml.Node) (string, error) {
-	logrus.Trace("xyml.ToString")
-
 	if err := RequireString(y); err != nil {
 		return "", err
 	}
 
 	return y.Value, nil
+}
+
+// ToUint attempts to parse the given raw YAML value as an unsigned integer.
+// If the value cannot be parsed as a uint value, returns an error.
+func ToUint(y *yaml.Node) (uint, error) {
+	if err := RequireInt(y); err != nil {
+		return 0, err
+	}
+
+	if val, err := strconv.ParseUint(y.Value, 10, strconv.IntSize); err != nil {
+		return 0, fmt.Errorf("%d:%d %s", y.Line, y.Column, err)
+	} else {
+		return uint(val), nil
+	}
 }
 
 func CastYmlTypeToScalar(v *yaml.Node) (interface{}, error) {
@@ -87,11 +98,13 @@ func CastYmlTypeToScalar(v *yaml.Node) (interface{}, error) {
 	case Nil:
 		return nil, nil
 	}
-	return nil, errors.New("cannot cast type " + v.Tag)
+
+	return nil, fmt.Errorf(errCantCast, v.Tag, v.Line, v.Column)
 }
 
 func CastScalarToYmlType(v interface{}) (*yaml.Node, error) {
 	k := reflect.TypeOf(v).Kind()
+
 	switch k {
 	case reflect.String:
 		return StringNode(v.(string)), nil
@@ -116,7 +129,7 @@ func CastScalarToYmlType(v interface{}) (*yaml.Node, error) {
 	case reflect.Uint64:
 		tmp := v.(uint64)
 		if uint64(math.MaxInt64) < tmp {
-			return nil, errors.New("uint value would overflow int64")
+			return nil, errors.New(errUintTooBig)
 		}
 		return IntNode(int64(tmp)), nil
 	case reflect.Float32:
@@ -124,37 +137,46 @@ func CastScalarToYmlType(v interface{}) (*yaml.Node, error) {
 	case reflect.Float64:
 		return FloatNode(v.(float64)), nil
 	}
-	return nil, errors.New("unsupported type conversion for " + reflect.TypeOf(v).String())
+
+	return nil, fmt.Errorf(errCantBeYaml, reflect.TypeOf(v).String())
 }
 
 func CastAnyToYmlType(v interface{}) (*yaml.Node, error) {
 	k := reflect.TypeOf(v).Kind()
+
 	switch k {
 	case reflect.Map:
 		r := reflect.ValueOf(v)
 		if r.IsNil() {
 			return MapNode(0), nil
 		}
-		tmp := MapNode(r.Len() * 2)
+
+		tmp := MapNode(r.Len())
 		it := r.MapRange()
+
 		for it.Next() {
 			if err := AppendToMap(tmp, it.Key().Interface(), it.Value().Interface()); err != nil {
 				return nil, err
 			}
 		}
+
 		return tmp, nil
 	case reflect.Array, reflect.Slice:
 		r := reflect.ValueOf(v)
+
 		if r.IsNil() {
 			return SequenceNode(0), nil
 		}
+
 		ln := r.Len()
 		tmp := SequenceNode(ln)
+
 		for i := 0; i < ln; i++ {
 			if err := AppendToSlice(tmp, r.Index(i).Interface()); err != nil {
 				return nil, err
 			}
 		}
+
 		return tmp, nil
 	}
 

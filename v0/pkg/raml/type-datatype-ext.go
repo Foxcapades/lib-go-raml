@@ -11,8 +11,8 @@ type ExtendedDataType interface {
 	// defined on the current DataType definition.
 	FacetDefinitions() FacetMap
 
-	// Xml returns the xml serialization settings for the
+	// XML returns the xml serialization settings for the
 	// current DataType definition, or nil if no settings have
 	// been applied.
-	Xml() Xml
+	XML() XML
 }

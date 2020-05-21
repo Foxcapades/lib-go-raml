@@ -133,9 +133,6 @@ func (o *{{.Name}}Type) UnsetDiscriminatorValue() raml.{{.Name}}Type {
 	return o
 }
 
-func (o {{.Name}}Type) render() bool {
-	return true
-}
 {{end}}
 func (o {{.Name}}Type) assign(key, val *yaml.Node) (err error) {
 {{define "object-assign"}}

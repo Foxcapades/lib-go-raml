@@ -74,9 +74,6 @@ func (o *{{.Name}}Type) UnsetMaxLength() raml.{{.Name}}Type {
 	return o
 }
 
-func (o {{.Name}}Type) render() bool {
-	return true
-}
 {{end}}
 func (o {{.Name}}Type) assign(key, val *yaml.Value) (err error) {
 {{define "string-assign"}}

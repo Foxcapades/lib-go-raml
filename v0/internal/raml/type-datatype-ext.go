@@ -25,7 +25,7 @@ type ExtendedDataType struct {
 	displayName *string
 	description *string
 	facets      raml.FacetMap
-	xml         raml.Xml
+	xml         raml.XML
 	required    bool
 }
 
@@ -41,7 +41,7 @@ func (e *ExtendedDataType) FacetDefinitions() raml.FacetMap {
 	return e.facets
 }
 
-func (e *ExtendedDataType) Xml() raml.Xml {
+func (e *ExtendedDataType) XML() raml.XML {
 	return e.xml
 }
 
@@ -67,7 +67,7 @@ func (e *ExtendedDataType) marshal(out raml.AnyMap) error {
 		out.Put(rmeta.KeyFacets, e.facets)
 	}
 
-	out.PutNonNil(rmeta.KeyXml, e.xml)
+	out.PutNonNil(rmeta.KeyXML, e.xml)
 
 	return nil
 }
@@ -80,8 +80,8 @@ func (e *ExtendedDataType) assign(key, val *yaml.Node) error {
 		return assign.AsStringPtr(val, &e.description)
 	case rmeta.KeyFacets:
 		return e.facets.UnmarshalRAML(val)
-	case rmeta.KeyXml:
-		xml := NewXml()
+	case rmeta.KeyXML:
+		xml := NewXML()
 		if err := xml.UnmarshalRAML(val); err != nil {
 			return err
 		}
@@ -98,8 +98,4 @@ func (e *ExtendedDataType) assign(key, val *yaml.Node) error {
 	}
 
 	return e.DataType.assign(key, val)
-}
-
-func (e *ExtendedDataType) render() bool {
-	return true
 }

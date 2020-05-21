@@ -6,7 +6,6 @@ import (
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 	"strings"
 )
@@ -20,9 +19,11 @@ const (
 		" a map.  instead got %s at %d:%d"
 )
 
+// TypeSortingHat takes the given YAML node and attempts to parse it into a
+// RAML data type object.
+//
+// If the YAML node cannot be parsed into a RAML element, returns an error.
 func TypeSortingHat(val *yaml.Node) (out raml.DataType, err error) {
-	logrus.Trace("internal.TypeSortingHat")
-
 	if xyml.IsString(val) {
 		return typeToKind(val.Value), nil
 	}
@@ -38,6 +39,7 @@ func TypeSortingHat(val *yaml.Node) (out raml.DataType, err error) {
 			if err = kind.UnmarshalRAML(val); err != nil {
 				return nil, err
 			}
+
 			return kind, nil
 		}
 	}
@@ -56,74 +58,59 @@ func TypeSortingHat(val *yaml.Node) (out raml.DataType, err error) {
 }
 
 func typeToKind(val string) concreteType {
-	logrus.Trace("internal.typeToKind")
-
 	tmp := rmeta.DataTypeKind(val)
+
 	switch tmp {
 	case rmeta.TypeAny:
-		logrus.Debug("you go to house ", rmeta.TypeAny)
 		return NewAnyType()
 	case rmeta.TypeArray:
-		logrus.Debug("you go to house ", rmeta.TypeArray)
 		return NewArrayType()
 	case rmeta.TypeBool:
-		logrus.Debug("you go to house ", rmeta.TypeBool)
 		return NewBoolType()
 	case rmeta.TypeDateOnly:
-		logrus.Debug("you go to house ", rmeta.TypeDateOnly)
 		return NewDateOnlyType()
 	case rmeta.TypeDatetime:
-		logrus.Debug("you go to house ", rmeta.TypeDatetime)
 		return NewDatetimeType()
 	case rmeta.TypeDatetimeOnly:
-		logrus.Debug("you go to house ", rmeta.TypeDatetimeOnly)
 		return NewDatetimeOnlyType()
 	case rmeta.TypeFile:
-		logrus.Debug("you go to house ", rmeta.TypeFile)
 		return NewFileType()
 	case rmeta.TypeInteger:
-		logrus.Debug("you go to house ", rmeta.TypeInteger)
 		return NewIntegerType()
 	case rmeta.TypeNil:
-		logrus.Debug("you go to house ", rmeta.TypeNil)
 		return NewNilType()
 	case rmeta.TypeNumber:
-		logrus.Debug("you go to house ", rmeta.TypeNumber)
 		return NewNumberType()
 	case rmeta.TypeObject:
-		logrus.Debug("you go to house ", rmeta.TypeObject)
 		return NewObjectType()
 	case rmeta.TypeString:
-		logrus.Debug("you go to house ", rmeta.TypeString)
 		return NewStringType()
 	case rmeta.TypeTimeOnly:
-		logrus.Debug("you go to house ", rmeta.TypeTimeOnly)
 		return NewTimeOnlyType()
 	}
 
 	if strings.HasPrefix(val, "!include ") {
-		logrus.Debug("you go to house ", rmeta.TypeInclude)
 		out := NewIncludeType()
 		out.schema = val
 		return out
 	}
 
 	if -1 < strings.IndexByte(val, '|') {
-		logrus.Debug("you go to house ", rmeta.TypeUnion)
 		tmp := NewUnionType()
 		tmp.schema = val
 		return tmp
 	}
 
-	logrus.Debug("you go to house ", rmeta.TypeCustom)
 	out := NewCustomType()
 	out.schema = val
 	return out
 }
 
+// siftType attempts to parse the given node for either a `type` facet or the
+// characteristics of either an object or an array.  If the input cannot be
+// matched to one of those, falls back to a string type node as per the RAML
+// specification.
 func siftType(val *yaml.Node) (concreteType, error) {
-	logrus.Trace("internal.siftType")
-
 	schema := -1
 	props := false
 	items := false

@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewUnionExample returns a new internal implementation of the
+// raml.UnionExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewUnionExample() *UnionExample {
 	return &UnionExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewUnionExample() *UnionExample {
 	}
 }
 
+// UnionExample is a generated internal implementation of the
+// raml.UnionExample interface.
 type UnionExample struct {
 	displayName *string
 	description *string
@@ -173,5 +179,6 @@ func (e *UnionExample) expand() bool {
 
 func (e *UnionExample) assignVal(val *yaml.Node) error {
 	e.value = val
+
 	return nil
 }

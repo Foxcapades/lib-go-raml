@@ -59,7 +59,6 @@ func (l *Library) UnmarshalYAML(root *yaml.Node) error {
 }
 
 func (l Library) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.Library.MarshalYAML")
 	out := NewAnyMap()
 	l.hasUsage.out(out)
 	l.hasUses.out(out)
@@ -70,11 +69,11 @@ func (l Library) MarshalYAML() (interface{}, error) {
 	l.hasResTypes.out(out)
 	l.hasExtra.out(out)
 	l.hasTypes.out(out)
+
 	return out, nil
 }
 
 func (l *Library) assign(k, v *yaml.Node) error {
-	logrus.Trace("internal.Library.assign")
 	switch k.Value {
 	case rmeta.KeyAnnotationTypes:
 		return l.hasAnnTypes.in(v)

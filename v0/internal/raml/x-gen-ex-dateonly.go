@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewDateOnlyExample returns a new internal implementation of the
+// raml.DateOnlyExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewDateOnlyExample() *DateOnlyExample {
 	return &DateOnlyExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewDateOnlyExample() *DateOnlyExample {
 	}
 }
 
+// DateOnlyExample is a generated internal implementation of the
+// raml.DateOnlyExample interface.
 type DateOnlyExample struct {
 	displayName *string
 	description *string
@@ -176,5 +182,6 @@ func (e *DateOnlyExample) assignVal(val *yaml.Node) error {
 		return err
 	}
 	e.value = val.Value
+
 	return nil
 }

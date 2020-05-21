@@ -2,7 +2,7 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// TimeOnlyType generated @ 2020-05-20T18:40:13.095690448-04:00
+// TimeOnlyType generated @ 2020-05-20T20:54:26.833516016-04:00
 type TimeOnlyType interface {
 	Unmarshaler
 	Marshaler
@@ -105,16 +105,16 @@ type TimeOnlyType interface {
 	// on the current DataType definition.
 	UnsetFacetDefinitions() TimeOnlyType
 
-	// SetXml sets the current DataType definition's xml
-	// serialization settings object to the given value.
+	// SetXML sets the current DataType definition's xml serialization settings
+	// object to the given value.
 	//
-	// Passing this method a nil value is effectively the same
-	// as calling UnsetXml.
-	SetXml(Xml) TimeOnlyType
+	// Passing this method a nil value is effectively the same as calling
+	// UnsetXML.
+	SetXML(XML) TimeOnlyType
 
-	// Removes the xml serialization settings object from the
-	// current DataType definition.
-	UnsetXml() TimeOnlyType
+	// UnsetXML removes the xml serialization settings object from the current
+	// DataType definition.
+	UnsetXML() TimeOnlyType
 
 	// Enum returns a slice of the enum values assigned to the
 	// current DataType definition.

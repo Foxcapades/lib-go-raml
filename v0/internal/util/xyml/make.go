@@ -29,7 +29,7 @@ func MapNode(size int) *yaml.Node {
 	return &yaml.Node{
 		Kind:    yaml.MappingNode,
 		Tag:     "!!map",
-		Content: make([]*yaml.Node, size),
+		Content: make([]*yaml.Node, size*MapSkip),
 	}
 }
 

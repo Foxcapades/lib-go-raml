@@ -72,9 +72,6 @@ func (o *{{.Name}}Type) UnsetItems() raml.{{.Name}}Type {
 	return o
 }
 
-func (o {{.Name}}Type) render() bool {
-	return true
-}
 {{end}}
 
 func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
@@ -82,12 +79,15 @@ func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 	if o.uniqueItems != rmeta.ArrayDefaultUniqueItems {
 		out.Put(rmeta.KeyUniqueItems, o.uniqueItems)
 	}
+
 	if o.minItems != rmeta.ArrayDefaultMinItems {
 		out.Put(rmeta.KeyMinItems, o.minItems)
 	}
+
 	if o.maxItems != rmeta.ArrayDefaultMaxItems {
 		out.Put(rmeta.KeyMaxItems, o.maxItems)
 	}
+
 	out.PutNonNil(rmeta.KeyItems, o.items)
 {{end}}
 }

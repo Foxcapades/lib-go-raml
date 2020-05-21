@@ -5,7 +5,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// PropertyMap generated @ 2020-05-20T18:40:12.501365164-04:00
+// PropertyMap generated @ 2020-05-20T20:54:25.054891636-04:00
 type PropertyMap interface {
 	Unmarshaler
 	yaml.Marshaler

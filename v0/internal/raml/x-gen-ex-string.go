@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewStringExample returns a new internal implementation of the
+// raml.StringExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewStringExample() *StringExample {
 	return &StringExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewStringExample() *StringExample {
 	}
 }
 
+// StringExample is a generated internal implementation of the
+// raml.StringExample interface.
 type StringExample struct {
 	displayName *string
 	description *string
@@ -176,5 +182,6 @@ func (e *StringExample) assignVal(val *yaml.Node) error {
 		return err
 	}
 	e.value = val.Value
+
 	return nil
 }

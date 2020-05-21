@@ -13,7 +13,7 @@ import (
 // NewStringType returns a new internal implementation
 // of the raml.StringType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 func NewStringType() *StringType {
 	out := &StringType{
 		examples: NewStringExampleMap(),
@@ -29,7 +29,7 @@ func NewStringType() *StringType {
 // StringType is a default generated implementation of
 // the raml.StringType interface
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 type StringType struct {
 	*ExtendedDataType
 
@@ -83,6 +83,7 @@ func (o *StringType) SetExamples(examples raml.StringExampleMap) raml.StringType
 	if examples == nil {
 		return o.UnsetExamples()
 	}
+
 	o.examples = examples
 	return o
 }
@@ -116,6 +117,7 @@ func (o *StringType) SetAnnotations(annotations raml.AnnotationMap) raml.StringT
 	if annotations == nil {
 		return o.UnsetAnnotations()
 	}
+
 	o.hasAnnotations.mp = annotations
 	return o
 }
@@ -129,6 +131,7 @@ func (o *StringType) SetFacetDefinitions(facets raml.FacetMap) raml.StringType {
 	if facets == nil {
 		return o.UnsetFacetDefinitions()
 	}
+
 	o.facets = facets
 	return o
 }
@@ -138,12 +141,12 @@ func (o *StringType) UnsetFacetDefinitions() raml.StringType {
 	return o
 }
 
-func (o *StringType) SetXml(x raml.Xml) raml.StringType {
+func (o *StringType) SetXML(x raml.XML) raml.StringType {
 	o.xml = x
 	return o
 }
 
-func (o *StringType) UnsetXml() raml.StringType {
+func (o *StringType) UnsetXML() raml.StringType {
 	o.xml = nil
 	return o
 }
@@ -166,6 +169,7 @@ func (o *StringType) SetExtraFacets(facets raml.AnyMap) raml.StringType {
 	if facets == nil {
 		return o.UnsetExtraFacets()
 	}
+
 	o.hasExtra.mp = facets
 	return o
 }
@@ -217,9 +221,6 @@ func (o *StringType) UnsetMaxLength() raml.StringType {
 	return o
 }
 
-func (o StringType) render() bool {
-	return true
-}
 func (o *StringType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.StringType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
@@ -243,7 +244,6 @@ func (o *StringType) marshal(out raml.AnyMap) error {
 }
 
 func (o *StringType) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.StringType.assign")
 	switch key.Value {
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
@@ -253,6 +253,7 @@ func (o *StringType) assign(key, val *yaml.Node) error {
 		} else {
 			o.example = ex.(raml.StringExample)
 		}
+
 		return nil
 	case rmeta.KeyExamples:
 		return o.examples.UnmarshalRAML(val)

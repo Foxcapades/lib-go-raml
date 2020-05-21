@@ -18,19 +18,17 @@ func NewDatetimeOnlyExampleMap() *DatetimeOnlyExampleMap {
 	}
 }
 
-// DatetimeOnlyExampleMap generated @ 2020-05-20T18:40:12.501365164-04:00
+// DatetimeOnlyExampleMap generated @ 2020-05-20T20:54:25.054891636-04:00
 type DatetimeOnlyExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.DatetimeOnlyExample
 }
 
 func (o *DatetimeOnlyExampleMap) Len() uint {
-	logrus.Trace("internal.DatetimeOnlyExampleMap.Len")
 	return uint(len(o.slice))
 }
 
 func (o *DatetimeOnlyExampleMap) Put(key string, value raml.DatetimeOnlyExample) raml.DatetimeOnlyExampleMap {
-	logrus.Trace("internal.DatetimeOnlyExampleMap.Put")
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
@@ -47,8 +45,6 @@ func (o *DatetimeOnlyExampleMap) PutNonNil(key string, value raml.DatetimeOnlyEx
 }
 
 func (o *DatetimeOnlyExampleMap) Replace(key string, value raml.DatetimeOnlyExample) raml.DatetimeOnlyExample {
-	logrus.Trace("internal.DatetimeOnlyExampleMap.Replace")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
@@ -63,13 +59,12 @@ func (o *DatetimeOnlyExampleMap) Replace(key string, value raml.DatetimeOnlyExam
 }
 
 func (o *DatetimeOnlyExampleMap) ReplaceOrPut(key string, value raml.DatetimeOnlyExample) raml.DatetimeOnlyExample {
-	logrus.Trace("internal.DatetimeOnlyExampleMap.ReplaceOrPut")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
 		o.index[key] = &value
 		o.slice = append(o.slice, mapPair{key: key, val: value})
+
 		return nil
 	}
 
@@ -91,8 +86,6 @@ func (o *DatetimeOnlyExampleMap) Get(key string) raml.DatetimeOnlyExample {
 
 func (o *DatetimeOnlyExampleMap) At(index uint) (key option.String, value raml.DatetimeOnlyExample) {
 
-	logrus.Trace("internal.DatetimeOnlyExampleMap.At")
-
 	tmp := &o.slice[index]
 	key = option.NewString(tmp.key.(string))
 
@@ -102,15 +95,16 @@ func (o *DatetimeOnlyExampleMap) At(index uint) (key option.String, value raml.D
 }
 
 func (o *DatetimeOnlyExampleMap) IndexOf(key string) option.Uint {
-	logrus.Trace("internal.DatetimeOnlyExampleMap.IndexOf")
 	if !o.Has(key) {
 		return option.NewEmptyUint()
 	}
+
 	for i := range o.slice {
 		if o.slice[i].key == key {
 			return option.NewUint(uint(i))
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
@@ -122,8 +116,6 @@ func (o *DatetimeOnlyExampleMap) Has(key string) bool {
 }
 
 func (o *DatetimeOnlyExampleMap) Delete(key string) raml.DatetimeOnlyExample {
-	logrus.Trace("internal.DatetimeOnlyExampleMap.Delete")
-
 	if !o.Has(key) {
 		return nil
 	}
@@ -137,57 +129,48 @@ func (o *DatetimeOnlyExampleMap) Delete(key string) raml.DatetimeOnlyExample {
 			return out
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
 func (o DatetimeOnlyExampleMap) ForEach(fn func(string, raml.DatetimeOnlyExample)) {
-	logrus.Trace("internal.DatetimeOnlyExampleMap.ForEach")
-
 	for k, v := range o.index {
 		fn(k, *v)
 	}
 }
 
 func (o DatetimeOnlyExampleMap) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.DatetimeOnlyExampleMap.MarshalYAML")
-
-	out := xyml.MapNode(len(o.slice) * 2)
+	out := xyml.MapNode(len(o.slice))
 	for i := range o.slice {
 		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
 			return nil, err
 		}
 	}
+
 	return out, nil
 }
 
 func (o *DatetimeOnlyExampleMap) UnmarshalRAML(val *yaml.Node) (err error) {
-	logrus.Trace("internal.DatetimeOnlyExampleMap.UnmarshalRAML")
-
-	if err := xyml.RequireMapping(val); err != nil {
-		return err
-	}
-
-	for i := 0; i < len(val.Content); i += 2 {
-		key := val.Content[i]
-		val := val.Content[i+1]
-
+	return xyml.ForEachMap(val, func(key, val *yaml.Node) error {
 		altKey := key.Value
 
 		tmpVal := NewDatetimeOnlyExample()
+
 		if err = tmpVal.UnmarshalRAML(val); err != nil {
 			return err
 		}
 
 		o.Put(altKey, tmpVal)
-	}
 
-	return nil
+		return nil
+	})
 }
 
 func (o *DatetimeOnlyExampleMap) String() string {
 	tmp := strings.Builder{}
 	enc := yaml.NewEncoder(&tmp)
-	enc.SetIndent(2)
+	enc.SetIndent(xyml.Indent)
+
 	if err := enc.Encode(o.index); err != nil {
 		return fmt.Sprint(o.index)
 	} else {

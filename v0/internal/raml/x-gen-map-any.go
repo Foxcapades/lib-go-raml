@@ -18,19 +18,17 @@ func NewAnyMap() *AnyMap {
 	}
 }
 
-// AnyMap generated @ 2020-05-20T18:40:12.501365164-04:00
+// AnyMap generated @ 2020-05-20T20:54:25.054891636-04:00
 type AnyMap struct {
 	slice []mapPair
 	index map[interface{}]*interface{}
 }
 
 func (o *AnyMap) Len() uint {
-	logrus.Trace("internal.AnyMap.Len")
 	return uint(len(o.slice))
 }
 
 func (o *AnyMap) Put(key interface{}, value interface{}) raml.AnyMap {
-	logrus.Trace("internal.AnyMap.Put")
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
@@ -47,8 +45,6 @@ func (o *AnyMap) PutNonNil(key interface{}, value interface{}) raml.AnyMap {
 }
 
 func (o *AnyMap) Replace(key interface{}, value interface{}) option.Untyped {
-	logrus.Trace("internal.AnyMap.Replace")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
@@ -63,13 +59,12 @@ func (o *AnyMap) Replace(key interface{}, value interface{}) option.Untyped {
 }
 
 func (o *AnyMap) ReplaceOrPut(key interface{}, value interface{}) option.Untyped {
-	logrus.Trace("internal.AnyMap.ReplaceOrPut")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
 		o.index[key] = &value
 		o.slice = append(o.slice, mapPair{key: key, val: value})
+
 		return option.NewEmptyUntyped()
 	}
 
@@ -91,8 +86,6 @@ func (o *AnyMap) Get(key interface{}) option.Untyped {
 
 func (o *AnyMap) At(index uint) (key option.Untyped, value option.Untyped) {
 
-	logrus.Trace("internal.AnyMap.At")
-
 	tmp := &o.slice[index]
 	key = option.NewUntyped(tmp.key.(string))
 
@@ -106,15 +99,16 @@ func (o *AnyMap) At(index uint) (key option.Untyped, value option.Untyped) {
 }
 
 func (o *AnyMap) IndexOf(key interface{}) option.Uint {
-	logrus.Trace("internal.AnyMap.IndexOf")
 	if !o.Has(key) {
 		return option.NewEmptyUint()
 	}
+
 	for i := range o.slice {
 		if o.slice[i].key == key {
 			return option.NewUint(uint(i))
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
@@ -126,8 +120,6 @@ func (o *AnyMap) Has(key interface{}) bool {
 }
 
 func (o *AnyMap) Delete(key interface{}) option.Untyped {
-	logrus.Trace("internal.AnyMap.Delete")
-
 	if !o.Has(key) {
 		return option.NewEmptyUntyped()
 	}
@@ -141,40 +133,29 @@ func (o *AnyMap) Delete(key interface{}) option.Untyped {
 			return out
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
 func (o AnyMap) ForEach(fn func(interface{}, interface{})) {
-	logrus.Trace("internal.AnyMap.ForEach")
-
 	for k, v := range o.index {
 		fn(k, *v)
 	}
 }
 
 func (o AnyMap) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.AnyMap.MarshalYAML")
-
-	out := xyml.MapNode(len(o.slice) * 2)
+	out := xyml.MapNode(len(o.slice))
 	for i := range o.slice {
 		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
 			return nil, err
 		}
 	}
+
 	return out, nil
 }
 
 func (o *AnyMap) UnmarshalRAML(val *yaml.Node) (err error) {
-	logrus.Trace("internal.AnyMap.UnmarshalRAML")
-
-	if err := xyml.RequireMapping(val); err != nil {
-		return err
-	}
-
-	for i := 0; i < len(val.Content); i += 2 {
-		key := val.Content[i]
-		val := val.Content[i+1]
-
+	return xyml.ForEachMap(val, func(key, val *yaml.Node) error {
 		altKey, err := xyml.CastScalarToYmlType(key)
 		if err != nil {
 			return err
@@ -183,15 +164,16 @@ func (o *AnyMap) UnmarshalRAML(val *yaml.Node) (err error) {
 		tmpVal := val
 
 		o.Put(altKey, tmpVal)
-	}
 
-	return nil
+		return nil
+	})
 }
 
 func (o *AnyMap) String() string {
 	tmp := strings.Builder{}
 	enc := yaml.NewEncoder(&tmp)
-	enc.SetIndent(2)
+	enc.SetIndent(xyml.Indent)
+
 	if err := enc.Encode(o.index); err != nil {
 		return fmt.Sprint(o.index)
 	} else {

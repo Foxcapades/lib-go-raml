@@ -13,7 +13,7 @@ import (
 // NewBoolType returns a new internal implementation
 // of the raml.BoolType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 func NewBoolType() *BoolType {
 	out := &BoolType{
 		examples: NewBoolExampleMap(),
@@ -27,7 +27,7 @@ func NewBoolType() *BoolType {
 // BoolType is a default generated implementation of
 // the raml.BoolType interface
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 type BoolType struct {
 	*ExtendedDataType
 
@@ -78,6 +78,7 @@ func (o *BoolType) SetExamples(examples raml.BoolExampleMap) raml.BoolType {
 	if examples == nil {
 		return o.UnsetExamples()
 	}
+
 	o.examples = examples
 	return o
 }
@@ -111,6 +112,7 @@ func (o *BoolType) SetAnnotations(annotations raml.AnnotationMap) raml.BoolType 
 	if annotations == nil {
 		return o.UnsetAnnotations()
 	}
+
 	o.hasAnnotations.mp = annotations
 	return o
 }
@@ -124,6 +126,7 @@ func (o *BoolType) SetFacetDefinitions(facets raml.FacetMap) raml.BoolType {
 	if facets == nil {
 		return o.UnsetFacetDefinitions()
 	}
+
 	o.facets = facets
 	return o
 }
@@ -133,12 +136,12 @@ func (o *BoolType) UnsetFacetDefinitions() raml.BoolType {
 	return o
 }
 
-func (o *BoolType) SetXml(x raml.Xml) raml.BoolType {
+func (o *BoolType) SetXML(x raml.XML) raml.BoolType {
 	o.xml = x
 	return o
 }
 
-func (o *BoolType) UnsetXml() raml.BoolType {
+func (o *BoolType) UnsetXML() raml.BoolType {
 	o.xml = nil
 	return o
 }
@@ -161,6 +164,7 @@ func (o *BoolType) SetExtraFacets(facets raml.AnyMap) raml.BoolType {
 	if facets == nil {
 		return o.UnsetExtraFacets()
 	}
+
 	o.hasExtra.mp = facets
 	return o
 }
@@ -194,7 +198,6 @@ func (o *BoolType) marshal(out raml.AnyMap) error {
 }
 
 func (o *BoolType) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.BoolType.assign")
 	switch key.Value {
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
@@ -204,6 +207,7 @@ func (o *BoolType) assign(key, val *yaml.Node) error {
 		} else {
 			o.example = ex.(raml.BoolExample)
 		}
+
 		return nil
 	case rmeta.KeyExamples:
 		return o.examples.UnmarshalRAML(val)

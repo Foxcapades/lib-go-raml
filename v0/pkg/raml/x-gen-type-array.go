@@ -1,6 +1,6 @@
 package raml
 
-// ArrayType generated @ 2020-05-20T18:40:13.095690448-04:00
+// ArrayType generated @ 2020-05-20T20:54:26.833516016-04:00
 type ArrayType interface {
 	Unmarshaler
 	Marshaler
@@ -103,16 +103,16 @@ type ArrayType interface {
 	// on the current DataType definition.
 	UnsetFacetDefinitions() ArrayType
 
-	// SetXml sets the current DataType definition's xml
-	// serialization settings object to the given value.
+	// SetXML sets the current DataType definition's xml serialization settings
+	// object to the given value.
 	//
-	// Passing this method a nil value is effectively the same
-	// as calling UnsetXml.
-	SetXml(Xml) ArrayType
+	// Passing this method a nil value is effectively the same as calling
+	// UnsetXML.
+	SetXML(XML) ArrayType
 
-	// Removes the xml serialization settings object from the
-	// current DataType definition.
-	UnsetXml() ArrayType
+	// UnsetXML removes the xml serialization settings object from the current
+	// DataType definition.
+	UnsetXML() ArrayType
 
 	// Enum returns a slice of the enum values assigned to the
 	// current DataType definition.

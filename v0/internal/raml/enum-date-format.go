@@ -37,7 +37,3 @@ func (d *DateFormat) UnmarshalYAML(y *yaml.Node) error {
 func (d DateFormat) MarshalYAML() (interface{}, error) {
 	return string(d), nil
 }
-
-func (d DateFormat) render() bool {
-	return d != DateFormatRfc3339
-}

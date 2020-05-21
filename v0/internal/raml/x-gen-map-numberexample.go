@@ -18,19 +18,17 @@ func NewNumberExampleMap() *NumberExampleMap {
 	}
 }
 
-// NumberExampleMap generated @ 2020-05-20T18:40:12.501365164-04:00
+// NumberExampleMap generated @ 2020-05-20T20:54:25.054891636-04:00
 type NumberExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.NumberExample
 }
 
 func (o *NumberExampleMap) Len() uint {
-	logrus.Trace("internal.NumberExampleMap.Len")
 	return uint(len(o.slice))
 }
 
 func (o *NumberExampleMap) Put(key string, value raml.NumberExample) raml.NumberExampleMap {
-	logrus.Trace("internal.NumberExampleMap.Put")
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
@@ -47,8 +45,6 @@ func (o *NumberExampleMap) PutNonNil(key string, value raml.NumberExample) raml.
 }
 
 func (o *NumberExampleMap) Replace(key string, value raml.NumberExample) raml.NumberExample {
-	logrus.Trace("internal.NumberExampleMap.Replace")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
@@ -63,13 +59,12 @@ func (o *NumberExampleMap) Replace(key string, value raml.NumberExample) raml.Nu
 }
 
 func (o *NumberExampleMap) ReplaceOrPut(key string, value raml.NumberExample) raml.NumberExample {
-	logrus.Trace("internal.NumberExampleMap.ReplaceOrPut")
-
 	ind := o.IndexOf(key)
 
 	if ind.IsNil() {
 		o.index[key] = &value
 		o.slice = append(o.slice, mapPair{key: key, val: value})
+
 		return nil
 	}
 
@@ -91,8 +86,6 @@ func (o *NumberExampleMap) Get(key string) raml.NumberExample {
 
 func (o *NumberExampleMap) At(index uint) (key option.String, value raml.NumberExample) {
 
-	logrus.Trace("internal.NumberExampleMap.At")
-
 	tmp := &o.slice[index]
 	key = option.NewString(tmp.key.(string))
 
@@ -102,15 +95,16 @@ func (o *NumberExampleMap) At(index uint) (key option.String, value raml.NumberE
 }
 
 func (o *NumberExampleMap) IndexOf(key string) option.Uint {
-	logrus.Trace("internal.NumberExampleMap.IndexOf")
 	if !o.Has(key) {
 		return option.NewEmptyUint()
 	}
+
 	for i := range o.slice {
 		if o.slice[i].key == key {
 			return option.NewUint(uint(i))
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
@@ -122,8 +116,6 @@ func (o *NumberExampleMap) Has(key string) bool {
 }
 
 func (o *NumberExampleMap) Delete(key string) raml.NumberExample {
-	logrus.Trace("internal.NumberExampleMap.Delete")
-
 	if !o.Has(key) {
 		return nil
 	}
@@ -137,57 +129,48 @@ func (o *NumberExampleMap) Delete(key string) raml.NumberExample {
 			return out
 		}
 	}
+
 	panic("invalid map state, index out of sync")
 }
 
 func (o NumberExampleMap) ForEach(fn func(string, raml.NumberExample)) {
-	logrus.Trace("internal.NumberExampleMap.ForEach")
-
 	for k, v := range o.index {
 		fn(k, *v)
 	}
 }
 
 func (o NumberExampleMap) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.NumberExampleMap.MarshalYAML")
-
-	out := xyml.MapNode(len(o.slice) * 2)
+	out := xyml.MapNode(len(o.slice))
 	for i := range o.slice {
 		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
 			return nil, err
 		}
 	}
+
 	return out, nil
 }
 
 func (o *NumberExampleMap) UnmarshalRAML(val *yaml.Node) (err error) {
-	logrus.Trace("internal.NumberExampleMap.UnmarshalRAML")
-
-	if err := xyml.RequireMapping(val); err != nil {
-		return err
-	}
-
-	for i := 0; i < len(val.Content); i += 2 {
-		key := val.Content[i]
-		val := val.Content[i+1]
-
+	return xyml.ForEachMap(val, func(key, val *yaml.Node) error {
 		altKey := key.Value
 
 		tmpVal := NewNumberExample()
+
 		if err = tmpVal.UnmarshalRAML(val); err != nil {
 			return err
 		}
 
 		o.Put(altKey, tmpVal)
-	}
 
-	return nil
+		return nil
+	})
 }
 
 func (o *NumberExampleMap) String() string {
 	tmp := strings.Builder{}
 	enc := yaml.NewEncoder(&tmp)
-	enc.SetIndent(2)
+	enc.SetIndent(xyml.Indent)
+
 	if err := enc.Encode(o.index); err != nil {
 		return fmt.Sprint(o.index)
 	} else {

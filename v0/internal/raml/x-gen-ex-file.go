@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewFileExample returns a new internal implementation of the
+// raml.FileExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewFileExample() *FileExample {
 	return &FileExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewFileExample() *FileExample {
 	}
 }
 
+// FileExample is a generated internal implementation of the
+// raml.FileExample interface.
 type FileExample struct {
 	displayName *string
 	description *string
@@ -173,5 +179,6 @@ func (e *FileExample) expand() bool {
 
 func (e *FileExample) assignVal(val *yaml.Node) error {
 	e.value = val
+
 	return nil
 }

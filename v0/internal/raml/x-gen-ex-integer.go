@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewIntegerExample returns a new internal implementation of the
+// raml.IntegerExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewIntegerExample() *IntegerExample {
 	return &IntegerExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewIntegerExample() *IntegerExample {
 	}
 }
 
+// IntegerExample is a generated internal implementation of the
+// raml.IntegerExample interface.
 type IntegerExample struct {
 	displayName *string
 	description *string
@@ -177,5 +183,6 @@ func (e *IntegerExample) assignVal(val *yaml.Node) error {
 	} else {
 		e.value = tmp
 	}
+
 	return nil
 }

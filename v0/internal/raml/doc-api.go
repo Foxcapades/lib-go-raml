@@ -6,14 +6,13 @@ import (
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
 
-func NewApiSpec() *ApiSpec {
+func NewApiSpec() *APISpec {
 
-	return &ApiSpec{
-		baseUriParameters: NewUntypedMap(),
+	return &APISpec{
+		baseURIParameters: NewUntypedMap(),
 		resources:         NewUntypedMap(),
 
 		hasAnnotations: makeAnnotations(),
@@ -27,7 +26,7 @@ func NewApiSpec() *ApiSpec {
 	}
 }
 
-type ApiSpec struct {
+type APISpec struct {
 	hasAnnotations
 	hasAnnTypes
 	hasExtra
@@ -39,22 +38,21 @@ type ApiSpec struct {
 
 	title             string
 	version           *string
-	baseUri           *string
+	baseURI           *string
 	description       *string
 	protocols         []string
 	mediaType         []string
 	documentation     []interface{}
 	securedBy         []string
-	baseUriParameters raml.UntypedMap
+	baseURIParameters raml.UntypedMap
 	resources         raml.UntypedMap
 }
 
-func (a ApiSpec) MarshalYAML() (interface{}, error) {
-	logrus.Trace("internal.ApiSpec.MarshalYAML")
+func (a APISpec) MarshalYAML() (interface{}, error) {
 	out := NewAnyMap().
 		Put(rmeta.KeyTitle, a.title).
 		PutNonNil(rmeta.KeyVersion, a.version).
-		PutNonNil(rmeta.KeyBaseUri, a.baseUri).
+		PutNonNil(rmeta.KeyBaseURI, a.baseURI).
 		PutNonNil(rmeta.KeyDescription, a.description).
 		PutNonNil(rmeta.KeyProtocols, a.protocols).
 		PutNonNil(rmeta.KeyMediaType, a.mediaType).
@@ -64,8 +62,8 @@ func (a ApiSpec) MarshalYAML() (interface{}, error) {
 	a.hasUses.out(out)
 	a.hasSecSchemes.out(out)
 
-	if a.baseUriParameters.Len() > 0 {
-		out.Put(rmeta.KeyBaseUriParams, a.baseUriParameters)
+	if a.baseURIParameters.Len() > 0 {
+		out.Put(rmeta.KeyBaseURIParams, a.baseURIParameters)
 	}
 
 	a.hasTraits.out(out)
@@ -79,54 +77,52 @@ func (a ApiSpec) MarshalYAML() (interface{}, error) {
 	return out, nil
 }
 
-func (a *ApiSpec) UnmarshalYAML(raw *yaml.Node) error {
-	logrus.Trace("internal.ApiSpec.UnmarshalYAML")
+func (a *APISpec) UnmarshalYAML(raw *yaml.Node) error {
 	return xyml.ForEachMap(raw, a.assign)
 }
 
-func (a *ApiSpec) Description() option.String {
+func (a *APISpec) Description() option.String {
 	return option.NewMaybeString(a.description)
 }
 
-func (a *ApiSpec) Title() string {
+func (a *APISpec) Title() string {
 	return a.title
 }
 
-func (a *ApiSpec) Version() option.String {
+func (a *APISpec) Version() option.String {
 	return option.NewMaybeString(a.version)
 }
 
-func (a *ApiSpec) BaseUri() option.String {
-	return option.NewMaybeString(a.baseUri)
+func (a *APISpec) BaseURI() option.String {
+	return option.NewMaybeString(a.baseURI)
 }
 
-func (a *ApiSpec) BaseUriParameters() raml.UntypedMap {
-	return a.baseUriParameters
+func (a *APISpec) BaseURIParameters() raml.UntypedMap {
+	return a.baseURIParameters
 }
 
-func (a *ApiSpec) Protocols() []string {
+func (a *APISpec) Protocols() []string {
 	return a.protocols
 }
 
-func (a *ApiSpec) MediaTypes() []string {
+func (a *APISpec) MediaTypes() []string {
 	return a.mediaType
 }
 
-func (a *ApiSpec) Documentation() []interface{} {
+func (a *APISpec) Documentation() []interface{} {
 	return a.documentation
 }
 
-func (a *ApiSpec) SecuredBy() []string {
+func (a *APISpec) SecuredBy() []string {
 	return a.securedBy
 }
 
-func (a *ApiSpec) Resources() raml.UntypedMap {
+func (a *APISpec) Resources() raml.UntypedMap {
 	return a.resources
 }
 
-func (a *ApiSpec) assign(k, v *yaml.Node) error {
-	logrus.Trace("internal.ApiSpec.assign")
-	if k.Tag != xyml.String {
+func (a *APISpec) assign(k, v *yaml.Node) error {
+	if !xyml.IsString(k) {
 		a.hasExtra.in(k, v)
 		return nil
 	}
@@ -146,18 +142,18 @@ func (a *ApiSpec) assign(k, v *yaml.Node) error {
 		return assign.AsString(v, &a.title)
 	case rmeta.KeyVersion:
 		return assign.AsStringPtr(v, &a.version)
-	case rmeta.KeyBaseUri:
-		return assign.AsStringPtr(v, &a.baseUri)
+	case rmeta.KeyBaseURI:
+		return assign.AsStringPtr(v, &a.baseURI)
 	case rmeta.KeyDescription:
 		return assign.AsStringPtr(v, &a.description)
 	case rmeta.KeyProtocols:
 		return assign.AsStringList(v, &a.protocols)
 	case rmeta.KeyMediaType:
-		if v.Tag == xyml.String {
+		if xyml.IsString(v) {
 			a.mediaType = append(a.mediaType, v.Value)
-			return nil
+		} else {
+			return assign.AsStringList(v, &a.mediaType)
 		}
-		return assign.AsStringList(v, &a.mediaType)
 	case rmeta.KeyDocumentation:
 		return assign.AnyList(v, &a.documentation)
 	case rmeta.KeySecuredBy:
@@ -166,8 +162,8 @@ func (a *ApiSpec) assign(k, v *yaml.Node) error {
 		return a.hasUses.in(v)
 	case rmeta.KeySecuritySchemes:
 		return a.secSchemes.UnmarshalRAML(v)
-	case rmeta.KeyBaseUriParams:
-		return assign.ToUntypedMap(v, a.baseUriParameters)
+	case rmeta.KeyBaseURIParams:
+		return assign.ToUntypedMap(v, a.baseURIParameters)
 	case rmeta.KeyTraits:
 		return a.hasTraits.in(v)
 	case rmeta.KeyAnnotationTypes:
@@ -176,8 +172,9 @@ func (a *ApiSpec) assign(k, v *yaml.Node) error {
 		return a.hasResTypes.in(v)
 	case rmeta.KeyTypes, rmeta.KeySchemas:
 		return a.hasTypes.in(v)
+	default:
+		a.hasExtra.in(k, v)
 	}
 
-	a.hasExtra.in(k, v)
 	return nil
 }

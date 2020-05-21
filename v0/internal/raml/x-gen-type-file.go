@@ -13,7 +13,7 @@ import (
 // NewFileType returns a new internal implementation
 // of the raml.FileType interface.
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 func NewFileType() *FileType {
 	out := &FileType{
 		examples: NewFileExampleMap(),
@@ -30,7 +30,7 @@ func NewFileType() *FileType {
 // FileType is a default generated implementation of
 // the raml.FileType interface
 //
-// Generated @ 2020-05-20T18:40:13.095690448-04:00
+// Generated @ 2020-05-20T20:54:26.833516016-04:00
 type FileType struct {
 	*ExtendedDataType
 
@@ -84,6 +84,7 @@ func (o *FileType) SetExamples(examples raml.FileExampleMap) raml.FileType {
 	if examples == nil {
 		return o.UnsetExamples()
 	}
+
 	o.examples = examples
 	return o
 }
@@ -117,6 +118,7 @@ func (o *FileType) SetAnnotations(annotations raml.AnnotationMap) raml.FileType 
 	if annotations == nil {
 		return o.UnsetAnnotations()
 	}
+
 	o.hasAnnotations.mp = annotations
 	return o
 }
@@ -130,6 +132,7 @@ func (o *FileType) SetFacetDefinitions(facets raml.FacetMap) raml.FileType {
 	if facets == nil {
 		return o.UnsetFacetDefinitions()
 	}
+
 	o.facets = facets
 	return o
 }
@@ -139,12 +142,12 @@ func (o *FileType) UnsetFacetDefinitions() raml.FileType {
 	return o
 }
 
-func (o *FileType) SetXml(x raml.Xml) raml.FileType {
+func (o *FileType) SetXML(x raml.XML) raml.FileType {
 	o.xml = x
 	return o
 }
 
-func (o *FileType) UnsetXml() raml.FileType {
+func (o *FileType) UnsetXML() raml.FileType {
 	o.xml = nil
 	return o
 }
@@ -167,6 +170,7 @@ func (o *FileType) SetExtraFacets(facets raml.AnyMap) raml.FileType {
 	if facets == nil {
 		return o.UnsetExtraFacets()
 	}
+
 	o.hasExtra.mp = facets
 	return o
 }
@@ -213,9 +217,6 @@ func (o *FileType) SetMaxLength(u uint) raml.FileType {
 	return o
 }
 
-func (o FileType) render() bool {
-	return true
-}
 func (o *FileType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.FileType.marshal")
 	out.PutNonNil(rmeta.KeyDefault, o.def)
@@ -224,9 +225,11 @@ func (o *FileType) marshal(out raml.AnyMap) error {
 		return err
 	}
 	out.PutNonNil(rmeta.KeyFileTypes, o.fileTypes)
+
 	if o.minLength != rmeta.FileDefaultMinLength {
 		out.Put(rmeta.KeyMinLength, o.minLength)
 	}
+
 	if o.maxLength != rmeta.FileDefaultMaxLength {
 		out.Put(rmeta.KeyMaxLength, o.maxLength)
 	}
@@ -241,7 +244,6 @@ func (o *FileType) marshal(out raml.AnyMap) error {
 }
 
 func (o *FileType) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.FileType.assign")
 	switch key.Value {
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
@@ -251,6 +253,7 @@ func (o *FileType) assign(key, val *yaml.Node) error {
 		} else {
 			o.example = ex.(raml.FileExample)
 		}
+
 		return nil
 	case rmeta.KeyExamples:
 		return o.examples.UnmarshalRAML(val)

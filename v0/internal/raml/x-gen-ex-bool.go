@@ -10,6 +10,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// NewBoolExample returns a new internal implementation of the
+// raml.BoolExample interface.
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 func NewBoolExample() *BoolExample {
 	return &BoolExample{
 		annotations: NewAnnotationMap(),
@@ -17,6 +21,8 @@ func NewBoolExample() *BoolExample {
 	}
 }
 
+// BoolExample is a generated internal implementation of the
+// raml.BoolExample interface.
 type BoolExample struct {
 	displayName *string
 	description *string
@@ -177,5 +183,6 @@ func (e *BoolExample) assignVal(val *yaml.Node) error {
 	} else {
 		e.value = tmp
 	}
+
 	return nil
 }

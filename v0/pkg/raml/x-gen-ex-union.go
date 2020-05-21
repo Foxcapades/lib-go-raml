@@ -2,7 +2,8 @@ package raml
 
 // UnionExample defines a single example attached to a DataType
 // or Property definition.
-// Generated @ 2020-05-20T18:40:12.806494881-04:00
+//
+// Generated @ 2020-05-20T20:54:25.600656868-04:00
 type UnionExample interface {
 	Example
 

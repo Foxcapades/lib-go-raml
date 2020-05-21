@@ -1,12 +1,18 @@
+package x
+
+type name interface {
 {{define "all"}}
 	// SetType sets the parent type name, this does not change
 	// the underlying kind of the DataType.
 	SetType(string) {{.Name}}Type
-{{if .DefIsOpt}}
+
+	{{if .DefIsOpt -}}
 	// Default returns an option of the current default value
-	// which will be empty if the value is not set.{{else}}
+	// which will be empty if the value is not set.
+	{{- else -}}
 	// Default returns the current default value or nil of no
-	// default value is set.{{end}}
+	// default value is set.
+	{{- end}}
 	Default() {{if .DefIsOpt}}option.{{end}}{{.DefTypeName}}
 
 	// SetDefault sets the default value for the current
@@ -98,16 +104,16 @@
 	// on the current DataType definition.
 	UnsetFacetDefinitions() {{.Name}}Type
 
-	// SetXml sets the current DataType definition's xml
-	// serialization settings object to the given value.
+	// SetXML sets the current DataType definition's xml serialization settings
+	// object to the given value.
 	//
-	// Passing this method a nil value is effectively the same
-	// as calling UnsetXml.
-	SetXml(Xml) {{.Name}}Type
+	// Passing this method a nil value is effectively the same as calling
+	// UnsetXML.
+	SetXML(XML) {{.Name}}Type
 
-	// Removes the xml serialization settings object from the
-	// current DataType definition.
-	UnsetXml() {{.Name}}Type
+	// UnsetXML removes the xml serialization settings object from the current
+	// DataType definition.
+	UnsetXML() {{.Name}}Type
 
 	// Enum returns a slice of the enum values assigned to the
 	// current DataType definition.
@@ -137,3 +143,4 @@
 
 	SetRequired(bool) {{.Name}}Type
 {{end}}
+}

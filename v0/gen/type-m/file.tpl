@@ -30,9 +30,11 @@ type Bar struct {
 func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 	{{define "file-marshal" -}}
 	out.PutNonNil(rmeta.KeyFileTypes, o.fileTypes)
+
 	if o.minLength != rmeta.FileDefaultMinLength {
 		out.Put(rmeta.KeyMinLength, o.minLength)
 	}
+
 	if o.maxLength != rmeta.FileDefaultMaxLength {
 		out.Put(rmeta.KeyMaxLength, o.maxLength)
 	}
@@ -72,9 +74,6 @@ func (o *{{.Name}}Type) SetMaxLength(u uint) raml.{{.Name}}Type {
 	return o
 }
 
-func (o {{.Name}}Type) render() bool {
-	return true
-}
 {{end}}
 func (o {{.Name}}Type) assign(key, val interface{}) (err error) {
 {{define "file-assign"}}

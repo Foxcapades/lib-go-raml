@@ -11,7 +11,7 @@ func ParseLibrary(red io.Reader) (raml.Library, error) {
 	out := impl.NewLibrary()
 	dec := yaml.NewDecoder(red)
 
-	if err := dec.Decode(out); err != nil {
+	if err := dec.Decode(out); err != nil && err != io.EOF {
 		return nil, err
 	}
 

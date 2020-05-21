@@ -12,7 +12,7 @@ import (
 // NewDateOnlyExample returns a new internal implementation of the
 // raml.DateOnlyExample interface.
 //
-// Generated @ 2020-05-20T21:46:00.638880955-04:00
+// Generated @ 2020-05-21T14:55:18.086428872-04:00
 func NewDateOnlyExample() *DateOnlyExample {
 	return &DateOnlyExample{
 		annotations: NewAnnotationMap(),
@@ -26,7 +26,7 @@ type DateOnlyExample struct {
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
-	value       string
+	value       *string
 	strict      bool
 	extra       raml.AnyMap
 }
@@ -76,12 +76,17 @@ func (e *DateOnlyExample) UnsetAnnotations() raml.DateOnlyExample {
 	return e
 }
 
-func (e *DateOnlyExample) Value() string {
-	return e.value
+func (e *DateOnlyExample) Value() option.String {
+	return option.NewMaybeString(e.value)
 }
 
 func (e *DateOnlyExample) SetValue(val string) raml.DateOnlyExample {
-	e.value = val
+	e.value = &val
+	return e
+}
+
+func (e *DateOnlyExample) UnsetValue() raml.DateOnlyExample {
+	e.value = nil
 	return e
 }
 
@@ -111,7 +116,7 @@ func (e *DateOnlyExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	if e.expand() {
 		out.PutNonNil(rmeta.KeyDisplayName, e.displayName).
 			PutNonNil(rmeta.KeyDescription, e.description).
-			Put(rmeta.KeyValue, e.value)
+			PutNonNil(rmeta.KeyValue, e.value)
 
 		if e.strict != rmeta.ExampleDefaultStrict {
 			out.Put(rmeta.KeyStrict, e.strict)
@@ -178,7 +183,7 @@ func (e *DateOnlyExample) assignVal(val *yaml.Node) error {
 	if err := xyml.RequireString(val); err != nil {
 		return err
 	}
-	e.value = val.Value
+	e.value = &val.Value
 
 	return nil
 }

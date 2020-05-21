@@ -1,6 +1,10 @@
 {{define "example" -}}
 package raml
 
+{{if .UseOption -}}
+import "github.com/Foxcapades/goop/v1/pkg/option"
+{{- end}}
+
 // {{.Name}}Example defines a single example attached to a DataType
 // or Property definition.
 //
@@ -34,10 +38,13 @@ type {{.Name}}Example interface {
 	UnsetAnnotations() {{.Name}}Example
 
 	// Value returns this example's value.
-	Value() {{.Type}}
+	Value() {{if .UseOption}}option.{{end}}{{.EType}}
 
 	// SetValue sets this example's value.
-	SetValue({{.Type}}) {{.Name}}Example
+	SetValue(v {{.Type}}) {{.Name}}Example
+
+	// UnsetValue removes this example's value.
+	UnsetValue() {{.Name}}Example
 
 	// SetStrict sets whether or not this example should be
 	// validated against its parent type definition.

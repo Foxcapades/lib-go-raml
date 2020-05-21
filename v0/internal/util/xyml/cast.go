@@ -3,6 +3,7 @@ package xyml
 import (
 	"errors"
 	"fmt"
+	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util"
 	"math"
 	"reflect"
 	"strconv"
@@ -103,7 +104,11 @@ func CastYmlTypeToScalar(v *yaml.Node) (interface{}, error) {
 }
 
 func CastScalarToYmlType(v interface{}) (*yaml.Node, error) {
-	k := reflect.TypeOf(v).Kind()
+	if util.IsNil(v) {
+		return MapNode(0), nil
+	}
+
+	k := reflect.ValueOf(v).Kind()
 
 	switch k {
 	case reflect.String:
@@ -140,13 +145,14 @@ func CastScalarToYmlType(v interface{}) (*yaml.Node, error) {
 		return BoolNode(v.(bool)), nil
 	}
 
-	return nil, fmt.Errorf(errCantBeYaml, reflect.TypeOf(v).String())
+	return nil, fmt.Errorf(errCantBeYaml, reflect.ValueOf(v).Type())
 }
 
 func CastAnyToYmlType(v interface{}) (*yaml.Node, error) {
 	if y, ok := v.(*yaml.Node); ok {
 		return y, nil
 	}
+
 	if y, ok := v.(yaml.Marshaler); ok {
 		if v, err := y.MarshalYAML(); err != nil {
 			return nil, err
@@ -155,11 +161,11 @@ func CastAnyToYmlType(v interface{}) (*yaml.Node, error) {
 		}
 	}
 
-	k := reflect.TypeOf(v).Kind()
+	r := reflect.ValueOf(v)
+	k := r.Kind()
 
 	switch k {
 	case reflect.Map:
-		r := reflect.ValueOf(v)
 		if r.IsNil() {
 			return MapNode(0), nil
 		}
@@ -175,8 +181,6 @@ func CastAnyToYmlType(v interface{}) (*yaml.Node, error) {
 
 		return tmp, nil
 	case reflect.Array, reflect.Slice:
-		r := reflect.ValueOf(v)
-
 		if r.IsNil() {
 			return SequenceNode(0), nil
 		}
@@ -193,10 +197,12 @@ func CastAnyToYmlType(v interface{}) (*yaml.Node, error) {
 		return tmp, nil
 
 	case reflect.Ptr:
-		r := reflect.ValueOf(v)
 		if r.IsNil() {
-			return MapNode(0), nil
+			tmp := MapNode(0)
+			tmp.Style = yaml.TaggedStyle
+			return tmp, nil
 		}
+
 		return CastAnyToYmlType(r.Elem().Interface())
 	}
 

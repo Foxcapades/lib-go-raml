@@ -18,19 +18,19 @@ const (
 var now = time.Now().Format(time.RFC3339Nano)
 
 var types = []exampleProps{
-	{Name: "Array", Type: "[]interface{}", Time: now},
-	{Name: "Bool", Type: "bool", Time: now},
-	{Name: "Custom", Type: "interface{}", Time: now},
-	{Name: "DateOnly", Type: "string", Time: now},
-	{Name: "TimeOnly", Type: "string", Time: now},
-	{Name: "DatetimeOnly", Type: "string", Time: now},
-	{Name: "Datetime", Type: "string", Time: now},
-	{Name: "File", Type: "interface{}", Time: now},
-	{Name: "Integer", Type: "int64", Time: now},
-	{Name: "Number", Type: "float64", Time: now},
-	{Name: "Object", Type: "interface{}", Time: now},
-	{Name: "String", Type: "string", Time: now},
-	{Name: "Union", Type: "interface{}", Time: now},
+	{Name: "Array", Type: "[]interface{}", EType: "[]interface{}", Time: now, UseOption: false},
+	{Name: "Bool", Type: "bool", EType: "Bool", Time: now, UseOption: true},
+	{Name: "Custom", Type: "interface{}", EType: "Untyped", Time: now, UseOption: true},
+	{Name: "DateOnly", Type: "string", EType: "String", Time: now, UseOption: true},
+	{Name: "TimeOnly", Type: "string", EType: "String", Time: now, UseOption: true},
+	{Name: "DatetimeOnly", Type: "string", EType: "String", Time: now, UseOption: true},
+	{Name: "Datetime", Type: "string", EType: "String", Time: now, UseOption: true},
+	{Name: "File", Type: "interface{}", EType: "Untyped", Time: now, UseOption: true},
+	{Name: "Integer", Type: "int64", EType: "Int64", Time: now, UseOption: true},
+	{Name: "Number", Type: "float64", EType: "Float64", Time: now, UseOption: true},
+	{Name: "Object", Type: "interface{}", EType: "Untyped", Time: now, UseOption: true},
+	{Name: "String", Type: "string", EType: "String", Time: now, UseOption: true},
+	{Name: "Union", Type: "interface{}", EType: "Untyped", Time: now, UseOption: true},
 }
 
 func main() {
@@ -57,7 +57,9 @@ func check(err error) {
 }
 
 type exampleProps struct {
-	Name string
-	Type string
-	Time string
+	Name      string
+	Type      string
+	EType     string
+	Time      string
+	UseOption bool
 }

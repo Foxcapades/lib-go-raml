@@ -3,7 +3,7 @@ package raml
 // ArrayExample defines a single example attached to a DataType
 // or Property definition.
 //
-// Generated @ 2020-05-20T21:46:00.638880955-04:00
+// Generated @ 2020-05-21T14:55:18.086428872-04:00
 type ArrayExample interface {
 	Example
 
@@ -36,7 +36,10 @@ type ArrayExample interface {
 	Value() []interface{}
 
 	// SetValue sets this example's value.
-	SetValue([]interface{}) ArrayExample
+	SetValue(v []interface{}) ArrayExample
+
+	// UnsetValue removes this example's value.
+	UnsetValue() ArrayExample
 
 	// SetStrict sets whether or not this example should be
 	// validated against its parent type definition.

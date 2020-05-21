@@ -12,7 +12,7 @@ import (
 // NewNumberExample returns a new internal implementation of the
 // raml.NumberExample interface.
 //
-// Generated @ 2020-05-20T21:46:00.638880955-04:00
+// Generated @ 2020-05-21T14:55:18.086428872-04:00
 func NewNumberExample() *NumberExample {
 	return &NumberExample{
 		annotations: NewAnnotationMap(),
@@ -26,7 +26,7 @@ type NumberExample struct {
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
-	value       float64
+	value       *float64
 	strict      bool
 	extra       raml.AnyMap
 }
@@ -76,12 +76,17 @@ func (e *NumberExample) UnsetAnnotations() raml.NumberExample {
 	return e
 }
 
-func (e *NumberExample) Value() float64 {
-	return e.value
+func (e *NumberExample) Value() option.Float64 {
+	return option.NewMaybeFloat64(e.value)
 }
 
 func (e *NumberExample) SetValue(val float64) raml.NumberExample {
-	e.value = val
+	e.value = &val
+	return e
+}
+
+func (e *NumberExample) UnsetValue() raml.NumberExample {
+	e.value = nil
 	return e
 }
 
@@ -111,7 +116,7 @@ func (e *NumberExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	if e.expand() {
 		out.PutNonNil(rmeta.KeyDisplayName, e.displayName).
 			PutNonNil(rmeta.KeyDescription, e.description).
-			Put(rmeta.KeyValue, e.value)
+			PutNonNil(rmeta.KeyValue, e.value)
 
 		if e.strict != rmeta.ExampleDefaultStrict {
 			out.Put(rmeta.KeyStrict, e.strict)
@@ -178,7 +183,7 @@ func (e *NumberExample) assignVal(val *yaml.Node) error {
 	if tmp, err := xyml.ToFloat64(val); err != nil {
 		return err
 	} else {
-		e.value = tmp
+		e.value = &tmp
 	}
 
 	return nil

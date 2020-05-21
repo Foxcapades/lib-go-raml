@@ -1,9 +1,11 @@
 package raml
 
+import "github.com/Foxcapades/goop/v1/pkg/option"
+
 // DatetimeExample defines a single example attached to a DataType
 // or Property definition.
 //
-// Generated @ 2020-05-20T21:46:00.638880955-04:00
+// Generated @ 2020-05-21T14:55:18.086428872-04:00
 type DatetimeExample interface {
 	Example
 
@@ -33,10 +35,13 @@ type DatetimeExample interface {
 	UnsetAnnotations() DatetimeExample
 
 	// Value returns this example's value.
-	Value() string
+	Value() option.String
 
 	// SetValue sets this example's value.
-	SetValue(string) DatetimeExample
+	SetValue(v string) DatetimeExample
+
+	// UnsetValue removes this example's value.
+	UnsetValue() DatetimeExample
 
 	// SetStrict sets whether or not this example should be
 	// validated against its parent type definition.

@@ -28,7 +28,7 @@ type {{.Name}}Example struct {
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
-	value       {{.Type}}
+	value       {{if .UseOption}}*{{end}}{{.Type}}
 	strict      bool
 	extra       raml.AnyMap
 }
@@ -78,12 +78,21 @@ func (e *{{.Name}}Example) UnsetAnnotations() raml.{{.Name}}Example {
 	return e
 }
 
-func (e *{{.Name}}Example) Value() {{.Type}} {
+func (e *{{.Name}}Example) Value() {{if .UseOption}}option.{{end}}{{.EType}} {
+	{{if .UseOption -}}
+	return option.NewMaybe{{.EType}}(e.value)
+	{{- else -}}
 	return e.value
+	{{- end}}
 }
 
 func (e *{{.Name}}Example) SetValue(val {{.Type}}) raml.{{.Name}}Example {
-	e.value = val
+	e.value = {{if .UseOption}}&{{end}}val
+	return e
+}
+
+func (e *{{.Name}}Example) UnsetValue() raml.{{.Name}}Example {
+	e.value = nil
 	return e
 }
 
@@ -113,7 +122,7 @@ func (e *{{.Name}}Example) MarshalRAML(out raml.AnyMap) (bool, error) {
 	if e.expand() {
 		out.PutNonNil(rmeta.KeyDisplayName, e.displayName).
 			PutNonNil(rmeta.KeyDescription, e.description).
-			Put(rmeta.KeyValue, e.value)
+			PutNonNil(rmeta.KeyValue, e.value)
 
 		if e.strict != rmeta.ExampleDefaultStrict {
 			out.Put(rmeta.KeyStrict, e.strict)
@@ -181,24 +190,24 @@ func (e *{{.Name}}Example) assignVal(val *yaml.Node) error {
 	if err := xyml.RequireString(val); err != nil {
 		return err
 	}
-	e.value = val.Value
+	e.value = &val.Value
 	{{- else if eq .Type "bool" -}}
 	if tmp, err := xyml.ToBool(val); err != nil {
 		return err
 	} else {
-		e.value = tmp
+		e.value = &tmp
 	}
 	{{- else if eq .Type "int64" -}}
 	if tmp, err := xyml.ToInt64(val); err != nil {
 		return err
 	} else {
-		e.value = tmp
+		e.value = &tmp
 	}
 	{{- else if eq .Type "float64" -}}
 	if tmp, err := xyml.ToFloat64(val); err != nil {
 		return err
 	} else {
-		e.value = tmp
+		e.value = &tmp
 	}
 	{{- else if eq .Type "[]interface{}" -}}
 	if err := xyml.RequireList(val); err != nil {
@@ -211,7 +220,8 @@ func (e *{{.Name}}Example) assignVal(val *yaml.Node) error {
 		})
 	}
 	{{- else -}}
-	e.value = val
+	var tmp interface{} = *val
+	e.value = &tmp
 	{{- end}}
 
 	return nil

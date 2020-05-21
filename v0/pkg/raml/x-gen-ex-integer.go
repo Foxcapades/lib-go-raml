@@ -1,9 +1,11 @@
 package raml
 
+import "github.com/Foxcapades/goop/v1/pkg/option"
+
 // IntegerExample defines a single example attached to a DataType
 // or Property definition.
 //
-// Generated @ 2020-05-20T21:46:00.638880955-04:00
+// Generated @ 2020-05-21T14:55:18.086428872-04:00
 type IntegerExample interface {
 	Example
 
@@ -33,10 +35,13 @@ type IntegerExample interface {
 	UnsetAnnotations() IntegerExample
 
 	// Value returns this example's value.
-	Value() int64
+	Value() option.Int64
 
 	// SetValue sets this example's value.
-	SetValue(int64) IntegerExample
+	SetValue(v int64) IntegerExample
+
+	// UnsetValue removes this example's value.
+	UnsetValue() IntegerExample
 
 	// SetStrict sets whether or not this example should be
 	// validated against its parent type definition.

@@ -12,7 +12,7 @@ import (
 // NewIntegerExample returns a new internal implementation of the
 // raml.IntegerExample interface.
 //
-// Generated @ 2020-05-20T21:46:00.638880955-04:00
+// Generated @ 2020-05-21T14:55:18.086428872-04:00
 func NewIntegerExample() *IntegerExample {
 	return &IntegerExample{
 		annotations: NewAnnotationMap(),
@@ -26,7 +26,7 @@ type IntegerExample struct {
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
-	value       int64
+	value       *int64
 	strict      bool
 	extra       raml.AnyMap
 }
@@ -76,12 +76,17 @@ func (e *IntegerExample) UnsetAnnotations() raml.IntegerExample {
 	return e
 }
 
-func (e *IntegerExample) Value() int64 {
-	return e.value
+func (e *IntegerExample) Value() option.Int64 {
+	return option.NewMaybeInt64(e.value)
 }
 
 func (e *IntegerExample) SetValue(val int64) raml.IntegerExample {
-	e.value = val
+	e.value = &val
+	return e
+}
+
+func (e *IntegerExample) UnsetValue() raml.IntegerExample {
+	e.value = nil
 	return e
 }
 
@@ -111,7 +116,7 @@ func (e *IntegerExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	if e.expand() {
 		out.PutNonNil(rmeta.KeyDisplayName, e.displayName).
 			PutNonNil(rmeta.KeyDescription, e.description).
-			Put(rmeta.KeyValue, e.value)
+			PutNonNil(rmeta.KeyValue, e.value)
 
 		if e.strict != rmeta.ExampleDefaultStrict {
 			out.Put(rmeta.KeyStrict, e.strict)
@@ -178,7 +183,7 @@ func (e *IntegerExample) assignVal(val *yaml.Node) error {
 	if tmp, err := xyml.ToInt64(val); err != nil {
 		return err
 	} else {
-		e.value = tmp
+		e.value = &tmp
 	}
 
 	return nil

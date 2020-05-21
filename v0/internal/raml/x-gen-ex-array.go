@@ -12,7 +12,7 @@ import (
 // NewArrayExample returns a new internal implementation of the
 // raml.ArrayExample interface.
 //
-// Generated @ 2020-05-20T21:46:00.638880955-04:00
+// Generated @ 2020-05-21T14:55:18.086428872-04:00
 func NewArrayExample() *ArrayExample {
 	return &ArrayExample{
 		annotations: NewAnnotationMap(),
@@ -85,6 +85,11 @@ func (e *ArrayExample) SetValue(val []interface{}) raml.ArrayExample {
 	return e
 }
 
+func (e *ArrayExample) UnsetValue() raml.ArrayExample {
+	e.value = nil
+	return e
+}
+
 func (e *ArrayExample) Strict() bool {
 	return e.strict
 }
@@ -111,7 +116,7 @@ func (e *ArrayExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	if e.expand() {
 		out.PutNonNil(rmeta.KeyDisplayName, e.displayName).
 			PutNonNil(rmeta.KeyDescription, e.description).
-			Put(rmeta.KeyValue, e.value)
+			PutNonNil(rmeta.KeyValue, e.value)
 
 		if e.strict != rmeta.ExampleDefaultStrict {
 			out.Put(rmeta.KeyStrict, e.strict)

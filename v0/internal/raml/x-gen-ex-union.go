@@ -12,7 +12,7 @@ import (
 // NewUnionExample returns a new internal implementation of the
 // raml.UnionExample interface.
 //
-// Generated @ 2020-05-20T21:46:00.638880955-04:00
+// Generated @ 2020-05-21T14:55:18.086428872-04:00
 func NewUnionExample() *UnionExample {
 	return &UnionExample{
 		annotations: NewAnnotationMap(),
@@ -26,7 +26,7 @@ type UnionExample struct {
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
-	value       interface{}
+	value       *interface{}
 	strict      bool
 	extra       raml.AnyMap
 }
@@ -76,12 +76,17 @@ func (e *UnionExample) UnsetAnnotations() raml.UnionExample {
 	return e
 }
 
-func (e *UnionExample) Value() interface{} {
-	return e.value
+func (e *UnionExample) Value() option.Untyped {
+	return option.NewMaybeUntyped(e.value)
 }
 
 func (e *UnionExample) SetValue(val interface{}) raml.UnionExample {
-	e.value = val
+	e.value = &val
+	return e
+}
+
+func (e *UnionExample) UnsetValue() raml.UnionExample {
+	e.value = nil
 	return e
 }
 
@@ -111,7 +116,7 @@ func (e *UnionExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	if e.expand() {
 		out.PutNonNil(rmeta.KeyDisplayName, e.displayName).
 			PutNonNil(rmeta.KeyDescription, e.description).
-			Put(rmeta.KeyValue, e.value)
+			PutNonNil(rmeta.KeyValue, e.value)
 
 		if e.strict != rmeta.ExampleDefaultStrict {
 			out.Put(rmeta.KeyStrict, e.strict)
@@ -175,7 +180,8 @@ func (e *UnionExample) expand() bool {
 }
 
 func (e *UnionExample) assignVal(val *yaml.Node) error {
-	e.value = val
+	var tmp interface{} = *val
+	e.value = &tmp
 
 	return nil
 }

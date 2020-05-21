@@ -12,7 +12,7 @@ import (
 // NewBoolExample returns a new internal implementation of the
 // raml.BoolExample interface.
 //
-// Generated @ 2020-05-20T21:46:00.638880955-04:00
+// Generated @ 2020-05-21T14:55:18.086428872-04:00
 func NewBoolExample() *BoolExample {
 	return &BoolExample{
 		annotations: NewAnnotationMap(),
@@ -26,7 +26,7 @@ type BoolExample struct {
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
-	value       bool
+	value       *bool
 	strict      bool
 	extra       raml.AnyMap
 }
@@ -76,12 +76,17 @@ func (e *BoolExample) UnsetAnnotations() raml.BoolExample {
 	return e
 }
 
-func (e *BoolExample) Value() bool {
-	return e.value
+func (e *BoolExample) Value() option.Bool {
+	return option.NewMaybeBool(e.value)
 }
 
 func (e *BoolExample) SetValue(val bool) raml.BoolExample {
-	e.value = val
+	e.value = &val
+	return e
+}
+
+func (e *BoolExample) UnsetValue() raml.BoolExample {
+	e.value = nil
 	return e
 }
 
@@ -111,7 +116,7 @@ func (e *BoolExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	if e.expand() {
 		out.PutNonNil(rmeta.KeyDisplayName, e.displayName).
 			PutNonNil(rmeta.KeyDescription, e.description).
-			Put(rmeta.KeyValue, e.value)
+			PutNonNil(rmeta.KeyValue, e.value)
 
 		if e.strict != rmeta.ExampleDefaultStrict {
 			out.Put(rmeta.KeyStrict, e.strict)
@@ -178,7 +183,7 @@ func (e *BoolExample) assignVal(val *yaml.Node) error {
 	if tmp, err := xyml.ToBool(val); err != nil {
 		return err
 	} else {
-		e.value = tmp
+		e.value = &tmp
 	}
 
 	return nil

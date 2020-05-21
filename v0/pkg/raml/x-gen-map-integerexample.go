@@ -5,7 +5,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// IntegerExampleMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// IntegerExampleMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type IntegerExampleMap interface {
 	Unmarshaler
 	yaml.Marshaler
@@ -13,6 +13,9 @@ type IntegerExampleMap interface {
 	// Len returns the current number of elements in the
 	// map.
 	Len() uint
+
+	// Empty returns whether the current map has 0 elements.
+	Empty() bool
 
 	// Put inserts a new element at the end of the map.
 	//

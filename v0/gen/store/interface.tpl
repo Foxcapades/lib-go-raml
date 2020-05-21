@@ -15,6 +15,9 @@ type {{.Name}}Map interface {
 	// map.
 	Len() uint
 
+	// Empty returns whether the current map has 0 elements.
+	Empty() bool
+
 	// Put inserts a new element at the end of the map.
 	//
 	// If there was already an entry in the map with the given

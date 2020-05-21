@@ -145,6 +145,13 @@ func CastAnyToYmlType(v interface{}) (*yaml.Node, error) {
 	if y, ok := v.(*yaml.Node); ok {
 		return y, nil
 	}
+	if y, ok := v.(yaml.Marshaler); ok {
+		if v, err := y.MarshalYAML(); err != nil {
+			return nil, err
+		} else {
+			return CastAnyToYmlType(v)
+		}
+	}
 
 	k := reflect.TypeOf(v).Kind()
 
@@ -182,6 +189,13 @@ func CastAnyToYmlType(v interface{}) (*yaml.Node, error) {
 		}
 
 		return tmp, nil
+
+	case reflect.Ptr:
+		r := reflect.ValueOf(v)
+		if r.IsNil() {
+			return MapNode(0), nil
+		}
+		return CastAnyToYmlType(r.Elem().Interface())
 	}
 
 	return CastScalarToYmlType(v)

@@ -31,13 +31,3 @@ type hasFacets interface {
 	// current RAML element.
 	ExtraFacets() AnyMap
 }
-
-type headered interface {
-	Headers() DataTypeMap
-}
-
-type hasUsage interface {
-	// Usage returns an option of the value of the `usage` property for the
-	// current RAML element.
-	Usage() option.String
-}

@@ -19,7 +19,7 @@ func NewFacetMap() *FacetMap {
 	}
 }
 
-// FacetMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// FacetMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type FacetMap struct {
 	slice []mapPair
 	index map[string]*raml.Facet
@@ -27,6 +27,10 @@ type FacetMap struct {
 
 func (o *FacetMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *FacetMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *FacetMap) Put(key string, value raml.Facet) raml.FacetMap {

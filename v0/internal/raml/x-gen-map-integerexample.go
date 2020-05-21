@@ -19,7 +19,7 @@ func NewIntegerExampleMap() *IntegerExampleMap {
 	}
 }
 
-// IntegerExampleMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// IntegerExampleMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type IntegerExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.IntegerExample
@@ -27,6 +27,10 @@ type IntegerExampleMap struct {
 
 func (o *IntegerExampleMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *IntegerExampleMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *IntegerExampleMap) Put(key string, value raml.IntegerExample) raml.IntegerExampleMap {

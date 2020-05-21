@@ -19,7 +19,7 @@ func NewDataTypeMap() *DataTypeMap {
 	}
 }
 
-// DataTypeMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// DataTypeMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type DataTypeMap struct {
 	slice []mapPair
 	index map[string]*raml.DataType
@@ -27,6 +27,10 @@ type DataTypeMap struct {
 
 func (o *DataTypeMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *DataTypeMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *DataTypeMap) Put(key string, value raml.DataType) raml.DataTypeMap {

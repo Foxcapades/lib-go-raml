@@ -19,7 +19,7 @@ func NewUnionExampleMap() *UnionExampleMap {
 	}
 }
 
-// UnionExampleMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// UnionExampleMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type UnionExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.UnionExample
@@ -27,6 +27,10 @@ type UnionExampleMap struct {
 
 func (o *UnionExampleMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *UnionExampleMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *UnionExampleMap) Put(key string, value raml.UnionExample) raml.UnionExampleMap {

@@ -19,7 +19,7 @@ func NewStringExampleMap() *StringExampleMap {
 	}
 }
 
-// StringExampleMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// StringExampleMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type StringExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.StringExample
@@ -27,6 +27,10 @@ type StringExampleMap struct {
 
 func (o *StringExampleMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *StringExampleMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *StringExampleMap) Put(key string, value raml.StringExample) raml.StringExampleMap {

@@ -43,6 +43,10 @@ func (o *{{.Name}}Map) Len() uint {
 	return uint(len(o.slice))
 }
 
+func (o *{{.Name}}Map) Empty() bool {
+	return len(o.slice) == 0
+}
+
 func (o *{{.Name}}Map) Put(key {{.KType}}, value {{if .Raml}}raml.{{end}}{{.Type}}) raml.{{.Name}}Map {
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})

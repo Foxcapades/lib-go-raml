@@ -19,7 +19,7 @@ func NewBoolExampleMap() *BoolExampleMap {
 	}
 }
 
-// BoolExampleMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// BoolExampleMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type BoolExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.BoolExample
@@ -27,6 +27,10 @@ type BoolExampleMap struct {
 
 func (o *BoolExampleMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *BoolExampleMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *BoolExampleMap) Put(key string, value raml.BoolExample) raml.BoolExampleMap {

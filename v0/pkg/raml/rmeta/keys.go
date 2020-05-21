@@ -6,6 +6,7 @@ const (
 	KeyAttribute        = "attribute"
 	KeyBaseURI          = "baseUri"
 	KeyBaseURIParams    = "baseUriParameters"
+	KeyContent          = "content"
 	KeyDefault          = "default"
 	KeyDescription      = "description"
 	KeyDiscriminator    = "discriminator"

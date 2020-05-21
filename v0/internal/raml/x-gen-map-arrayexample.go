@@ -19,7 +19,7 @@ func NewArrayExampleMap() *ArrayExampleMap {
 	}
 }
 
-// ArrayExampleMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// ArrayExampleMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type ArrayExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.ArrayExample
@@ -27,6 +27,10 @@ type ArrayExampleMap struct {
 
 func (o *ArrayExampleMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *ArrayExampleMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *ArrayExampleMap) Put(key string, value raml.ArrayExample) raml.ArrayExampleMap {

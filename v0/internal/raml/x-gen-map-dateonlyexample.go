@@ -19,7 +19,7 @@ func NewDateOnlyExampleMap() *DateOnlyExampleMap {
 	}
 }
 
-// DateOnlyExampleMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// DateOnlyExampleMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type DateOnlyExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.DateOnlyExample
@@ -27,6 +27,10 @@ type DateOnlyExampleMap struct {
 
 func (o *DateOnlyExampleMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *DateOnlyExampleMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *DateOnlyExampleMap) Put(key string, value raml.DateOnlyExample) raml.DateOnlyExampleMap {

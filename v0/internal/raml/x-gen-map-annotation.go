@@ -19,7 +19,7 @@ func NewAnnotationMap() *AnnotationMap {
 	}
 }
 
-// AnnotationMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// AnnotationMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type AnnotationMap struct {
 	slice []mapPair
 	index map[string]*raml.Annotation
@@ -27,6 +27,10 @@ type AnnotationMap struct {
 
 func (o *AnnotationMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *AnnotationMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *AnnotationMap) Put(key string, value raml.Annotation) raml.AnnotationMap {

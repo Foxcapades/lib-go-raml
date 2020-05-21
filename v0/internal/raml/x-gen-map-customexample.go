@@ -19,7 +19,7 @@ func NewCustomExampleMap() *CustomExampleMap {
 	}
 }
 
-// CustomExampleMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// CustomExampleMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type CustomExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.CustomExample
@@ -27,6 +27,10 @@ type CustomExampleMap struct {
 
 func (o *CustomExampleMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *CustomExampleMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *CustomExampleMap) Put(key string, value raml.CustomExample) raml.CustomExampleMap {

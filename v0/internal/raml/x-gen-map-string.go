@@ -20,7 +20,7 @@ func NewStringMap() *StringMap {
 	}
 }
 
-// StringMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// StringMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type StringMap struct {
 	slice []mapPair
 	index map[string]*string
@@ -28,6 +28,10 @@ type StringMap struct {
 
 func (o *StringMap) Len() uint {
 	return uint(len(o.slice))
+}
+
+func (o *StringMap) Empty() bool {
+	return len(o.slice) == 0
 }
 
 func (o *StringMap) Put(key string, value string) raml.StringMap {

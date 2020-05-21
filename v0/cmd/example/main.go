@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/Foxcapades/Go-ChainRequest/simple"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rparse"
-	"gopkg.in/yaml.v3"
 	"os"
 )
 
@@ -17,7 +16,7 @@ func main() {
 	api, err := rparse.ParseApiDoc(res.Body)
 	check(err)
 
-	check(yaml.NewEncoder(os.Stdout).Encode(api.Types()))
+	check(api.WriteRAML(os.Stdout))
 }
 
 func check(err error) {

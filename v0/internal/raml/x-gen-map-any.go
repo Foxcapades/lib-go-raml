@@ -19,7 +19,7 @@ func NewAnyMap() *AnyMap {
 	}
 }
 
-// AnyMap generated @ 2020-05-20T21:46:00.242352937-04:00
+// AnyMap generated @ 2020-05-21T01:49:31.367162698-04:00
 type AnyMap struct {
 	slice []mapPair
 	index map[interface{}]*interface{}
@@ -29,7 +29,12 @@ func (o *AnyMap) Len() uint {
 	return uint(len(o.slice))
 }
 
+func (o *AnyMap) Empty() bool {
+	return len(o.slice) == 0
+}
+
 func (o *AnyMap) Put(key interface{}, value interface{}) raml.AnyMap {
+	o.Delete(key)
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o

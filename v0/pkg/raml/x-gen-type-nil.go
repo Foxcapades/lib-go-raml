@@ -1,6 +1,6 @@
 package raml
 
-// NilType generated @ 2020-05-20T20:54:26.833516016-04:00
+// NilType generated @ 2020-05-20T21:46:01.015916886-04:00
 type NilType interface {
 	Unmarshaler
 	Marshaler

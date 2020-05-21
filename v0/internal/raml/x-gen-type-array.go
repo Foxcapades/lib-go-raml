@@ -12,7 +12,7 @@ import (
 // NewArrayType returns a new internal implementation
 // of the raml.ArrayType interface.
 //
-// Generated @ 2020-05-20T20:54:26.833516016-04:00
+// Generated @ 2020-05-20T21:46:01.015916886-04:00
 func NewArrayType() *ArrayType {
 	out := &ArrayType{
 		examples: NewArrayExampleMap(),
@@ -30,7 +30,7 @@ func NewArrayType() *ArrayType {
 // ArrayType is a default generated implementation of
 // the raml.ArrayType interface
 //
-// Generated @ 2020-05-20T20:54:26.833516016-04:00
+// Generated @ 2020-05-20T21:46:01.015916886-04:00
 type ArrayType struct {
 	*ExtendedDataType
 

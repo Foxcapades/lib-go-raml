@@ -8,6 +8,7 @@ import (
 
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -18,7 +19,7 @@ func NewObjectExampleMap() *ObjectExampleMap {
 	}
 }
 
-// ObjectExampleMap generated @ 2020-05-20T20:54:25.054891636-04:00
+// ObjectExampleMap generated @ 2020-05-20T21:46:00.242352937-04:00
 type ObjectExampleMap struct {
 	slice []mapPair
 	index map[string]*raml.ObjectExample
@@ -141,8 +142,24 @@ func (o ObjectExampleMap) ForEach(fn func(string, raml.ObjectExample)) {
 
 func (o ObjectExampleMap) MarshalYAML() (interface{}, error) {
 	out := xyml.MapNode(len(o.slice))
+
 	for i := range o.slice {
-		if err := xyml.AppendToMap(out, o.slice[i].key, o.slice[i].val); err != nil {
+		var val interface{}
+
+		if v, ok := o.slice[i].val.(raml.Marshaler); ok {
+			tmp := NewAnyMap()
+			if s, err := v.MarshalRAML(tmp); err != nil {
+				return nil, err
+			} else if s {
+				val = tmp.Get(rmeta.KeyType).Get()
+			} else {
+				val = tmp
+			}
+		} else {
+			val = o.slice[i].val
+		}
+
+		if err := xyml.AppendToMap(out, o.slice[i].key, val); err != nil {
 			return nil, err
 		}
 	}

@@ -13,7 +13,7 @@ import (
 // NewTimeOnlyType returns a new internal implementation
 // of the raml.TimeOnlyType interface.
 //
-// Generated @ 2020-05-20T20:54:26.833516016-04:00
+// Generated @ 2020-05-20T21:46:01.015916886-04:00
 func NewTimeOnlyType() *TimeOnlyType {
 	out := &TimeOnlyType{
 		examples: NewTimeOnlyExampleMap(),
@@ -27,7 +27,7 @@ func NewTimeOnlyType() *TimeOnlyType {
 // TimeOnlyType is a default generated implementation of
 // the raml.TimeOnlyType interface
 //
-// Generated @ 2020-05-20T20:54:26.833516016-04:00
+// Generated @ 2020-05-20T21:46:01.015916886-04:00
 type TimeOnlyType struct {
 	*ExtendedDataType
 

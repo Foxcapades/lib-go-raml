@@ -142,6 +142,10 @@ func CastScalarToYmlType(v interface{}) (*yaml.Node, error) {
 }
 
 func CastAnyToYmlType(v interface{}) (*yaml.Node, error) {
+	if y, ok := v.(*yaml.Node); ok {
+		return y, nil
+	}
+
 	k := reflect.TypeOf(v).Kind()
 
 	switch k {

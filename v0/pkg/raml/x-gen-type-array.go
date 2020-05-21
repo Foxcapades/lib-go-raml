@@ -1,6 +1,6 @@
 package raml
 
-// ArrayType generated @ 2020-05-20T20:54:26.833516016-04:00
+// ArrayType generated @ 2020-05-20T21:46:01.015916886-04:00
 type ArrayType interface {
 	Unmarshaler
 	Marshaler

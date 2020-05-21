@@ -6,14 +6,13 @@ import (
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
 
 // NewTimeOnlyExample returns a new internal implementation of the
 // raml.TimeOnlyExample interface.
 //
-// Generated @ 2020-05-20T20:54:25.600656868-04:00
+// Generated @ 2020-05-20T21:46:00.638880955-04:00
 func NewTimeOnlyExample() *TimeOnlyExample {
 	return &TimeOnlyExample{
 		annotations: NewAnnotationMap(),
@@ -129,8 +128,6 @@ func (e *TimeOnlyExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 }
 
 func (e *TimeOnlyExample) assign(key, val *yaml.Node) error {
-	logrus.Trace("internal.TimeOnlyExample.assign")
-
 	if !xyml.IsString(key) {
 		if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
 			return err

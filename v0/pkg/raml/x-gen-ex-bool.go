@@ -3,7 +3,7 @@ package raml
 // BoolExample defines a single example attached to a DataType
 // or Property definition.
 //
-// Generated @ 2020-05-20T20:54:25.600656868-04:00
+// Generated @ 2020-05-20T21:46:00.638880955-04:00
 type BoolExample interface {
 	Example
 

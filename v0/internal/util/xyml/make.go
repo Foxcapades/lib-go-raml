@@ -5,30 +5,34 @@ import (
 	"strconv"
 )
 
-func StringNode(v string) *yaml.Node {
-	return &yaml.Node{Kind: yaml.ScalarNode, Tag: "!!str", Value: v}
-}
-
-func IntNode(v int64) *yaml.Node {
+func BoolNode(v bool) *yaml.Node {
 	return &yaml.Node{
 		Kind:  yaml.ScalarNode,
-		Tag:   "!!int",
-		Value: strconv.FormatInt(v, 10),
+		Tag:   Bool,
+		Value: strconv.FormatBool(v),
 	}
 }
 
 func FloatNode(v float64) *yaml.Node {
 	return &yaml.Node{
 		Kind:  yaml.ScalarNode,
-		Tag:   "!!float",
+		Tag:   Float,
 		Value: strconv.FormatFloat(v, 'f', -1, 64),
+	}
+}
+
+func IntNode(v int64) *yaml.Node {
+	return &yaml.Node{
+		Kind:  yaml.ScalarNode,
+		Tag:   Int,
+		Value: strconv.FormatInt(v, 10),
 	}
 }
 
 func MapNode(size int) *yaml.Node {
 	return &yaml.Node{
 		Kind:    yaml.MappingNode,
-		Tag:     "!!map",
+		Tag:     Map,
 		Content: make([]*yaml.Node, 0, size*MapSkip),
 	}
 }
@@ -36,7 +40,11 @@ func MapNode(size int) *yaml.Node {
 func SequenceNode(size int) *yaml.Node {
 	return &yaml.Node{
 		Kind:    yaml.SequenceNode,
-		Tag:     "!!seq",
+		Tag:     Sequence,
 		Content: make([]*yaml.Node, 0, size),
 	}
+}
+
+func StringNode(v string) *yaml.Node {
+	return &yaml.Node{Kind: yaml.ScalarNode, Tag: String, Value: v}
 }

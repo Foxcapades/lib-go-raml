@@ -136,6 +136,8 @@ func CastScalarToYmlType(v interface{}) (*yaml.Node, error) {
 		return FloatNode(float64(v.(float32))), nil
 	case reflect.Float64:
 		return FloatNode(v.(float64)), nil
+	case reflect.Bool:
+		return BoolNode(v.(bool)), nil
 	}
 
 	return nil, fmt.Errorf(errCantBeYaml, reflect.TypeOf(v).String())

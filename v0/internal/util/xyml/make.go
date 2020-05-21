@@ -37,6 +37,6 @@ func SequenceNode(size int) *yaml.Node {
 	return &yaml.Node{
 		Kind:    yaml.SequenceNode,
 		Tag:     "!!seq",
-		Content: make([]*yaml.Node, size),
+		Content: make([]*yaml.Node, 0, size),
 	}
 }

@@ -16,7 +16,7 @@ func main() {
   api, err := rparse.ParseApiDoc(res.Body)
   check(err)
 
-  check(yaml.NewEncoder(os.Stdout).Encode(api.Types()))
+  check(api.WriteRAML(os.Stdout))
 }
 
 func check(err error) {
@@ -30,7 +30,15 @@ func check(err error) {
 [source, sh-session]
 ----
 $ go run v0/cmd/example/main.go
-song: !include jukebox-include-song.schema
-artist: !include jukebox-include-artist.schema
-album: !include jukebox-include-album.schema
+#%RAML 1.0
+---
+title: Jukebox API
+version: v1
+baseUri: http://jukebox.api.com
+traits:
+  searchable:
+    queryParameters:
+      query:
+        description: |
+          JSON array [{"field1","value1","operator1"},{"field2","value2","operator2"},...
 ----

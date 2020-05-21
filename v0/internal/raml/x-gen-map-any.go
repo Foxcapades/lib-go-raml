@@ -41,8 +41,6 @@ func (o *AnyMap) Put(key interface{}, value interface{}) raml.AnyMap {
 }
 
 func (o *AnyMap) PutNonNil(key interface{}, value interface{}) raml.AnyMap {
-	logrus.Trace("internal.AnyMap.PutNonNil")
-
 	if !util.IsNil(value) {
 		return o.Put(key, value)
 	}

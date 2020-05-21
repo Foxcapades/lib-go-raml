@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	res, err := simple.GetRequest("https://raw.githubusercontent.com/raml-org/raml-examples/master/others/tutorial-jukebox-api/jukebox-api.raml").
+	res, err := simple.GetRequest("https://raw.githubusercontent.com/raml-org/raml-examples/master/annotations/advanced.raml").
 		Submit().
 		GetRawResponse()
 	check(err)

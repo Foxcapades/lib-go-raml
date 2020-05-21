@@ -27,7 +27,7 @@ func check(err error) {
 ----
 
 .example output
-[source, shell-session]
+[source, sh-session]
 ----
 $ go run v0/cmd/example/main.go
 song: !include jukebox-include-song.schema

@@ -36,6 +36,10 @@ func (d *DataType) Type() string {
 	return d.schema
 }
 
+func (d *DataType) OverrideType(t string) {
+	d.schema = t
+}
+
 func (d *DataType) Kind() rmeta.DataTypeKind {
 	return d.kind
 }

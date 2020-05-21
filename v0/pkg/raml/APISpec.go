@@ -205,5 +205,7 @@ type APISpec interface {
 
 	Resources() UntypedMap
 
+	// WriteRAML writes out the current RAML element as a standalone document to
+	// the given writer.
 	WriteRAML(w io.Writer) error
 }

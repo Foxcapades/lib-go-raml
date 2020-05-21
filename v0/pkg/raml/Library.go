@@ -3,6 +3,7 @@ package raml
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"gopkg.in/yaml.v3"
+	"io"
 )
 
 // Library represents the contents of a Library type RAML fragment.
@@ -104,4 +105,8 @@ type Library interface {
 
 	// UnsetUsage removes the usage property from the current RAML element.
 	UnsetUsage() Library
+
+	// WriteRAML writes out the current RAML element as a standalone document to
+	// the given writer.
+	WriteRAML(w io.Writer) error
 }

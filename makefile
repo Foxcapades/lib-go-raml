@@ -18,5 +18,10 @@ gen-types:
 	@go run v0/tools/gen/type/main.go
 	@gofmt -s -w .
 
+.PHONE: gen-doc
+gen-doc:
+	@go run v0/tools/gen/doc/main.go
+	@gofmt -s -w .
+
 .PHONY: gen-all
-gen-all: gen-maps gen-examples gen-types
+gen-all: gen-doc gen-maps gen-examples gen-types

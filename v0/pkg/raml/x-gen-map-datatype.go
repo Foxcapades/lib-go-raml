@@ -5,7 +5,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// DataTypeMap generated @ 2020-05-21T01:49:31.367162698-04:00
+// DataTypeMap generated @ 2020-05-22T11:24:08.538522822-04:00
 type DataTypeMap interface {
 	Unmarshaler
 	yaml.Marshaler

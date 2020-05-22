@@ -8,7 +8,6 @@ import (
 
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -19,7 +18,7 @@ func NewAnyMap() *AnyMap {
 	}
 }
 
-// AnyMap generated @ 2020-05-21T01:49:31.367162698-04:00
+// AnyMap generated @ 2020-05-22T11:24:08.538522822-04:00
 type AnyMap struct {
 	slice []mapPair
 	index map[interface{}]*interface{}
@@ -34,13 +33,14 @@ func (o *AnyMap) Empty() bool {
 }
 
 func (o *AnyMap) Put(key interface{}, value interface{}) raml.AnyMap {
-	o.Delete(key)
 	o.index[key] = &value
 	o.slice = append(o.slice, mapPair{key: key, val: value})
 	return o
 }
 
 func (o *AnyMap) PutNonNil(key interface{}, value interface{}) raml.AnyMap {
+	logrus.Trace("internal.AnyMap.PutNonNil")
+
 	if !util.IsNil(value) {
 		return o.Put(key, value)
 	}
@@ -158,7 +158,8 @@ func (o AnyMap) MarshalYAML() (interface{}, error) {
 			if s, err := v.MarshalRAML(tmp); err != nil {
 				return nil, err
 			} else if s {
-				val = tmp.Get(rmeta.KeyType).Get()
+				_, t2 := tmp.At(0)
+				val = t2.Get()
 			} else {
 				val = tmp
 			}

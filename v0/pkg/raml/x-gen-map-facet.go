@@ -5,7 +5,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// FacetMap generated @ 2020-05-21T01:49:31.367162698-04:00
+// FacetMap generated @ 2020-05-22T11:24:08.538522822-04:00
 type FacetMap interface {
 	Unmarshaler
 	yaml.Marshaler

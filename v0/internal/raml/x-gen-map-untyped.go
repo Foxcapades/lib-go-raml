@@ -8,7 +8,6 @@ import (
 
 	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
 	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -19,7 +18,7 @@ func NewUntypedMap() *UntypedMap {
 	}
 }
 
-// UntypedMap generated @ 2020-05-21T01:49:31.367162698-04:00
+// UntypedMap generated @ 2020-05-22T11:24:08.538522822-04:00
 type UntypedMap struct {
 	slice []mapPair
 	index map[string]*interface{}
@@ -159,7 +158,8 @@ func (o UntypedMap) MarshalYAML() (interface{}, error) {
 			if s, err := v.MarshalRAML(tmp); err != nil {
 				return nil, err
 			} else if s {
-				val = tmp.Get(rmeta.KeyType).Get()
+				_, t2 := tmp.At(0)
+				val = t2.Get()
 			} else {
 				val = tmp
 			}

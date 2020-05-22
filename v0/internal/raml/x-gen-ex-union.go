@@ -12,11 +12,12 @@ import (
 // NewUnionExample returns a new internal implementation of the
 // raml.UnionExample interface.
 //
-// Generated @ 2020-05-21T14:55:18.086428872-04:00
+// Generated @ 2020-05-21T22:19:27.027107376-04:00
 func NewUnionExample() *UnionExample {
 	return &UnionExample{
 		annotations: NewAnnotationMap(),
 		extra:       NewAnyMap(),
+		strict:      rmeta.ExampleDefaultStrict,
 	}
 }
 

@@ -19,6 +19,7 @@ func New{{.Name}}Example() *{{.Name}}Example {
 	return &{{.Name}}Example{
 		annotations: NewAnnotationMap(),
 		extra:       NewAnyMap(),
+		strict:      rmeta.ExampleDefaultStrict,
 	}
 }
 

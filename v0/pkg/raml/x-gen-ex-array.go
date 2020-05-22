@@ -3,7 +3,7 @@ package raml
 // ArrayExample defines a single example attached to a DataType
 // or Property definition.
 //
-// Generated @ 2020-05-21T14:55:18.086428872-04:00
+// Generated @ 2020-05-21T22:19:27.027107376-04:00
 type ArrayExample interface {
 	Example
 

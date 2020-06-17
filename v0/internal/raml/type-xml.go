@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"gopkg.in/yaml.v3"
 )
 
@@ -95,15 +95,15 @@ func (x *XML) UnsetPrefix() raml.XML {
 }
 
 func (x *XML) UnmarshalRAML(v *yaml.Node) error {
-	return xyml.ForEachMap(v, x.assign)
+	return xyml.MapForEach(v, x.assign)
 }
 
 func (x XML) MarshalRAML(out raml.AnyMap) (bool, error) {
-	out.PutNonNil(rmeta.KeyAttribute, x.isAttr).
-		PutNonNil(rmeta.KeyWrapped, x.isWrap).
-		PutNonNil(rmeta.KeyName, x.name).
-		PutNonNil(rmeta.KeyNamespace, x.ns).
-		PutNonNil(rmeta.KeyPrefix, x.pref)
+	out.PutIfNotNil(rmeta.KeyAttribute, x.isAttr).
+		PutIfNotNil(rmeta.KeyWrapped, x.isWrap).
+		PutIfNotNil(rmeta.KeyName, x.name).
+		PutIfNotNil(rmeta.KeyNamespace, x.ns).
+		PutIfNotNil(rmeta.KeyPrefix, x.pref)
 
 	return false, nil
 }
@@ -121,7 +121,7 @@ func (x *XML) assign(key, val *yaml.Node) error {
 	case rmeta.KeyPrefix:
 		return assign.AsStringPtr(val, &x.pref)
 	default:
-		if k, err := xyml.CastYmlTypeToScalar(key); err != nil {
+		if k, err := xyml.ToScalarValue(key); err != nil {
 			return err
 		} else {
 			x.extra[k] = val

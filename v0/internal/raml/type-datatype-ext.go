@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"gopkg.in/yaml.v3"
 )
 
@@ -13,7 +13,7 @@ func NewExtendedDataType(kind rmeta.DataTypeKind, self concreteType) *ExtendedDa
 	return &ExtendedDataType{
 		DataType:       NewDataType(kind, self),
 		hasAnnotations: makeAnnotations(),
-		facets:         NewFacetMap(),
+		facets:         raml.NewFacetMap(0),
 		required:       true,
 	}
 }
@@ -50,8 +50,8 @@ func (e *ExtendedDataType) Required() bool {
 }
 
 func (e *ExtendedDataType) marshal(out raml.AnyMap) error {
-	out.PutNonNil(rmeta.KeyDisplayName, e.displayName).
-		PutNonNil(rmeta.KeyDescription, e.description)
+	out.PutIfNotNil(rmeta.KeyDisplayName, e.displayName).
+		PutIfNotNil(rmeta.KeyDescription, e.description)
 
 	if err := e.DataType.marshal(out); err != nil {
 		return err
@@ -67,7 +67,7 @@ func (e *ExtendedDataType) marshal(out raml.AnyMap) error {
 		out.Put(rmeta.KeyFacets, e.facets)
 	}
 
-	out.PutNonNil(rmeta.KeyXML, e.xml)
+	out.PutIfNotNil(rmeta.KeyXML, e.xml)
 
 	return nil
 }
@@ -79,7 +79,7 @@ func (e *ExtendedDataType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyDescription:
 		return assign.AsStringPtr(val, &e.description)
 	case rmeta.KeyFacets:
-		return e.facets.UnmarshalRAML(val)
+		return UnmarshalFacetMapRAML(e.facets, val)
 	case rmeta.KeyXML:
 		xml := NewXML()
 		if err := xml.UnmarshalRAML(val); err != nil {

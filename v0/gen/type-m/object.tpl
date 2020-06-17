@@ -1,11 +1,11 @@
-{{- /* gotype: github.com/Foxcapades/lib-go-raml-types/v0/tools/gen/type.extTypeProps */ -}}
+{{- /* gotype: github.com/Foxcapades/lib-go-raml/v0/tools/gen/type.extTypeProps */ -}}
 package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -14,7 +14,7 @@ func Foo() {
 	out := &{{ .Name }}Type{}
 
 {{define "object-constructor"}}
-	out.properties = NewPropertyMap()
+	out.properties = raml.NewPropertyMap(3)
 	out.addtlProps = true
 {{end}}
 }
@@ -38,10 +38,10 @@ func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 		out.Put(rmeta.KeyAddtlProps, o.addtlProps)
 	}
 
-	out.PutNonNil(rmeta.KeyMinProperties, o.minProps).
-		PutNonNil(rmeta.KeyMaxProperties, o.maxProps).
-		PutNonNil(rmeta.KeyDiscriminator, o.discrim).
-		PutNonNil(rmeta.KeyDiscriminatorVal, o.discrimVal)
+	out.PutIfNotNil(rmeta.KeyMinProperties, o.minProps).
+		PutIfNotNil(rmeta.KeyMaxProperties, o.maxProps).
+		PutIfNotNil(rmeta.KeyDiscriminator, o.discrim).
+		PutIfNotNil(rmeta.KeyDiscriminatorVal, o.discrimVal)
 
 	if o.properties.Len() > 0 {
 		out.Put(rmeta.KeyProperties, o.properties)
@@ -64,7 +64,7 @@ func (o *{{.Name}}Type) SetProperties(props raml.PropertyMap) raml.{{.Name}}Type
 }
 
 func (o *{{.Name}}Type) UnsetProperties() raml.{{.Name}}Type {
-	o.properties = NewPropertyMap()
+	o.properties = raml.NewPropertyMap(3)
 	return o
 }
 
@@ -138,7 +138,7 @@ func (o {{.Name}}Type) assign(key, val *yaml.Node) (err error) {
 {{define "object-assign"}}
 	switch key.Value {
 	case rmeta.KeyProperties:
-		return o.properties.UnmarshalRAML(val)
+		return UnmarshalPropertyMapRAML(o.properties, val)
 	case rmeta.KeyMinProperties:
 		return assign.AsUintPtr(val, &o.minProps)
 	case rmeta.KeyMaxProperties:

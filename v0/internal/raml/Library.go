@@ -2,24 +2,24 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"gopkg.in/yaml.v3"
 	"io"
 )
 
 func NewLibrary() *Library {
 	return &Library{
-		annotations:     NewAnnotationMap(),
-		annotationTypes: NewUntypedMap(),
-		extra:           NewAnyMap(),
-		uses:            NewStringMap(),
-		resourceTypes:   NewUntypedMap(),
-		securitySchemes: NewUntypedMap(),
-		traits:          NewUntypedMap(),
-		types:           NewDataTypeMap(),
+		annotations:     raml.NewAnnotationMap(0),
+		annotationTypes: raml.NewUntypedMap(0),
+		extra:           raml.NewAnyMap(0),
+		uses:            raml.NewStringMap(1),
+		resourceTypes:   raml.NewUntypedMap(5),
+		securitySchemes: raml.NewUntypedMap(1),
+		traits:          raml.NewUntypedMap(2),
+		types:           raml.NewDataTypeMap(10),
 	}
 }
 
@@ -48,7 +48,7 @@ func (l *Library) SetAnnotations(a raml.AnnotationMap) raml.Library {
 }
 
 func (l *Library) UnsetAnnotations() raml.Library {
-	l.annotations = NewAnnotationMap()
+	l.annotations = raml.NewAnnotationMap(0)
 	return l
 }
 
@@ -73,7 +73,7 @@ func (l *Library) SetUses(uses raml.StringMap) raml.Library {
 }
 
 func (l *Library) UnsetUses() raml.Library {
-	l.uses = NewStringMap()
+	l.uses = raml.NewStringMap(0)
 	return l
 }
 
@@ -90,7 +90,7 @@ func (l *Library) SetResourceTypes(resTypes raml.UntypedMap) raml.Library {
 }
 
 func (l *Library) UnsetResourceTypes() raml.Library {
-	l.resourceTypes = NewUntypedMap()
+	l.resourceTypes = raml.NewUntypedMap(0)
 	return l
 }
 
@@ -111,7 +111,7 @@ func (l *Library) SetTraits(traits raml.UntypedMap) raml.Library {
 }
 
 func (l *Library) UnsetTraits() raml.Library {
-	l.traits = NewUntypedMap()
+	l.traits = raml.NewUntypedMap(0)
 	return l
 }
 
@@ -128,7 +128,7 @@ func (l *Library) SetTypes(types raml.DataTypeMap) raml.Library {
 }
 
 func (l *Library) UnsetTypes() raml.Library {
-	l.types = NewDataTypeMap()
+	l.types = raml.NewDataTypeMap(0)
 	return l
 }
 
@@ -168,37 +168,41 @@ func (l *Library) WriteRAML(w io.Writer) error {
 }
 
 func (l *Library) UnmarshalYAML(root *yaml.Node) error {
-	return xyml.ForEachMap(root, l.assign)
+	return xyml.MapForEach(root, l.assign)
 }
 
 func (l Library) MarshalYAML() (interface{}, error) {
-	out := NewAnyMap().PutNonNil(rmeta.KeyUsage, l.usage)
+	out := raml.NewAnyMap(1)
 
-	if !l.uses.Empty() {
+	if l.usage != nil {
+		out.Put(rmeta.KeyUsage, *l.usage)
+	}
+
+	if l.uses.Len() > 0 {
 		out.Put(rmeta.KeyUses, l.uses)
 	}
 
-	if !l.securitySchemes.Empty() {
+	if l.securitySchemes.Len() > 0 {
 		out.Put(rmeta.KeySecuritySchemes, l.securitySchemes)
 	}
 
-	if !l.traits.Empty() {
+	if l.traits.Len() > 0 {
 		out.Put(rmeta.KeyTraits, l.traits)
 	}
 
-	if !l.annotationTypes.Empty() {
+	if l.annotationTypes.Len() > 0 {
 		out.Put(rmeta.KeyAnnotationTypes, l.annotationTypes)
 	}
 
 	l.annotations.ForEach(func(k string, v raml.Annotation) { out.Put(k, v) })
 
-	if !l.resourceTypes.Empty() {
+	if l.resourceTypes.Len() > 0 {
 		out.Put(rmeta.KeyResourceTypes, l.resourceTypes)
 	}
 
 	l.extra.ForEach(func(k, v interface{}) { out.Put(k, v) })
 
-	if !l.types.Empty() {
+	if l.types.Len() > 0 {
 		out.Put(rmeta.KeyTypes, l.types)
 	}
 
@@ -208,31 +212,31 @@ func (l Library) MarshalYAML() (interface{}, error) {
 func (l *Library) assign(k, v *yaml.Node) error {
 	switch k.Value {
 	case rmeta.KeyAnnotationTypes:
-		return l.annotationTypes.UnmarshalRAML(v)
+		return UnmarshalAnnotationMapRAML(l.annotations, v)
 	case rmeta.KeyResourceTypes:
-		return l.resourceTypes.UnmarshalRAML(v)
+		return UnmarshalUntypedMapRAML(l.resourceTypes, v)
 	case rmeta.KeyTypes, rmeta.KeySchemas:
-		return l.types.UnmarshalRAML(v)
+		return UnmarshalDataTypeMapRAML(l.types, v)
 	case rmeta.KeyTraits:
-		return l.traits.UnmarshalRAML(v)
+		return UnmarshalUntypedMapRAML(l.traits, v)
 	case rmeta.KeyUses:
-		return l.uses.UnmarshalRAML(v)
+		return UnmarshalStringMapRAML(l.uses, v)
 	case rmeta.KeyUsage:
 		return assign.AsStringPtr(v, &l.usage)
 	case rmeta.KeySecuritySchemes:
-		return l.securitySchemes.UnmarshalRAML(v)
+		return UnmarshalUntypedMapRAML(l.securitySchemes, v)
 	}
 
 	if xyml.IsString(k) && k.Value[0] == '(' {
-		tmp := NewUntypedMap()
-		if err := tmp.UnmarshalRAML(v); err != nil {
+		tmp := raml.NewUntypedMap(len(v.Content) / 2)
+		if err := UnmarshalUntypedMapRAML(tmp, v); err != nil {
 			return err
 		}
 		l.annotations.Put(k.Value, tmp)
 		return nil
 	}
 
-	if val, err := xyml.CastYmlTypeToScalar(k); err != nil {
+	if val, err := xyml.ToScalarValue(k); err != nil {
 		return err
 	} else {
 		l.extra.Put(val, v)

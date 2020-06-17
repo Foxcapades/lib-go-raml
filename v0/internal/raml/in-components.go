@@ -1,14 +1,14 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"gopkg.in/yaml.v3"
 )
 
 /******************************************************************************/
 
 func makeAnnotations() hasAnnotations {
-	return hasAnnotations{NewAnnotationMap()}
+	return hasAnnotations{raml.NewAnnotationMap(0)}
 }
 
 type hasAnnotations struct {
@@ -28,9 +28,9 @@ func (h *hasAnnotations) in(k string, v *yaml.Node) (bool, error) {
 		return false, nil
 	}
 
-	tmp := NewUntypedMap()
+	tmp := raml.NewUntypedMap(0)
 
-	if err := tmp.UnmarshalRAML(v); err != nil {
+	if err := UnmarshalUntypedMapRAML(tmp, v); err != nil {
 		return false, err
 	}
 
@@ -43,7 +43,7 @@ func (h *hasAnnotations) in(k string, v *yaml.Node) (bool, error) {
 
 // Deprecated: don't use this
 func makeExtra() hasExtra {
-	return hasExtra{NewAnyMap()}
+	return hasExtra{raml.NewAnyMap(0)}
 }
 
 // Deprecated: don't use this

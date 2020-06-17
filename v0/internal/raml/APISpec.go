@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"gopkg.in/yaml.v3"
 	"io"
 )
@@ -13,16 +13,16 @@ import (
 func NewApiSpec() *APISpec {
 
 	return &APISpec{
-		baseURIParameters: NewUntypedMap(),
-		types:             NewDataTypeMap(),
-		traits:            NewUntypedMap(),
-		resourceTypes:     NewUntypedMap(),
-		annotationTypes:   NewUntypedMap(),
-		annotations:       NewAnnotationMap(),
-		securitySchemes:   NewUntypedMap(),
-		uses:              NewStringMap(),
-		resources:         NewUntypedMap(),
-		extra:             NewAnyMap(),
+		baseURIParameters: raml.NewUntypedMap(0),
+		types:             raml.NewDataTypeMap(5),
+		traits:            raml.NewUntypedMap(2),
+		resourceTypes:     raml.NewUntypedMap(0),
+		annotationTypes:   raml.NewUntypedMap(0),
+		annotations:       raml.NewAnnotationMap(0),
+		securitySchemes:   raml.NewUntypedMap(1),
+		uses:              raml.NewStringMap(0),
+		resources:         raml.NewUntypedMap(10),
+		extra:             raml.NewAnyMap(0),
 	}
 }
 
@@ -157,7 +157,7 @@ func (a *APISpec) SetTypes(t raml.DataTypeMap) raml.APISpec {
 }
 
 func (a *APISpec) UnsetTypes() raml.APISpec {
-	a.types = NewDataTypeMap()
+	a.types = raml.NewDataTypeMap(0)
 	return a
 }
 
@@ -174,7 +174,7 @@ func (a *APISpec) SetSchemas(t raml.DataTypeMap) raml.APISpec {
 }
 
 func (a *APISpec) UnsetSchemas() raml.APISpec {
-	a.types = NewDataTypeMap()
+	a.types = raml.NewDataTypeMap(0)
 	return a
 }
 
@@ -191,7 +191,7 @@ func (a *APISpec) SetTraits(t raml.UntypedMap) raml.APISpec {
 }
 
 func (a *APISpec) UnsetTraits() raml.APISpec {
-	a.traits = NewUntypedMap()
+	a.traits = raml.NewUntypedMap(0)
 	return a
 }
 
@@ -208,7 +208,7 @@ func (a *APISpec) SetResourceTypes(t raml.UntypedMap) raml.APISpec {
 }
 
 func (a *APISpec) UnsetResourceTypes() raml.APISpec {
-	a.resourceTypes = NewUntypedMap()
+	a.resourceTypes = raml.NewUntypedMap(0)
 	return a
 }
 
@@ -225,7 +225,7 @@ func (a *APISpec) SetAnnotationTypes(t raml.UntypedMap) raml.APISpec {
 }
 
 func (a *APISpec) UnsetAnnotationTypes() raml.APISpec {
-	a.annotationTypes = NewUntypedMap()
+	a.annotationTypes = raml.NewUntypedMap(0)
 	return a
 }
 
@@ -242,7 +242,7 @@ func (a *APISpec) SetAnnotations(t raml.AnnotationMap) raml.APISpec {
 }
 
 func (a *APISpec) UnsetAnnotations() raml.APISpec {
-	a.annotations = NewAnnotationMap()
+	a.annotations = raml.NewAnnotationMap(0)
 	return a
 }
 
@@ -259,7 +259,7 @@ func (a *APISpec) SetSecuritySchemes(t raml.UntypedMap) raml.APISpec {
 }
 
 func (a *APISpec) UnsetSecuritySchemes() raml.APISpec {
-	a.securitySchemes = NewUntypedMap()
+	a.securitySchemes = raml.NewUntypedMap(0)
 	return a
 }
 
@@ -290,7 +290,7 @@ func (a *APISpec) SetUses(s raml.StringMap) raml.APISpec {
 }
 
 func (a *APISpec) UnsetUses() raml.APISpec {
-	a.uses = NewStringMap()
+	a.uses = raml.NewStringMap(0)
 	return a
 }
 
@@ -303,37 +303,37 @@ func (a *APISpec) ExtraFacets() raml.AnyMap {
 }
 
 func (a APISpec) MarshalYAML() (interface{}, error) {
-	out := NewAnyMap().
+	out := raml.NewAnyMap(8).
 		Put(rmeta.KeyTitle, a.title).
-		PutNonNil(rmeta.KeyVersion, a.version).
-		PutNonNil(rmeta.KeyBaseURI, a.baseURI).
-		PutNonNil(rmeta.KeyDescription, a.description).
-		PutNonNil(rmeta.KeyProtocols, a.protocols).
-		PutNonNil(rmeta.KeyMediaType, a.mediaType).
-		PutNonNil(rmeta.KeyDocumentation, a.documentation).
-		PutNonNil(rmeta.KeySecuredBy, a.securedBy)
+		PutIfNotNil(rmeta.KeyVersion, a.version).
+		PutIfNotNil(rmeta.KeyBaseURI, a.baseURI).
+		PutIfNotNil(rmeta.KeyDescription, a.description).
+		PutIfNotNil(rmeta.KeyProtocols, a.protocols).
+		PutIfNotNil(rmeta.KeyMediaType, a.mediaType).
+		PutIfNotNil(rmeta.KeyDocumentation, a.documentation).
+		PutIfNotNil(rmeta.KeySecuredBy, a.securedBy)
 
-	if !a.uses.Empty() {
+	if a.uses.Len() > 0 {
 		out.Put(rmeta.KeyUses, a.uses)
 	}
 
-	if !a.securitySchemes.Empty() {
+	if a.securitySchemes.Len() > 0 {
 		out.Put(rmeta.KeySecuritySchemes, a.securitySchemes)
 	}
 
-	if !a.baseURIParameters.Empty() {
+	if a.baseURIParameters.Len() > 0 {
 		out.Put(rmeta.KeyBaseURIParams, a.baseURIParameters)
 	}
 
-	if !a.traits.Empty() {
+	if a.traits.Len() > 0 {
 		out.Put(rmeta.KeyTraits, a.traits)
 	}
 
-	if !a.annotationTypes.Empty() {
+	if a.annotationTypes.Len() > 0 {
 		out.Put(rmeta.KeyAnnotationTypes, a.annotationTypes)
 	}
 
-	if !a.resourceTypes.Empty() {
+	if a.resourceTypes.Len() > 0 {
 		out.Put(rmeta.KeyResourceTypes, a.resourceTypes)
 	}
 
@@ -341,29 +341,36 @@ func (a APISpec) MarshalYAML() (interface{}, error) {
 	a.extra.ForEach(func(k, v interface{}) { out.Put(k, v) })
 	a.resources.ForEach(func(k string, v interface{}) { out.Put(k, v) })
 
-	if !a.types.Empty() {
+	if a.types.Len() > 0 {
 		out.Put(rmeta.KeyTypes, a.types)
 	}
 
-	return out, nil
+	return out.ToYAML()
 }
 
 func (a *APISpec) UnmarshalYAML(raw *yaml.Node) error {
-	return xyml.ForEachMap(raw, a.assign)
+	return xyml.MapForEach(raw, a.assign)
 }
 
 func (a *APISpec) WriteRAML(w io.Writer) error {
-	if _, err := w.Write([]byte(rmeta.HeaderRoot)); err != nil {
+	out := &yaml.Node{
+		Kind: yaml.DocumentNode,
+		HeadComment: "#%RAML 1.0", //rmeta.HeaderRoot,
+	}
+	body, err := a.MarshalYAML()
+	if err != nil {
 		return err
 	}
+
+	out.Content = append(out.Content, body.(*yaml.Node))
 	enc := yaml.NewEncoder(w)
 	enc.SetIndent(2)
-	return enc.Encode(a)
+	return enc.Encode(out)
 }
 
 func (a *APISpec) assign(k, v *yaml.Node) error {
 	if !xyml.IsString(k) {
-		if val, err := xyml.CastYmlTypeToScalar(k); err != nil {
+		if val, err := xyml.ToScalarValue(k); err != nil {
 			return err
 		} else {
 			a.extra.Put(val, v)
@@ -372,8 +379,8 @@ func (a *APISpec) assign(k, v *yaml.Node) error {
 	}
 
 	if k.Value[0] == '(' {
-		tmp := NewUntypedMap()
-		if err := tmp.UnmarshalRAML(v); err != nil {
+		tmp := raml.NewUntypedMap(len(v.Content) / 2)
+		if err := UnmarshalUntypedMapRAML(tmp, v); err != nil {
 			return err
 		}
 		a.annotations.Put(k.Value, tmp)
@@ -403,7 +410,7 @@ func (a *APISpec) assign(k, v *yaml.Node) error {
 			return assign.AsStringList(v, &a.mediaType)
 		}
 	case rmeta.KeyDocumentation:
-		return xyml.ForEachList(v, func(v *yaml.Node) error {
+		return xyml.SequenceForEach(v, func(v *yaml.Node) error {
 			tmp := NewDocumentation()
 			if err := tmp.UnmarshalRAML(v); err != nil {
 				return err
@@ -414,21 +421,21 @@ func (a *APISpec) assign(k, v *yaml.Node) error {
 	case rmeta.KeySecuredBy:
 		return assign.AsStringList(v, &a.securedBy)
 	case rmeta.KeyUses:
-		return a.uses.UnmarshalRAML(v)
+		return UnmarshalStringMapRAML(a.uses, v)
 	case rmeta.KeySecuritySchemes:
-		return a.securitySchemes.UnmarshalRAML(v)
+		return UnmarshalUntypedMapRAML(a.securitySchemes, v)
 	case rmeta.KeyBaseURIParams:
 		return assign.ToUntypedMap(v, a.baseURIParameters)
 	case rmeta.KeyTraits:
-		return a.traits.UnmarshalRAML(v)
+		return UnmarshalUntypedMapRAML(a.traits, v)
 	case rmeta.KeyAnnotationTypes:
-		return a.annotationTypes.UnmarshalRAML(v)
+		return UnmarshalUntypedMapRAML(a.annotationTypes, v)
 	case rmeta.KeyResourceTypes:
-		return a.resourceTypes.UnmarshalRAML(v)
+		return UnmarshalUntypedMapRAML(a.resourceTypes, v)
 	case rmeta.KeyTypes, rmeta.KeySchemas:
-		return a.types.UnmarshalRAML(v)
+		return UnmarshalDataTypeMapRAML(a.types, v)
 	default:
-		if key, err := xyml.CastYmlTypeToScalar(k); err != nil {
+		if key, err := xyml.ToScalarValue(k); err != nil {
 			return err
 		} else {
 			a.extra.Put(key, v)

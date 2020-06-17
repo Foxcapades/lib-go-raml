@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -13,10 +13,10 @@ import (
 // NewDatetimeType returns a new internal implementation
 // of the raml.DatetimeType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 func NewDatetimeType() *DatetimeType {
 	out := &DatetimeType{
-		examples: NewDatetimeExampleMap(),
+		examples: raml.NewDatetimeExampleMap(0),
 	}
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeDatetime, out)
@@ -27,7 +27,7 @@ func NewDatetimeType() *DatetimeType {
 // DatetimeType is a default generated implementation of
 // the raml.DatetimeType interface
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 type DatetimeType struct {
 	*ExtendedDataType
 
@@ -85,7 +85,7 @@ func (o *DatetimeType) SetExamples(examples raml.DatetimeExampleMap) raml.Dateti
 }
 
 func (o *DatetimeType) UnsetExamples() raml.DatetimeType {
-	o.examples = NewDatetimeExampleMap()
+	o.examples = raml.NewDatetimeExampleMap(0)
 	return o
 }
 
@@ -119,7 +119,7 @@ func (o *DatetimeType) SetAnnotations(annotations raml.AnnotationMap) raml.Datet
 }
 
 func (o *DatetimeType) UnsetAnnotations() raml.DatetimeType {
-	o.hasAnnotations.mp = NewAnnotationMap()
+	o.hasAnnotations.mp = raml.NewAnnotationMap(0)
 	return o
 }
 
@@ -133,7 +133,7 @@ func (o *DatetimeType) SetFacetDefinitions(facets raml.FacetMap) raml.DatetimeTy
 }
 
 func (o *DatetimeType) UnsetFacetDefinitions() raml.DatetimeType {
-	o.facets = NewFacetMap()
+	o.facets = raml.NewFacetMap(0)
 	return o
 }
 
@@ -171,7 +171,7 @@ func (o *DatetimeType) SetExtraFacets(facets raml.AnyMap) raml.DatetimeType {
 }
 
 func (o *DatetimeType) UnsetExtraFacets() raml.DatetimeType {
-	o.hasExtra.mp = NewAnyMap()
+	o.hasExtra.mp = raml.NewAnyMap(0)
 	return o
 }
 
@@ -196,17 +196,17 @@ func (o *DatetimeType) UnsetFormat() raml.DatetimeType {
 
 func (o *DatetimeType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.DatetimeType.marshal")
-	out.PutNonNil(rmeta.KeyDefault, o.def)
+	out.PutIfNotNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	out.PutNonNil(rmeta.KeyFormat, o.format)
-	out.PutNonNil(rmeta.KeyEnum, o.enum).
-		PutNonNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyFormat, o.format)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
+		PutIfNotNil(rmeta.KeyExample, o.example)
 
 	if o.examples.Len() > 0 {
-		out.PutNonNil(rmeta.KeyExamples, o.examples)
+		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
 	return nil
@@ -225,10 +225,11 @@ func (o *DatetimeType) assign(key, val *yaml.Node) error {
 
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val)
+		return UnmarshalDatetimeExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
-		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			if val, err := xyml.ToString(cur); err != nil {
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)

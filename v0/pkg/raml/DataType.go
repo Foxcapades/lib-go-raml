@@ -1,7 +1,7 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 )
 
 type DataType interface {

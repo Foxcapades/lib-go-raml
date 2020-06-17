@@ -2,10 +2,10 @@ package raml
 
 import (
 	"fmt"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"gopkg.in/yaml.v3"
 	"strings"
 )
@@ -14,9 +14,9 @@ const (
 	multiTypeNotAllowed = "multi-type definitions are not currently supported " +
 		"%d:%d"
 	fullTypeKeyBadValue = "the type key in an expanded definition must be an " +
-		"array or a string. got %s at %d:%d"
-	badTypeDefType = "a type definition should be empty, a string, an array, or" +
-		" a map.  instead got %s at %d:%d"
+		"array, a string, or an import. got %s at %d:%d"
+	badTypeDefType = "a type definition should be empty, a string, an array, an" +
+		"include, or a map.  instead got %s at %d:%d"
 )
 
 // TypeSortingHat takes the given YAML node and attempts to parse it into a
@@ -28,7 +28,7 @@ func TypeSortingHat(val *yaml.Node) (out raml.DataType, err error) {
 		return typeToKind(val.Value), nil
 	}
 
-	if xyml.IsList(val) {
+	if xyml.IsSequence(val) {
 		return nil, fmt.Errorf(multiTypeNotAllowed, val.Line, val.Column)
 	}
 
@@ -134,10 +134,12 @@ func siftType(val *yaml.Node) (concreteType, error) {
 
 	if schema > -1 {
 		tmp := val.Content[schema]
-		if tmp.Tag == xyml.String {
+		if tmp.Tag == xyml.TagString {
 			return typeToKind(tmp.Value), nil
 		} else if tmp.Kind == yaml.SequenceNode {
 			return nil, fmt.Errorf(multiTypeNotAllowed, tmp.Line, tmp.Column)
+		} else if tmp.Tag == "!include" {
+			return NewIncludeType(), nil
 		} else {
 			return nil, fmt.Errorf(fullTypeKeyBadValue, tmp.Tag, tmp.Line, tmp.Column)
 		}

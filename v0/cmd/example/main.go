@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/Foxcapades/Go-ChainRequest/simple"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rparse"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rparse"
 	"os"
 )
 

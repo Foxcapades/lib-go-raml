@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -13,10 +13,10 @@ import (
 // NewStringType returns a new internal implementation
 // of the raml.StringType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 func NewStringType() *StringType {
 	out := &StringType{
-		examples: NewStringExampleMap(),
+		examples: raml.NewStringExampleMap(0),
 	}
 
 	out.minLength = rmeta.StringDefaultMinLength
@@ -29,7 +29,7 @@ func NewStringType() *StringType {
 // StringType is a default generated implementation of
 // the raml.StringType interface
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 type StringType struct {
 	*ExtendedDataType
 
@@ -89,7 +89,7 @@ func (o *StringType) SetExamples(examples raml.StringExampleMap) raml.StringType
 }
 
 func (o *StringType) UnsetExamples() raml.StringType {
-	o.examples = NewStringExampleMap()
+	o.examples = raml.NewStringExampleMap(0)
 	return o
 }
 
@@ -123,7 +123,7 @@ func (o *StringType) SetAnnotations(annotations raml.AnnotationMap) raml.StringT
 }
 
 func (o *StringType) UnsetAnnotations() raml.StringType {
-	o.hasAnnotations.mp = NewAnnotationMap()
+	o.hasAnnotations.mp = raml.NewAnnotationMap(0)
 	return o
 }
 
@@ -137,7 +137,7 @@ func (o *StringType) SetFacetDefinitions(facets raml.FacetMap) raml.StringType {
 }
 
 func (o *StringType) UnsetFacetDefinitions() raml.StringType {
-	o.facets = NewFacetMap()
+	o.facets = raml.NewFacetMap(0)
 	return o
 }
 
@@ -175,7 +175,7 @@ func (o *StringType) SetExtraFacets(facets raml.AnyMap) raml.StringType {
 }
 
 func (o *StringType) UnsetExtraFacets() raml.StringType {
-	o.hasExtra.mp = NewAnyMap()
+	o.hasExtra.mp = raml.NewAnyMap(0)
 	return o
 }
 
@@ -223,21 +223,21 @@ func (o *StringType) UnsetMaxLength() raml.StringType {
 
 func (o *StringType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.StringType.marshal")
-	out.PutNonNil(rmeta.KeyDefault, o.def)
+	out.PutIfNotNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	out.PutNonNil(rmeta.KeyPattern, o.pattern)
+	out.PutIfNotNil(rmeta.KeyPattern, o.pattern)
 	if o.minLength > 0 {
 		out.Put(rmeta.KeyMinLength, o.minLength)
 	}
-	out.PutNonNil(rmeta.KeyMaxLength, o.maxLength)
-	out.PutNonNil(rmeta.KeyEnum, o.enum).
-		PutNonNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyMaxLength, o.maxLength)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
+		PutIfNotNil(rmeta.KeyExample, o.example)
 
 	if o.examples.Len() > 0 {
-		out.PutNonNil(rmeta.KeyExamples, o.examples)
+		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
 	return nil
@@ -256,10 +256,11 @@ func (o *StringType) assign(key, val *yaml.Node) error {
 
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val)
+		return UnmarshalStringExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
-		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			if val, err := xyml.ToString(cur); err != nil {
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)

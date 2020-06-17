@@ -1,0 +1,49 @@
+package: raml
+dir: v0/pkg/raml
+repo: github.com/Foxcapades/lib-go-raml
+
+maps:
+  - key: string
+    values:
+      - type: Annotation
+        name: AnnotationMap
+      - type: DataType
+        name: DataTypeMap
+      - type: ArrayExample
+        name: ArrayExampleMap
+      - type: BoolExample
+        name: BoolExampleMap
+      - type: CustomExample
+        name: CustomExampleMap
+      - type: DateOnlyExample
+        name: DateOnlyExampleMap
+      - type: DatetimeExample
+        name: DatetimeExampleMap
+      - type: DatetimeOnlyExample
+        name: DatetimeOnlyExampleMap
+      - type: FileExample
+        name: FileExampleMap
+      - type: IntegerExample
+        name: IntegerExampleMap
+      - type: NumberExample
+        name: NumberExampleMap
+      - type: ObjectExample
+        name: ObjectExampleMap
+      - type: StringExample
+        name: StringExampleMap
+      - type: TimeOnlyExample
+        name: TimeOnlyExampleMap
+      - type: UnionExample
+        name: UnionExampleMap
+      - type: Facet
+        name: FacetMap
+      - type: string
+        name: StringMap
+      - type: Property
+        name: PropertyMap
+      - type: interface{}
+        name: UntypedMap
+  - key: interface{}
+    values:
+      - type: interface{}
+        name: AnyMap

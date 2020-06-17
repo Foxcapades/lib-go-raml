@@ -1,9 +1,9 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 )
 
 func NewAnnotation() raml.Annotation {
-	return raml.Annotation(NewUntypedMap())
+	return raml.Annotation(raml.NewUntypedMap(1))
 }

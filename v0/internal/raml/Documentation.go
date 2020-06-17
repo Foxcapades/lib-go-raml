@@ -1,14 +1,14 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"gopkg.in/yaml.v3"
 )
 
 func NewDocumentation() *Documentation {
-	return &Documentation{extra: NewAnyMap()}
+	return &Documentation{extra: raml.NewAnyMap(0)}
 }
 
 type Documentation struct {
@@ -47,14 +47,14 @@ func (d *Documentation) MarshalRAML(out raml.AnyMap) (simple bool, err error) {
 }
 
 func (d *Documentation) UnmarshalRAML(val *yaml.Node) error {
-	return xyml.ForEachMap(val, func(k, v *yaml.Node) error {
+	return xyml.MapForEach(val, func(k, v *yaml.Node) error {
 		switch k.Value {
 		case rmeta.KeyTitle:
 			d.title = v.Value
 		case rmeta.KeyContent:
 			d.content = v.Value
 		default:
-			if key, err := xyml.CastYmlTypeToScalar(k); err != nil {
+			if key, err := xyml.ToScalarValue(k); err != nil {
 				return err
 			} else {
 				d.extra.Put(key, v)

@@ -1,11 +1,11 @@
-{{- /*gotype: github.com/Foxcapades/lib-go-raml-types/v0/tools/gen./type.extTypeProps*/ -}}
+{{- /*gotype: github.com/Foxcapades/lib-go-raml/v0/tools/gen./type.extTypeProps*/ -}}
 package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 	"gopkg.in/yaml.v3"
 )
 
@@ -88,7 +88,7 @@ func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 		out.Put(rmeta.KeyMaxItems, o.maxItems)
 	}
 
-	out.PutNonNil(rmeta.KeyItems, o.items)
+	out.PutIfNotNil(rmeta.KeyItems, o.items)
 {{end}}
 }
 

@@ -25,3 +25,6 @@ gen-doc:
 
 .PHONY: gen-all
 gen-all: gen-doc gen-maps gen-examples gen-types
+
+install-dev:
+	@which gomp-gen > /dev/null || go get -u github.com/Foxcapades/gomp/v1/cmd/gomp-gen

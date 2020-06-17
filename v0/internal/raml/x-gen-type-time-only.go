@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -13,10 +13,10 @@ import (
 // NewTimeOnlyType returns a new internal implementation
 // of the raml.TimeOnlyType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 func NewTimeOnlyType() *TimeOnlyType {
 	out := &TimeOnlyType{
-		examples: NewTimeOnlyExampleMap(),
+		examples: raml.NewTimeOnlyExampleMap(0),
 	}
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeTimeOnly, out)
@@ -27,7 +27,7 @@ func NewTimeOnlyType() *TimeOnlyType {
 // TimeOnlyType is a default generated implementation of
 // the raml.TimeOnlyType interface
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 type TimeOnlyType struct {
 	*ExtendedDataType
 
@@ -84,7 +84,7 @@ func (o *TimeOnlyType) SetExamples(examples raml.TimeOnlyExampleMap) raml.TimeOn
 }
 
 func (o *TimeOnlyType) UnsetExamples() raml.TimeOnlyType {
-	o.examples = NewTimeOnlyExampleMap()
+	o.examples = raml.NewTimeOnlyExampleMap(0)
 	return o
 }
 
@@ -118,7 +118,7 @@ func (o *TimeOnlyType) SetAnnotations(annotations raml.AnnotationMap) raml.TimeO
 }
 
 func (o *TimeOnlyType) UnsetAnnotations() raml.TimeOnlyType {
-	o.hasAnnotations.mp = NewAnnotationMap()
+	o.hasAnnotations.mp = raml.NewAnnotationMap(0)
 	return o
 }
 
@@ -132,7 +132,7 @@ func (o *TimeOnlyType) SetFacetDefinitions(facets raml.FacetMap) raml.TimeOnlyTy
 }
 
 func (o *TimeOnlyType) UnsetFacetDefinitions() raml.TimeOnlyType {
-	o.facets = NewFacetMap()
+	o.facets = raml.NewFacetMap(0)
 	return o
 }
 
@@ -170,7 +170,7 @@ func (o *TimeOnlyType) SetExtraFacets(facets raml.AnyMap) raml.TimeOnlyType {
 }
 
 func (o *TimeOnlyType) UnsetExtraFacets() raml.TimeOnlyType {
-	o.hasExtra.mp = NewAnyMap()
+	o.hasExtra.mp = raml.NewAnyMap(0)
 	return o
 }
 
@@ -181,17 +181,17 @@ func (o *TimeOnlyType) SetRequired(b bool) raml.TimeOnlyType {
 
 func (o *TimeOnlyType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.TimeOnlyType.marshal")
-	out.PutNonNil(rmeta.KeyDefault, o.def)
+	out.PutIfNotNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
 
-	out.PutNonNil(rmeta.KeyEnum, o.enum).
-		PutNonNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
+		PutIfNotNil(rmeta.KeyExample, o.example)
 
 	if o.examples.Len() > 0 {
-		out.PutNonNil(rmeta.KeyExamples, o.examples)
+		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
 	return nil
@@ -210,10 +210,11 @@ func (o *TimeOnlyType) assign(key, val *yaml.Node) error {
 
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val)
+		return UnmarshalTimeOnlyExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
-		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			if val, err := xyml.ToString(cur); err != nil {
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)

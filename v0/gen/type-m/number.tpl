@@ -1,11 +1,11 @@
-{{- /* gotype: github.com/Foxcapades/lib-go-raml-types/v0/tools/gen/type.extTypeProps */ -}}
+{{- /* gotype: github.com/Foxcapades/lib-go-raml/v0/tools/gen/type.extTypeProps */ -}}
 package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 )
 
 func Foo() {
@@ -27,10 +27,10 @@ type Bar struct {
 
 func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 	{{define "number-marshal" -}}
-	out.PutNonNil(rmeta.KeyFormat, o.format).
-		PutNonNil(rmeta.KeyMinimum, o.minimum).
-		PutNonNil(rmeta.KeyMaximum, o.maximum).
-		PutNonNil(rmeta.KeyMultipleOf, o.multipleOf)
+	out.PutIfNotNil(rmeta.KeyFormat, o.format).
+		PutIfNotNil(rmeta.KeyMinimum, o.minimum).
+		PutIfNotNil(rmeta.KeyMaximum, o.maximum).
+		PutIfNotNil(rmeta.KeyMultipleOf, o.multipleOf)
 	{{- end}}
 }
 

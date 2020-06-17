@@ -1,14 +1,14 @@
-{{- /* gotype: github.com/Foxcapades/lib-go-raml-types/v0/tools/gen/type.extTypeProps */ -}}
+{{- /* gotype: github.com/Foxcapades/lib-go-raml/v0/tools/gen/type.extTypeProps */ -}}
 package raml
 
 {{define "base" -}}
 import (
 	{{if eq .Name "Include" -}}
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"gopkg.in/yaml.v3"
 
 {{- end}}
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 )
 
 // New{{.Name}}Type returns a new internal implementation of

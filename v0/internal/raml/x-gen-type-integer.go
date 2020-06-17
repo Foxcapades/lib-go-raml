@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -13,10 +13,10 @@ import (
 // NewIntegerType returns a new internal implementation
 // of the raml.IntegerType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 func NewIntegerType() *IntegerType {
 	out := &IntegerType{
-		examples: NewIntegerExampleMap(),
+		examples: raml.NewIntegerExampleMap(0),
 	}
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeInteger, out)
@@ -27,7 +27,7 @@ func NewIntegerType() *IntegerType {
 // IntegerType is a default generated implementation of
 // the raml.IntegerType interface
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 type IntegerType struct {
 	*ExtendedDataType
 
@@ -88,7 +88,7 @@ func (o *IntegerType) SetExamples(examples raml.IntegerExampleMap) raml.IntegerT
 }
 
 func (o *IntegerType) UnsetExamples() raml.IntegerType {
-	o.examples = NewIntegerExampleMap()
+	o.examples = raml.NewIntegerExampleMap(0)
 	return o
 }
 
@@ -122,7 +122,7 @@ func (o *IntegerType) SetAnnotations(annotations raml.AnnotationMap) raml.Intege
 }
 
 func (o *IntegerType) UnsetAnnotations() raml.IntegerType {
-	o.hasAnnotations.mp = NewAnnotationMap()
+	o.hasAnnotations.mp = raml.NewAnnotationMap(0)
 	return o
 }
 
@@ -136,7 +136,7 @@ func (o *IntegerType) SetFacetDefinitions(facets raml.FacetMap) raml.IntegerType
 }
 
 func (o *IntegerType) UnsetFacetDefinitions() raml.IntegerType {
-	o.facets = NewFacetMap()
+	o.facets = raml.NewFacetMap(0)
 	return o
 }
 
@@ -174,7 +174,7 @@ func (o *IntegerType) SetExtraFacets(facets raml.AnyMap) raml.IntegerType {
 }
 
 func (o *IntegerType) UnsetExtraFacets() raml.IntegerType {
-	o.hasExtra.mp = NewAnyMap()
+	o.hasExtra.mp = raml.NewAnyMap(0)
 	return o
 }
 
@@ -241,20 +241,20 @@ func (o *IntegerType) UnsetMultipleOf() raml.IntegerType {
 
 func (o *IntegerType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.IntegerType.marshal")
-	out.PutNonNil(rmeta.KeyDefault, o.def)
+	out.PutIfNotNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	out.PutNonNil(rmeta.KeyFormat, o.format).
-		PutNonNil(rmeta.KeyMinimum, o.minimum).
-		PutNonNil(rmeta.KeyMaximum, o.maximum).
-		PutNonNil(rmeta.KeyMultipleOf, o.multipleOf)
-	out.PutNonNil(rmeta.KeyEnum, o.enum).
-		PutNonNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyFormat, o.format).
+		PutIfNotNil(rmeta.KeyMinimum, o.minimum).
+		PutIfNotNil(rmeta.KeyMaximum, o.maximum).
+		PutIfNotNil(rmeta.KeyMultipleOf, o.multipleOf)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
+		PutIfNotNil(rmeta.KeyExample, o.example)
 
 	if o.examples.Len() > 0 {
-		out.PutNonNil(rmeta.KeyExamples, o.examples)
+		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
 	return nil
@@ -273,10 +273,11 @@ func (o *IntegerType) assign(key, val *yaml.Node) error {
 
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val)
+		return UnmarshalIntegerExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
-		return xyml.ForEachList(val, func(cur *yaml.Node) error {
-			if val, err := xyml.ToInt64(cur); err != nil {
+		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
+			if val, err := xyml.ToInt(cur, 10); err != nil {
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)

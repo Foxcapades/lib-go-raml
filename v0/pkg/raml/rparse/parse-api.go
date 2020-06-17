@@ -1,11 +1,11 @@
 package rparse
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"gopkg.in/yaml.v3"
 	"io"
 
-	impl "github.com/Foxcapades/lib-go-raml-types/v0/internal/raml"
+	impl "github.com/Foxcapades/lib-go-raml/v0/internal/raml"
 )
 
 func ParseApiDoc(red io.Reader) (raml.APISpec, error) {

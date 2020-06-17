@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -13,10 +13,10 @@ import (
 // NewBoolType returns a new internal implementation
 // of the raml.BoolType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 func NewBoolType() *BoolType {
 	out := &BoolType{
-		examples: NewBoolExampleMap(),
+		examples: raml.NewBoolExampleMap(0),
 	}
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeBool, out)
@@ -27,7 +27,7 @@ func NewBoolType() *BoolType {
 // BoolType is a default generated implementation of
 // the raml.BoolType interface
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 type BoolType struct {
 	*ExtendedDataType
 
@@ -84,7 +84,7 @@ func (o *BoolType) SetExamples(examples raml.BoolExampleMap) raml.BoolType {
 }
 
 func (o *BoolType) UnsetExamples() raml.BoolType {
-	o.examples = NewBoolExampleMap()
+	o.examples = raml.NewBoolExampleMap(0)
 	return o
 }
 
@@ -118,7 +118,7 @@ func (o *BoolType) SetAnnotations(annotations raml.AnnotationMap) raml.BoolType 
 }
 
 func (o *BoolType) UnsetAnnotations() raml.BoolType {
-	o.hasAnnotations.mp = NewAnnotationMap()
+	o.hasAnnotations.mp = raml.NewAnnotationMap(0)
 	return o
 }
 
@@ -132,7 +132,7 @@ func (o *BoolType) SetFacetDefinitions(facets raml.FacetMap) raml.BoolType {
 }
 
 func (o *BoolType) UnsetFacetDefinitions() raml.BoolType {
-	o.facets = NewFacetMap()
+	o.facets = raml.NewFacetMap(0)
 	return o
 }
 
@@ -170,7 +170,7 @@ func (o *BoolType) SetExtraFacets(facets raml.AnyMap) raml.BoolType {
 }
 
 func (o *BoolType) UnsetExtraFacets() raml.BoolType {
-	o.hasExtra.mp = NewAnyMap()
+	o.hasExtra.mp = raml.NewAnyMap(0)
 	return o
 }
 
@@ -181,17 +181,17 @@ func (o *BoolType) SetRequired(b bool) raml.BoolType {
 
 func (o *BoolType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.BoolType.marshal")
-	out.PutNonNil(rmeta.KeyDefault, o.def)
+	out.PutIfNotNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
 
-	out.PutNonNil(rmeta.KeyEnum, o.enum).
-		PutNonNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
+		PutIfNotNil(rmeta.KeyExample, o.example)
 
 	if o.examples.Len() > 0 {
-		out.PutNonNil(rmeta.KeyExamples, o.examples)
+		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
 	return nil
@@ -210,10 +210,11 @@ func (o *BoolType) assign(key, val *yaml.Node) error {
 
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val)
+		return UnmarshalBoolExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
-		return xyml.ForEachList(val, func(cur *yaml.Node) error {
-			if val, err := xyml.ToBool(cur); err != nil {
+		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
+			if val, err := xyml.ToBoolean(cur); err != nil {
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)

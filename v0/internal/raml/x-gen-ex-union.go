@@ -2,21 +2,21 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"gopkg.in/yaml.v3"
 )
 
 // NewUnionExample returns a new internal implementation of the
 // raml.UnionExample interface.
 //
-// Generated @ 2020-05-21T22:19:27.027107376-04:00
+// Generated @ 2020-05-25T18:15:33.802521588-04:00
 func NewUnionExample() *UnionExample {
 	return &UnionExample{
-		annotations: NewAnnotationMap(),
-		extra:       NewAnyMap(),
+		annotations: raml.NewAnnotationMap(0),
+		extra:       raml.NewAnyMap(0),
 		strict:      rmeta.ExampleDefaultStrict,
 	}
 }
@@ -73,7 +73,7 @@ func (e *UnionExample) SetAnnotations(ann raml.AnnotationMap) raml.UnionExample 
 }
 
 func (e *UnionExample) UnsetAnnotations() raml.UnionExample {
-	e.annotations = NewAnnotationMap()
+	e.annotations = raml.NewAnnotationMap(0)
 	return e
 }
 
@@ -107,7 +107,7 @@ func (e *UnionExample) ExtraFacets() raml.AnyMap {
 func (e *UnionExample) UnmarshalRAML(value *yaml.Node) error {
 
 	if xyml.IsMap(value) {
-		return xyml.ForEachMap(value, e.assign)
+		return xyml.MapForEach(value, e.assign)
 	}
 
 	return e.assignVal(value)
@@ -115,9 +115,9 @@ func (e *UnionExample) UnmarshalRAML(value *yaml.Node) error {
 
 func (e *UnionExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	if e.expand() {
-		out.PutNonNil(rmeta.KeyDisplayName, e.displayName).
-			PutNonNil(rmeta.KeyDescription, e.description).
-			PutNonNil(rmeta.KeyValue, e.value)
+		out.PutIfNotNil(rmeta.KeyDisplayName, e.displayName).
+			PutIfNotNil(rmeta.KeyDescription, e.description).
+			PutIfNotNil(rmeta.KeyValue, e.value)
 
 		if e.strict != rmeta.ExampleDefaultStrict {
 			out.Put(rmeta.KeyStrict, e.strict)
@@ -135,7 +135,7 @@ func (e *UnionExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 
 func (e *UnionExample) assign(key, val *yaml.Node) error {
 	if !xyml.IsString(key) {
-		if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
+		if ver, err := xyml.ToScalarValue(key); err != nil {
 			return err
 		} else {
 			e.extra.Put(ver, val)
@@ -145,7 +145,7 @@ func (e *UnionExample) assign(key, val *yaml.Node) error {
 
 	if key.Value[0] == '(' {
 		tmp := NewAnnotation()
-		if err := tmp.UnmarshalRAML(val); err != nil {
+		if err := UnmarshalUntypedMapRAML(tmp, val); err != nil {
 			return err
 		}
 		e.annotations.Put(key.Value, tmp)
@@ -163,7 +163,7 @@ func (e *UnionExample) assign(key, val *yaml.Node) error {
 		return e.assignVal(val)
 	}
 
-	if ver, err := xyml.CastYmlTypeToScalar(key); err != nil {
+	if ver, err := xyml.ToScalarValue(key); err != nil {
 		return err
 	} else {
 		e.extra.Put(ver, val)

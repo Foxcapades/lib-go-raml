@@ -1,14 +1,14 @@
-{{- /* gotype: github.com/Foxcapades/lib-go-raml-types/v0/tools/gen/type.extTypeProps */ -}}
+{{- /* gotype: github.com/Foxcapades/lib-go-raml/v0/tools/gen/type.extTypeProps */ -}}
 package raml
 {{ define "extended" }}
 import (
 {{if not (eq .Name "Array") -}}
 	"github.com/Foxcapades/goop/v1/pkg/option"
 {{- end}}
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -19,7 +19,7 @@ import (
 // Generated @ {{ .Time }}
 func New{{ .Name }}Type() *{{ .Name }}Type {
 	out := &{{.Name}}Type{
-		examples: New{{.Name}}ExampleMap(),
+		examples: raml.New{{.Name}}ExampleMap(0),
 	}
 	{{if eq .Name "Object" -}}
 		{{template "object-constructor" $}}
@@ -120,7 +120,7 @@ func (o *{{.Name}}Type) SetExamples(examples raml.{{.Name}}ExampleMap) raml.{{.N
 }
 
 func (o *{{.Name}}Type) UnsetExamples() raml.{{.Name}}Type {
-	o.examples = New{{.Name}}ExampleMap()
+	o.examples = raml.New{{.Name}}ExampleMap(0)
 	return o
 }
 
@@ -154,7 +154,7 @@ func (o *{{.Name}}Type) SetAnnotations(annotations raml.AnnotationMap) raml.{{.N
 }
 
 func (o *{{.Name}}Type) UnsetAnnotations() raml.{{.Name}}Type {
-	o.hasAnnotations.mp = NewAnnotationMap()
+	o.hasAnnotations.mp = raml.NewAnnotationMap(0)
 	return o
 }
 
@@ -168,7 +168,7 @@ func (o *{{.Name}}Type) SetFacetDefinitions(facets raml.FacetMap) raml.{{.Name}}
 }
 
 func (o *{{.Name}}Type) UnsetFacetDefinitions() raml.{{.Name}}Type {
-	o.facets = NewFacetMap()
+	o.facets = raml.NewFacetMap(0)
 	return o
 }
 
@@ -206,7 +206,7 @@ func (o *{{.Name}}Type) SetExtraFacets(facets raml.AnyMap) raml.{{.Name}}Type {
 }
 
 func (o *{{.Name}}Type) UnsetExtraFacets() raml.{{.Name}}Type {
-	o.hasExtra.mp = NewAnyMap()
+	o.hasExtra.mp = raml.NewAnyMap(0)
 	return o
 }
 
@@ -233,7 +233,7 @@ func (o *{{.Name}}Type) SetRequired(b bool) raml.{{.Name}}Type {
 
 func (o *{{.Name}}Type) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.{{.Name}}Type.marshal")
-	out.PutNonNil(rmeta.KeyDefault, o.def)
+	out.PutIfNotNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
@@ -253,11 +253,11 @@ func (o *{{.Name}}Type) marshal(out raml.AnyMap) error {
 	{{- else if eq .Name "Datetime" -}}
 	{{template "datetime-marshal" $}}
 	{{- end}}
-	out.PutNonNil(rmeta.KeyEnum, o.enum).
-		PutNonNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
+		PutIfNotNil(rmeta.KeyExample, o.example)
 
 	if o.examples.Len() > 0 {
-		out.PutNonNil(rmeta.KeyExamples, o.examples)
+		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
 	return nil
@@ -276,16 +276,24 @@ func (o *{{.Name}}Type) assign(key, val *yaml.Node) error {
 
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val)
+		return Unmarshal{{.Name}}ExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
-		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			{{if eq .DefTypeName "Bool" "Float64" "Int64" "String" -}}
-			if val, err := xyml.To{{.DefTypeName}}(cur); err != nil {
+			{{if eq .DefTypeName "Bool" -}}
+				if val, err := xyml.ToBoolean(cur); err != nil {
+			{{else if eq .DefTypeName "Int64" -}}
+				if val, err := xyml.ToInt(cur, 10); err != nil {
+			{{else if eq .DefTypeName "Float64" -}}
+				if val, err := xyml.ToFloat(cur); err != nil {
+			{{- else -}}
+				if val, err := xyml.To{{.DefTypeName}}(cur); err != nil {
+			{{end}}
 				return err
 			} else {
 				o.enum = append(o.enum, val)
 			}
-			{{- else if eq .DefTypeName "Untyped" -}}
+			{{- else -}}
 			o.enum = append(o.enum, val)
 			{{- end}}
 

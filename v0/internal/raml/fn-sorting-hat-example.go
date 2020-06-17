@@ -2,8 +2,8 @@ package raml
 
 import (
 	"fmt"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 	"github.com/sirupsen/logrus"
 )
 
@@ -35,6 +35,8 @@ func ExampleSortingHat(kind rmeta.DataTypeKind) (raml.Example, error) {
 		return NewCustomExample(), nil
 	case rmeta.TypeDatetime:
 		return NewDatetimeExample(), nil
+	case rmeta.TypeTimeOnly:
+		return NewTimeOnlyExample(), nil
 	case rmeta.TypeUnion:
 		return NewUnionExample(), nil
 	}

@@ -1,11 +1,11 @@
-{{- /* gotype: github.com/Foxcapades/lib-go-raml-types/v0/tools/gen/type.extTypeProps */ -}}
+{{- /* gotype: github.com/Foxcapades/lib-go-raml/v0/tools/gen/type.extTypeProps */ -}}
 package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 )
 
 func Foo() {
@@ -41,7 +41,7 @@ func (o *{{.Name}}Type) UnsetFormat() raml.{{.Name}}Type {
 
 func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 	{{define "datetime-marshal" -}}
-	out.PutNonNil(rmeta.KeyFormat, o.format)
+	out.PutIfNotNil(rmeta.KeyFormat, o.format)
 	{{- end}}
 }
 

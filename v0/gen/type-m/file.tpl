@@ -1,11 +1,11 @@
-{{- /* gotype: github.com/Foxcapades/lib-go-raml-types/v0/tools/gen/type.extTypeProps */ -}}
+{{- /* gotype: github.com/Foxcapades/lib-go-raml/v0/tools/gen/type.extTypeProps */ -}}
 package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 )
 
 func Foo() {
@@ -29,7 +29,7 @@ type Bar struct {
 
 func (o {{.Name}}Type) marshal(out raml.AnyMap) error {
 	{{define "file-marshal" -}}
-	out.PutNonNil(rmeta.KeyFileTypes, o.fileTypes)
+	out.PutIfNotNil(rmeta.KeyFileTypes, o.fileTypes)
 
 	if o.minLength != rmeta.FileDefaultMinLength {
 		out.Put(rmeta.KeyMinLength, o.minLength)

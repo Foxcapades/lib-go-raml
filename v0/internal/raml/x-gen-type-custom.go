@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -13,10 +13,10 @@ import (
 // NewCustomType returns a new internal implementation
 // of the raml.CustomType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 func NewCustomType() *CustomType {
 	out := &CustomType{
-		examples: NewCustomExampleMap(),
+		examples: raml.NewCustomExampleMap(0),
 	}
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeCustom, out)
@@ -27,7 +27,7 @@ func NewCustomType() *CustomType {
 // CustomType is a default generated implementation of
 // the raml.CustomType interface
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 type CustomType struct {
 	*ExtendedDataType
 
@@ -84,7 +84,7 @@ func (o *CustomType) SetExamples(examples raml.CustomExampleMap) raml.CustomType
 }
 
 func (o *CustomType) UnsetExamples() raml.CustomType {
-	o.examples = NewCustomExampleMap()
+	o.examples = raml.NewCustomExampleMap(0)
 	return o
 }
 
@@ -118,7 +118,7 @@ func (o *CustomType) SetAnnotations(annotations raml.AnnotationMap) raml.CustomT
 }
 
 func (o *CustomType) UnsetAnnotations() raml.CustomType {
-	o.hasAnnotations.mp = NewAnnotationMap()
+	o.hasAnnotations.mp = raml.NewAnnotationMap(0)
 	return o
 }
 
@@ -132,7 +132,7 @@ func (o *CustomType) SetFacetDefinitions(facets raml.FacetMap) raml.CustomType {
 }
 
 func (o *CustomType) UnsetFacetDefinitions() raml.CustomType {
-	o.facets = NewFacetMap()
+	o.facets = raml.NewFacetMap(0)
 	return o
 }
 
@@ -170,7 +170,7 @@ func (o *CustomType) SetExtraFacets(facets raml.AnyMap) raml.CustomType {
 }
 
 func (o *CustomType) UnsetExtraFacets() raml.CustomType {
-	o.hasExtra.mp = NewAnyMap()
+	o.hasExtra.mp = raml.NewAnyMap(0)
 	return o
 }
 
@@ -181,17 +181,17 @@ func (o *CustomType) SetRequired(b bool) raml.CustomType {
 
 func (o *CustomType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.CustomType.marshal")
-	out.PutNonNil(rmeta.KeyDefault, o.def)
+	out.PutIfNotNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
 
-	out.PutNonNil(rmeta.KeyEnum, o.enum).
-		PutNonNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
+		PutIfNotNil(rmeta.KeyExample, o.example)
 
 	if o.examples.Len() > 0 {
-		out.PutNonNil(rmeta.KeyExamples, o.examples)
+		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
 	return nil
@@ -210,9 +210,9 @@ func (o *CustomType) assign(key, val *yaml.Node) error {
 
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val)
+		return UnmarshalCustomExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
-		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			o.enum = append(o.enum, val)
 
 			return nil

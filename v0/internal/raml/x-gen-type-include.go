@@ -1,15 +1,15 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 	"gopkg.in/yaml.v3"
 )
 
 // NewIncludeType returns a new internal implementation of
 // the raml.IncludeType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 func NewIncludeType() *IncludeType {
 	out := &IncludeType{}
 
@@ -21,7 +21,7 @@ func NewIncludeType() *IncludeType {
 // IncludeType is a generated internal implementation of
 // the raml.IncludeType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 type IncludeType struct {
 	*DataType
 }

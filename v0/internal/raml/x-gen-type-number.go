@@ -2,10 +2,10 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -13,10 +13,10 @@ import (
 // NewNumberType returns a new internal implementation
 // of the raml.NumberType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 func NewNumberType() *NumberType {
 	out := &NumberType{
-		examples: NewNumberExampleMap(),
+		examples: raml.NewNumberExampleMap(0),
 	}
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeNumber, out)
@@ -27,7 +27,7 @@ func NewNumberType() *NumberType {
 // NumberType is a default generated implementation of
 // the raml.NumberType interface
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 type NumberType struct {
 	*ExtendedDataType
 
@@ -88,7 +88,7 @@ func (o *NumberType) SetExamples(examples raml.NumberExampleMap) raml.NumberType
 }
 
 func (o *NumberType) UnsetExamples() raml.NumberType {
-	o.examples = NewNumberExampleMap()
+	o.examples = raml.NewNumberExampleMap(0)
 	return o
 }
 
@@ -122,7 +122,7 @@ func (o *NumberType) SetAnnotations(annotations raml.AnnotationMap) raml.NumberT
 }
 
 func (o *NumberType) UnsetAnnotations() raml.NumberType {
-	o.hasAnnotations.mp = NewAnnotationMap()
+	o.hasAnnotations.mp = raml.NewAnnotationMap(0)
 	return o
 }
 
@@ -136,7 +136,7 @@ func (o *NumberType) SetFacetDefinitions(facets raml.FacetMap) raml.NumberType {
 }
 
 func (o *NumberType) UnsetFacetDefinitions() raml.NumberType {
-	o.facets = NewFacetMap()
+	o.facets = raml.NewFacetMap(0)
 	return o
 }
 
@@ -174,7 +174,7 @@ func (o *NumberType) SetExtraFacets(facets raml.AnyMap) raml.NumberType {
 }
 
 func (o *NumberType) UnsetExtraFacets() raml.NumberType {
-	o.hasExtra.mp = NewAnyMap()
+	o.hasExtra.mp = raml.NewAnyMap(0)
 	return o
 }
 
@@ -241,20 +241,20 @@ func (o *NumberType) UnsetMultipleOf() raml.NumberType {
 
 func (o *NumberType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.NumberType.marshal")
-	out.PutNonNil(rmeta.KeyDefault, o.def)
+	out.PutIfNotNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	out.PutNonNil(rmeta.KeyFormat, o.format).
-		PutNonNil(rmeta.KeyMinimum, o.minimum).
-		PutNonNil(rmeta.KeyMaximum, o.maximum).
-		PutNonNil(rmeta.KeyMultipleOf, o.multipleOf)
-	out.PutNonNil(rmeta.KeyEnum, o.enum).
-		PutNonNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyFormat, o.format).
+		PutIfNotNil(rmeta.KeyMinimum, o.minimum).
+		PutIfNotNil(rmeta.KeyMaximum, o.maximum).
+		PutIfNotNil(rmeta.KeyMultipleOf, o.multipleOf)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
+		PutIfNotNil(rmeta.KeyExample, o.example)
 
 	if o.examples.Len() > 0 {
-		out.PutNonNil(rmeta.KeyExamples, o.examples)
+		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
 	return nil
@@ -273,10 +273,10 @@ func (o *NumberType) assign(key, val *yaml.Node) error {
 
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val)
+		return UnmarshalNumberExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
-		return xyml.ForEachList(val, func(cur *yaml.Node) error {
-			if val, err := xyml.ToFloat64(cur); err != nil {
+		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
+			if val, err := xyml.ToFloat(cur); err != nil {
 				return err
 			} else {
 				o.enum = append(o.enum, val)

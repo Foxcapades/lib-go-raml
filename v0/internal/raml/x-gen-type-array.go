@@ -1,10 +1,10 @@
 package raml
 
 import (
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/assign"
-	"github.com/Foxcapades/lib-go-raml-types/v0/internal/util/xyml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml-types/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
@@ -12,10 +12,10 @@ import (
 // NewArrayType returns a new internal implementation
 // of the raml.ArrayType interface.
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 func NewArrayType() *ArrayType {
 	out := &ArrayType{
-		examples: NewArrayExampleMap(),
+		examples: raml.NewArrayExampleMap(0),
 	}
 
 	out.minItems = rmeta.ArrayDefaultMinItems
@@ -30,7 +30,7 @@ func NewArrayType() *ArrayType {
 // ArrayType is a default generated implementation of
 // the raml.ArrayType interface
 //
-// Generated @ 2020-05-20T21:46:01.015916886-04:00
+// Generated @ 2020-05-25T19:07:00.757913962-04:00
 type ArrayType struct {
 	*ExtendedDataType
 
@@ -91,7 +91,7 @@ func (o *ArrayType) SetExamples(examples raml.ArrayExampleMap) raml.ArrayType {
 }
 
 func (o *ArrayType) UnsetExamples() raml.ArrayType {
-	o.examples = NewArrayExampleMap()
+	o.examples = raml.NewArrayExampleMap(0)
 	return o
 }
 
@@ -125,7 +125,7 @@ func (o *ArrayType) SetAnnotations(annotations raml.AnnotationMap) raml.ArrayTyp
 }
 
 func (o *ArrayType) UnsetAnnotations() raml.ArrayType {
-	o.hasAnnotations.mp = NewAnnotationMap()
+	o.hasAnnotations.mp = raml.NewAnnotationMap(0)
 	return o
 }
 
@@ -139,7 +139,7 @@ func (o *ArrayType) SetFacetDefinitions(facets raml.FacetMap) raml.ArrayType {
 }
 
 func (o *ArrayType) UnsetFacetDefinitions() raml.ArrayType {
-	o.facets = NewFacetMap()
+	o.facets = raml.NewFacetMap(0)
 	return o
 }
 
@@ -177,7 +177,7 @@ func (o *ArrayType) SetExtraFacets(facets raml.AnyMap) raml.ArrayType {
 }
 
 func (o *ArrayType) UnsetExtraFacets() raml.ArrayType {
-	o.hasExtra.mp = NewAnyMap()
+	o.hasExtra.mp = raml.NewAnyMap(0)
 	return o
 }
 
@@ -229,7 +229,7 @@ func (o *ArrayType) UnsetItems() raml.ArrayType {
 
 func (o *ArrayType) marshal(out raml.AnyMap) error {
 	logrus.Trace("internal.ArrayType.marshal")
-	out.PutNonNil(rmeta.KeyDefault, o.def)
+	out.PutIfNotNil(rmeta.KeyDefault, o.def)
 
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
@@ -247,13 +247,13 @@ func (o *ArrayType) marshal(out raml.AnyMap) error {
 		out.Put(rmeta.KeyMaxItems, o.maxItems)
 	}
 
-	out.PutNonNil(rmeta.KeyItems, o.items)
+	out.PutIfNotNil(rmeta.KeyItems, o.items)
 
-	out.PutNonNil(rmeta.KeyEnum, o.enum).
-		PutNonNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
+		PutIfNotNil(rmeta.KeyExample, o.example)
 
 	if o.examples.Len() > 0 {
-		out.PutNonNil(rmeta.KeyExamples, o.examples)
+		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
 	return nil
@@ -272,9 +272,10 @@ func (o *ArrayType) assign(key, val *yaml.Node) error {
 
 		return nil
 	case rmeta.KeyExamples:
-		return o.examples.UnmarshalRAML(val)
+		return UnmarshalArrayExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
-		return xyml.ForEachList(val, func(cur *yaml.Node) error {
+		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
+			o.enum = append(o.enum, val)
 
 			return nil
 		})

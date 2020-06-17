@@ -5,7 +5,7 @@ import "github.com/Foxcapades/goop/v1/pkg/option"
 // NumberExample defines a single example attached to a DataType
 // or Property definition.
 //
-// Generated @ 2020-05-21T22:19:27.027107376-04:00
+// Generated @ 2020-05-25T18:15:33.802521588-04:00
 type NumberExample interface {
 	Example
 

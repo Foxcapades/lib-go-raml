@@ -134,7 +134,7 @@ func siftType(val *yaml.Node) (concreteType, error) {
 
 	if schema > -1 {
 		tmp := val.Content[schema]
-		if tmp.Tag == xyml.TagString {
+		if tmp.LongTag() == xyml.TagString {
 			return typeToKind(tmp.Value), nil
 		} else if tmp.Kind == yaml.SequenceNode {
 			return nil, fmt.Errorf(multiTypeNotAllowed, tmp.Line, tmp.Column)

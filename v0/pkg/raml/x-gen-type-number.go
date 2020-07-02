@@ -2,12 +2,12 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// NumberType generated @ 2020-05-25T19:07:00.757913962-04:00
+// NumberType generated @ 2020-07-02T14:31:30.98374873-04:00
 type NumberType interface {
 	Unmarshaler
 	Marshaler
 	ExtendedDataType
-
+	
 	// SetType sets the parent type name, this does not change
 	// the underlying kind of the DataType.
 	SetType(string) NumberType
@@ -143,7 +143,7 @@ type NumberType interface {
 	UnsetExtraFacets() NumberType
 
 	SetRequired(bool) NumberType
-	// Minimum returns an option which will contain the value
+// Minimum returns an option which will contain the value
 	// of the "minimum" facet for the current number type
 	// definition if it is set.
 	Minimum() option.Float64

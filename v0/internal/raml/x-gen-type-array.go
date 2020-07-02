@@ -1,6 +1,7 @@
 package raml
 
 import (
+
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -12,14 +13,14 @@ import (
 // NewArrayType returns a new internal implementation
 // of the raml.ArrayType interface.
 //
-// Generated @ 2020-05-25T19:07:00.757913962-04:00
+// Generated @ 2020-07-02T14:31:30.98374873-04:00
 func NewArrayType() *ArrayType {
 	out := &ArrayType{
 		examples: raml.NewArrayExampleMap(0),
 	}
-
-	out.minItems = rmeta.ArrayDefaultMinItems
-	out.maxItems = rmeta.ArrayDefaultMaxItems
+	
+	out.minItems    = rmeta.ArrayDefaultMinItems
+	out.maxItems    = rmeta.ArrayDefaultMaxItems
 	out.uniqueItems = rmeta.ArrayDefaultUniqueItems
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeArray, out)
@@ -30,14 +31,14 @@ func NewArrayType() *ArrayType {
 // ArrayType is a default generated implementation of
 // the raml.ArrayType interface
 //
-// Generated @ 2020-05-25T19:07:00.757913962-04:00
+// Generated @ 2020-07-02T14:31:30.98374873-04:00
 type ArrayType struct {
 	*ExtendedDataType
 
-	def         []interface{}
-	example     raml.ArrayExample
-	examples    raml.ArrayExampleMap
-	enum        []interface{}
+	def      []interface{}
+	example  raml.ArrayExample
+	examples raml.ArrayExampleMap
+	enum     []interface{}
 	uniqueItems bool
 	minItems    uint
 	maxItems    uint
@@ -234,7 +235,7 @@ func (o *ArrayType) marshal(out raml.AnyMap) error {
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-
+	
 	if o.uniqueItems != rmeta.ArrayDefaultUniqueItems {
 		out.Put(rmeta.KeyUniqueItems, o.uniqueItems)
 	}
@@ -283,7 +284,7 @@ func (o *ArrayType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-
+	
 	switch key.Value {
 	case rmeta.KeyUniqueItems:
 		return assign.AsBool(val, &o.uniqueItems)
@@ -302,3 +303,4 @@ func (o *ArrayType) assign(key, val *yaml.Node) error {
 
 	return o.ExtendedDataType.assign(key, val)
 }
+

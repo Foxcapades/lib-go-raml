@@ -2,48 +2,48 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// TimeOnlyExample defines a single example attached to a DataType
+// AnyExample defines a single example attached to a DataType
 // or Property definition.
 //
 // Generated @ 2020-07-02T14:19:59.953300998-04:00
-type TimeOnlyExample interface {
+type AnyExample interface {
 	Example
 
 	// SetDisplayName sets this example's display name value.
-	SetDisplayName(string) TimeOnlyExample
+	SetDisplayName(string) AnyExample
 
 	// UnsetDisplayName removes this example's display name
 	// value.
-	UnsetDisplayName() TimeOnlyExample
+	UnsetDisplayName() AnyExample
 
 	// SetDescription sets this example's description value.
-	SetDescription(string) TimeOnlyExample
+	SetDescription(string) AnyExample
 
 	// UnsetDescription removes this example's description
 	// value.
-	UnsetDescription() TimeOnlyExample
+	UnsetDescription() AnyExample
 
 	// SetAnnotations replaces this example's annotation map
 	// with the given value.
 	//
 	// Passing this method a nil value is effectively the same
 	// as calling UnsetAnnotations.
-	SetAnnotations(annotations AnnotationMap) TimeOnlyExample
+	SetAnnotations(annotations AnnotationMap) AnyExample
 
 	// UnsetAnnotations removes all annotations from this
 	// example.
-	UnsetAnnotations() TimeOnlyExample
+	UnsetAnnotations() AnyExample
 
 	// Value returns this example's value.
-	Value() option.String
+	Value() option.Untyped
 
 	// SetValue sets this example's value.
-	SetValue(v string) TimeOnlyExample
+	SetValue(v interface{}) AnyExample
 
 	// UnsetValue removes this example's value.
-	UnsetValue() TimeOnlyExample
+	UnsetValue() AnyExample
 
 	// SetStrict sets whether or not this example should be
 	// validated against its parent type definition.
-	SetStrict(bool) TimeOnlyExample
+	SetStrict(bool) AnyExample
 }

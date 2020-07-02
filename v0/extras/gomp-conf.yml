@@ -5,6 +5,8 @@ repo: github.com/Foxcapades/lib-go-raml
 maps:
   - key: string
     values:
+      - type: interface{}
+        name: AnyExampleMap
       - type: Annotation
         name: AnnotationMap
       - type: DataType

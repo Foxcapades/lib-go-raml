@@ -9,62 +9,62 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// NewTimeOnlyExample returns a new internal implementation of the
-// raml.TimeOnlyExample interface.
+// NewAnyExample returns a new internal implementation of the
+// raml.AnyExample interface.
 //
 // Generated @ 2020-07-02T14:19:59.953300998-04:00
-func NewTimeOnlyExample() *TimeOnlyExample {
-	return &TimeOnlyExample{
+func NewAnyExample() *AnyExample {
+	return &AnyExample{
 		annotations: raml.NewAnnotationMap(0),
 		extra:       raml.NewAnyMap(0),
 		strict:      rmeta.ExampleDefaultStrict,
 	}
 }
 
-// TimeOnlyExample is a generated internal implementation of the
-// raml.TimeOnlyExample interface.
-type TimeOnlyExample struct {
+// AnyExample is a generated internal implementation of the
+// raml.AnyExample interface.
+type AnyExample struct {
 	displayName *string
 	description *string
 	annotations raml.AnnotationMap
-	value       *string
+	value       *interface{}
 	strict      bool
 	extra       raml.AnyMap
 }
 
-func (e *TimeOnlyExample) DisplayName() option.String {
+func (e *AnyExample) DisplayName() option.String {
 	return option.NewMaybeString(e.displayName)
 }
 
-func (e *TimeOnlyExample) SetDisplayName(name string) raml.TimeOnlyExample {
+func (e *AnyExample) SetDisplayName(name string) raml.AnyExample {
 	e.displayName = &name
 	return e
 }
 
-func (e *TimeOnlyExample) UnsetDisplayName() raml.TimeOnlyExample {
+func (e *AnyExample) UnsetDisplayName() raml.AnyExample {
 	e.displayName = nil
 	return e
 }
 
-func (e *TimeOnlyExample) Description() option.String {
+func (e *AnyExample) Description() option.String {
 	return option.NewMaybeString(e.description)
 }
 
-func (e *TimeOnlyExample) SetDescription(desc string) raml.TimeOnlyExample {
+func (e *AnyExample) SetDescription(desc string) raml.AnyExample {
 	e.description = &desc
 	return e
 }
 
-func (e *TimeOnlyExample) UnsetDescription() raml.TimeOnlyExample {
+func (e *AnyExample) UnsetDescription() raml.AnyExample {
 	e.description = nil
 	return e
 }
 
-func (e *TimeOnlyExample) Annotations() raml.AnnotationMap {
+func (e *AnyExample) Annotations() raml.AnnotationMap {
 	return e.annotations
 }
 
-func (e *TimeOnlyExample) SetAnnotations(ann raml.AnnotationMap) raml.TimeOnlyExample {
+func (e *AnyExample) SetAnnotations(ann raml.AnnotationMap) raml.AnyExample {
 	if ann == nil {
 		return e.UnsetAnnotations()
 	}
@@ -72,39 +72,39 @@ func (e *TimeOnlyExample) SetAnnotations(ann raml.AnnotationMap) raml.TimeOnlyEx
 	return e
 }
 
-func (e *TimeOnlyExample) UnsetAnnotations() raml.TimeOnlyExample {
+func (e *AnyExample) UnsetAnnotations() raml.AnyExample {
 	e.annotations = raml.NewAnnotationMap(0)
 	return e
 }
 
-func (e *TimeOnlyExample) Value() option.String {
-	return option.NewMaybeString(e.value)
+func (e *AnyExample) Value() option.Untyped {
+	return option.NewMaybeUntyped(e.value)
 }
 
-func (e *TimeOnlyExample) SetValue(val string) raml.TimeOnlyExample {
+func (e *AnyExample) SetValue(val interface{}) raml.AnyExample {
 	e.value = &val
 	return e
 }
 
-func (e *TimeOnlyExample) UnsetValue() raml.TimeOnlyExample {
+func (e *AnyExample) UnsetValue() raml.AnyExample {
 	e.value = nil
 	return e
 }
 
-func (e *TimeOnlyExample) Strict() bool {
+func (e *AnyExample) Strict() bool {
 	return e.strict
 }
 
-func (e *TimeOnlyExample) SetStrict(b bool) raml.TimeOnlyExample {
+func (e *AnyExample) SetStrict(b bool) raml.AnyExample {
 	e.strict = b
 	return e
 }
 
-func (e *TimeOnlyExample) ExtraFacets() raml.AnyMap {
+func (e *AnyExample) ExtraFacets() raml.AnyMap {
 	return e.extra
 }
 
-func (e *TimeOnlyExample) UnmarshalRAML(value *yaml.Node) error {
+func (e *AnyExample) UnmarshalRAML(value *yaml.Node) error {
 
 	if xyml.IsMap(value) {
 		return xyml.MapForEach(value, e.assign)
@@ -113,7 +113,7 @@ func (e *TimeOnlyExample) UnmarshalRAML(value *yaml.Node) error {
 	return e.assignVal(value)
 }
 
-func (e *TimeOnlyExample) MarshalRAML(out raml.AnyMap) (bool, error) {
+func (e *AnyExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	if e.expand() {
 		out.PutIfNotNil(rmeta.KeyDisplayName, e.displayName).
 			PutIfNotNil(rmeta.KeyDescription, e.description).
@@ -133,7 +133,7 @@ func (e *TimeOnlyExample) MarshalRAML(out raml.AnyMap) (bool, error) {
 	return true, nil
 }
 
-func (e *TimeOnlyExample) assign(key, val *yaml.Node) error {
+func (e *AnyExample) assign(key, val *yaml.Node) error {
 	if !xyml.IsString(key) {
 		if ver, err := xyml.ToScalarValue(key); err != nil {
 			return err
@@ -172,7 +172,7 @@ func (e *TimeOnlyExample) assign(key, val *yaml.Node) error {
 	return nil
 }
 
-func (e *TimeOnlyExample) expand() bool {
+func (e *AnyExample) expand() bool {
 	return e.displayName != nil ||
 		e.description != nil ||
 		e.annotations.Len() > 0 ||
@@ -180,11 +180,9 @@ func (e *TimeOnlyExample) expand() bool {
 		e.strict != rmeta.ExampleDefaultStrict
 }
 
-func (e *TimeOnlyExample) assignVal(val *yaml.Node) error {
-	if err := xyml.RequireString(val); err != nil {
-		return err
-	}
-	e.value = &val.Value
+func (e *AnyExample) assignVal(val *yaml.Node) error {
+	var tmp interface{} = *val
+	e.value = &tmp
 
 	return nil
 }

@@ -18,6 +18,7 @@ const (
 var now = time.Now().Format(time.RFC3339Nano)
 
 var types = []exampleProps{
+	{Name: "Any", Type: "interface{}", EType: "Untyped", Time: now, UseOption: true},
 	{Name: "Array", Type: "[]interface{}", EType: "[]interface{}", Time: now, UseOption: false},
 	{Name: "Bool", Type: "bool", EType: "Bool", Time: now, UseOption: true},
 	{Name: "Custom", Type: "interface{}", EType: "Untyped", Time: now, UseOption: true},

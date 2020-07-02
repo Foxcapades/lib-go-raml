@@ -2,12 +2,12 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// ObjectType generated @ 2020-05-25T19:07:00.757913962-04:00
+// ObjectType generated @ 2020-07-02T14:31:30.98374873-04:00
 type ObjectType interface {
 	Unmarshaler
 	Marshaler
 	ExtendedDataType
-
+	
 	// SetType sets the parent type name, this does not change
 	// the underlying kind of the DataType.
 	SetType(string) ObjectType
@@ -143,7 +143,7 @@ type ObjectType interface {
 	UnsetExtraFacets() ObjectType
 
 	SetRequired(bool) ObjectType
-	// Properties returns a mutable map of the properties
+// Properties returns a mutable map of the properties
 	// defined on the current object type definition.
 	Properties() PropertyMap
 

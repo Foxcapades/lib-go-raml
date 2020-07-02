@@ -2,12 +2,12 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// FileType generated @ 2020-05-25T19:07:00.757913962-04:00
+// FileType generated @ 2020-07-02T14:31:30.98374873-04:00
 type FileType interface {
 	Unmarshaler
 	Marshaler
 	ExtendedDataType
-
+	
 	// SetType sets the parent type name, this does not change
 	// the underlying kind of the DataType.
 	SetType(string) FileType
@@ -143,7 +143,7 @@ type FileType interface {
 	UnsetExtraFacets() FileType
 
 	SetRequired(bool) FileType
-	// FileTypes returns a slice of the "fileTypes" facet set
+// FileTypes returns a slice of the "fileTypes" facet set
 	// on the current file type definition.
 	FileTypes() []string
 

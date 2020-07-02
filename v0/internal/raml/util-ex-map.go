@@ -6,6 +6,23 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+func UnmarshalAnyExampleMapRAML(aMap raml.AnyExampleMap, y *yaml.Node) error {
+	return xyml.MapForEach(y, func(k, v *yaml.Node) error {
+		if err := xyml.RequireString(k); err != nil {
+			return err
+		}
+
+		tmp := NewAnyExample()
+
+		if err := tmp.UnmarshalRAML(v); err != nil {
+			return err
+		}
+
+		aMap.Put(k.Value, tmp)
+
+		return nil
+	})
+}
 func UnmarshalArrayExampleMapRAML(aMap raml.ArrayExampleMap, y *yaml.Node) error {
 	return xyml.MapForEach(y, func(k, v *yaml.Node) error {
 		if err := xyml.RequireString(k); err != nil {

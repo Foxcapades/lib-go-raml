@@ -5,7 +5,7 @@ import "github.com/Foxcapades/goop/v1/pkg/option"
 // DatetimeOnlyExample defines a single example attached to a DataType
 // or Property definition.
 //
-// Generated @ 2020-05-25T18:15:33.802521588-04:00
+// Generated @ 2020-07-02T14:19:59.953300998-04:00
 type DatetimeOnlyExample interface {
 	Example
 

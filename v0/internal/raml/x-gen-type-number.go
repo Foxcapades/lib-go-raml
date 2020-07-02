@@ -1,7 +1,7 @@
 package raml
 
 import (
-	"github.com/Foxcapades/goop/v1/pkg/option"
+"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -13,12 +13,12 @@ import (
 // NewNumberType returns a new internal implementation
 // of the raml.NumberType interface.
 //
-// Generated @ 2020-05-25T19:07:00.757913962-04:00
+// Generated @ 2020-07-02T14:31:30.98374873-04:00
 func NewNumberType() *NumberType {
 	out := &NumberType{
 		examples: raml.NewNumberExampleMap(0),
 	}
-
+	
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeNumber, out)
 
 	return out
@@ -27,14 +27,14 @@ func NewNumberType() *NumberType {
 // NumberType is a default generated implementation of
 // the raml.NumberType interface
 //
-// Generated @ 2020-05-25T19:07:00.757913962-04:00
+// Generated @ 2020-07-02T14:31:30.98374873-04:00
 type NumberType struct {
 	*ExtendedDataType
 
-	def        *float64
-	example    raml.NumberExample
-	examples   raml.NumberExampleMap
-	enum       []float64
+	def      *float64
+	example  raml.NumberExample
+	examples raml.NumberExampleMap
+	enum     []float64
 	minimum    *float64
 	maximum    *float64
 	format     raml.NumberFormat
@@ -288,7 +288,7 @@ func (o *NumberType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-
+	
 	switch key.Value {
 	case rmeta.KeyMinimum:
 		return assign.AsFloat64Ptr(val, &o.minimum)
@@ -307,3 +307,4 @@ func (o *NumberType) assign(key, val *yaml.Node) error {
 
 	return o.ExtendedDataType.assign(key, val)
 }
+

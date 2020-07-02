@@ -12,7 +12,7 @@ import (
 // NewDatetimeExample returns a new internal implementation of the
 // raml.DatetimeExample interface.
 //
-// Generated @ 2020-05-25T18:15:33.802521588-04:00
+// Generated @ 2020-07-02T14:19:59.953300998-04:00
 func NewDatetimeExample() *DatetimeExample {
 	return &DatetimeExample{
 		annotations: raml.NewAnnotationMap(0),

@@ -1,7 +1,7 @@
 package raml
 
 import (
-	"github.com/Foxcapades/goop/v1/pkg/option"
+"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -13,12 +13,12 @@ import (
 // NewDatetimeType returns a new internal implementation
 // of the raml.DatetimeType interface.
 //
-// Generated @ 2020-05-25T19:07:00.757913962-04:00
+// Generated @ 2020-07-02T14:31:30.98374873-04:00
 func NewDatetimeType() *DatetimeType {
 	out := &DatetimeType{
 		examples: raml.NewDatetimeExampleMap(0),
 	}
-
+	
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeDatetime, out)
 
 	return out
@@ -27,7 +27,7 @@ func NewDatetimeType() *DatetimeType {
 // DatetimeType is a default generated implementation of
 // the raml.DatetimeType interface
 //
-// Generated @ 2020-05-25T19:07:00.757913962-04:00
+// Generated @ 2020-07-02T14:31:30.98374873-04:00
 type DatetimeType struct {
 	*ExtendedDataType
 
@@ -35,7 +35,7 @@ type DatetimeType struct {
 	example  raml.DatetimeExample
 	examples raml.DatetimeExampleMap
 	enum     []string
-	format   raml.DateFormat
+	format     raml.DateFormat
 }
 
 func (o *DatetimeType) SetType(s string) raml.DatetimeType {
@@ -229,7 +229,7 @@ func (o *DatetimeType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			if val, err := xyml.ToString(cur); err != nil {
-
+			
 				return err
 			} else {
 				o.enum = append(o.enum, val)
@@ -241,7 +241,7 @@ func (o *DatetimeType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-
+	
 	if key.Value == rmeta.KeyFormat {
 		if val, err := DateFormatSortingHat(val); err != nil {
 			return err
@@ -254,3 +254,4 @@ func (o *DatetimeType) assign(key, val *yaml.Node) error {
 
 	return o.ExtendedDataType.assign(key, val)
 }
+

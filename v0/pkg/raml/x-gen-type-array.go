@@ -1,11 +1,13 @@
 package raml
 
-// ArrayType generated @ 2020-05-25T19:07:00.757913962-04:00
+
+
+// ArrayType generated @ 2020-07-02T14:31:30.98374873-04:00
 type ArrayType interface {
 	Unmarshaler
 	Marshaler
 	ExtendedDataType
-
+	
 	// SetType sets the parent type name, this does not change
 	// the underlying kind of the DataType.
 	SetType(string) ArrayType
@@ -141,7 +143,7 @@ type ArrayType interface {
 	UnsetExtraFacets() ArrayType
 
 	SetRequired(bool) ArrayType
-	// UniqueItems returns whether or not the current array
+// UniqueItems returns whether or not the current array
 	// type definition requires items in the defined array to
 	// be unique.
 	//

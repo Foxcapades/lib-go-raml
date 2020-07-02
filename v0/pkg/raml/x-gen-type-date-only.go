@@ -2,12 +2,12 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// DateOnlyType generated @ 2020-05-25T19:07:00.757913962-04:00
+// DateOnlyType generated @ 2020-07-02T14:31:30.98374873-04:00
 type DateOnlyType interface {
 	Unmarshaler
 	Marshaler
 	ExtendedDataType
-
+	
 	// SetType sets the parent type name, this does not change
 	// the underlying kind of the DataType.
 	SetType(string) DateOnlyType
@@ -143,4 +143,5 @@ type DateOnlyType interface {
 	UnsetExtraFacets() DateOnlyType
 
 	SetRequired(bool) DateOnlyType
+
 }

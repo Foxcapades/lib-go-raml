@@ -47,17 +47,21 @@ func (d *DataType) ToRAML() (string, error) {
 	panic("implement me")
 }
 
-func (d DataType) MarshalYAML() (interface{}, error) {
+func (d DataType) ToYAML() (*yaml.Node, error) {
 	out := raml.NewAnyMap(0).SerializeOrdered(false)
 	if short, err := d.MarshalRAML(out); err != nil {
 		return nil, err
 	} else if short {
 		schema, _ := out.Get(rmeta.KeyType)
 		logrus.Debug("Printing RAML type short form ", schema)
-		return schema, nil
+		return xyml.ToYamlNode(schema)
 	}
 	logrus.Debug("Printing RAML type long form")
-	return out, nil
+	return out.ToYAML()
+}
+
+func (d DataType) MarshalYAML() (interface{}, error) {
+	return d.ToYAML()
 }
 
 func (d *DataType) MarshalRAML(out raml.AnyMap) (bool, error) {

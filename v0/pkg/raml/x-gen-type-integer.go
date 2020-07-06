@@ -2,7 +2,7 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// IntegerType generated @ 2020-07-06T12:49:37.941034901-04:00
+// IntegerType generated @ 2020-07-06T13:52:18.671712454-04:00
 type IntegerType interface {
 	Unmarshaler
 	Marshaler

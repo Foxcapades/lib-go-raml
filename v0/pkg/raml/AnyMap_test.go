@@ -12,8 +12,8 @@ import (
 
 func TestAnyMap_Put(t *testing.T) {
 	Convey("TestAnyMap.Put", t, func() {
-		var k interface{} = "3f887f96-3f54-46a6-ba6e-fef7750cc25c"
-		var v interface{} = "133ba455-6770-4ff4-b73e-ae8cd242ed5e"
+		var k interface{} = "1123610f-2ff0-4f55-bb33-8c1c13291db4"
+		var v interface{} = "045b72c5-34c7-49c5-8d91-4119eb552d2d"
 
 		test := raml.NewAnyMap(1)
 
@@ -26,8 +26,8 @@ func TestAnyMap_Put(t *testing.T) {
 
 func TestAnyMap_Delete(t *testing.T) {
 	Convey("TestAnyMap.Delete", t, func() {
-		var k interface{} = "cfa6ba2f-9985-40a8-9836-fab6a1fa8b50"
-		var v interface{} = "e419fe6a-0538-41bc-ac68-48a003f5c632"
+		var k interface{} = "d4b803db-a0d5-4cd4-ab05-0812a0d45334"
+		var v interface{} = "c535b351-73f6-40b7-8faf-798e0e425eab"
 
 		test := raml.NewAnyMap(1)
 
@@ -41,8 +41,8 @@ func TestAnyMap_Delete(t *testing.T) {
 
 func TestAnyMap_Has(t *testing.T) {
 	Convey("TestAnyMap.Has", t, func() {
-		var k interface{} = "85c67a36-a21a-457e-8ea4-97e1896db31c"
-		var v interface{} = "6224fcc6-0f0f-4347-ba4e-c122908dba64"
+		var k interface{} = "98ba83ef-4604-4374-9533-2222208713b1"
+		var v interface{} = "cec09ec0-c7e9-459a-8b96-c74872fad7db"
 
 		test := raml.NewAnyMap(1)
 
@@ -50,14 +50,14 @@ func TestAnyMap_Has(t *testing.T) {
 		So(test.Len(), ShouldEqual, 1)
 
 		So(test.Has(k), ShouldBeTrue)
-		So(test.Has("dbf60dac-ab5b-4769-aa97-26863a33ebdc"+"4e9865d4-5c8a-46ef-a434-de58eec72105"), ShouldBeFalse)
+		So(test.Has("b65e0319-4574-4d2c-a35d-ecc578990790"+"7a408d7c-0b48-43c8-8cfc-1417f479a0a3"), ShouldBeFalse)
 	})
 }
 
 func TestAnyMap_Get(t *testing.T) {
 	Convey("TestAnyMap.Get", t, func() {
-		var k interface{} = "6702a47e-322b-4a50-8482-bc1ea36c1290"
-		var v interface{} = "be7b65ad-3ab4-4ada-8318-3a1b0539d23d"
+		var k interface{} = "15c77164-b6c8-4b3d-891a-6d0fdbe331a6"
+		var v interface{} = "d9291357-3526-4572-9b31-e3f883d4ce39"
 
 		test := raml.NewAnyMap(1)
 
@@ -68,15 +68,15 @@ func TestAnyMap_Get(t *testing.T) {
 		So(b, ShouldBeTrue)
 		So(a, ShouldEqual, v)
 
-		_, b = test.Get("43f86337-027a-4aa2-96df-98741351c438" + "0244b1be-57e2-4a22-bc00-b8e9731d31a7")
+		_, b = test.Get("787ddfc7-3704-40e0-8a0a-ea946e2add0e" + "64a46c45-ef12-4e26-9f37-e058f25bc9ad")
 		So(b, ShouldBeFalse)
 	})
 }
 
 func TestAnyMap_GetOpt(t *testing.T) {
 	Convey("TestAnyMap.GetOpt", t, func() {
-		var k interface{} = "29f1efce-3ec9-4df4-80a5-8639ad9e4cf9"
-		var v interface{} = "d988176b-ea6e-4e5f-a010-2b4c8383b997"
+		var k interface{} = "df942fae-96ab-4a4b-b557-c8dea07a6961"
+		var v interface{} = "6492abff-668d-418b-8cc3-198e6f2c016f"
 
 		test := raml.NewAnyMap(1)
 
@@ -87,15 +87,15 @@ func TestAnyMap_GetOpt(t *testing.T) {
 		So(a.IsPresent(), ShouldBeTrue)
 		So(a.Get(), ShouldEqual, v)
 
-		a = test.GetOpt("68543fa5-aeb7-437f-ab6b-8aafd351161a" + "02c8d25d-ac0a-4bf3-a515-8130da369d4a")
+		a = test.GetOpt("faf4c784-fa3a-4ca3-a07f-ec0e0fc855cc" + "bad63e4e-c95a-46a1-a58e-2818728aa01d")
 		So(a.IsNil(), ShouldBeTrue)
 	})
 }
 
 func TestAnyMap_ForEach(t *testing.T) {
 	Convey("TestAnyMap.ForEach", t, func() {
-		var k interface{} = "d24a8eee-2676-4a9f-b7f4-a4bcd5dde63c"
-		var v interface{} = "b8ba4dae-9eac-42bb-ab4a-72fd61c15809"
+		var k interface{} = "34039cdb-1adf-4517-8022-46523f00d053"
+		var v interface{} = "042d570d-78fe-48cc-bf71-1693bfe53843"
 		hits := 0
 
 		test := raml.NewAnyMap(1)
@@ -114,8 +114,8 @@ func TestAnyMap_ForEach(t *testing.T) {
 
 func TestAnyMap_MarshalYAML(t *testing.T) {
 	Convey("TestAnyMap.MarshalYAML", t, func() {
-		var k interface{} = "23dae8e3-441a-4d3d-919b-d33507170646"
-		var v interface{} = "3dbfcb2f-4fe4-45e4-8407-1dc0c97ec82e"
+		var k interface{} = "0d45bda0-6a72-4969-a859-c742b6a66501"
+		var v interface{} = "656fc93a-5538-455a-b643-08ad4f876e3e"
 
 		test := raml.NewAnyMap(1)
 
@@ -135,8 +135,8 @@ func TestAnyMap_MarshalYAML(t *testing.T) {
 func TestAnyMap_ToYAML(t *testing.T) {
 	Convey("TestAnyMap.ToYAML", t, func() {
 		Convey("Ordered", func() {
-			var k interface{} = "bfeaa7da-1b4c-4b67-8b12-201038eb2a50"
-			var v interface{} = "4042160e-8bb6-475b-84ff-a750ff5e3999"
+			var k interface{} = "a36feb57-2377-4b82-b51e-9676f446244f"
+			var v interface{} = "feaa4f4d-2374-4229-8341-ed5f21f9a6b3"
 
 			test := raml.NewAnyMap(1)
 
@@ -152,8 +152,8 @@ func TestAnyMap_ToYAML(t *testing.T) {
 		})
 
 		Convey("Unordered", func() {
-			var k interface{} = "f2c05401-3f67-450b-8eeb-b01ede739f0a"
-			var v interface{} = "6135b9e9-dbbc-45e3-b041-2f0590b9f70f"
+			var k interface{} = "4bf88849-bd76-45ff-b2f2-5030764611bd"
+			var v interface{} = "4b913a3b-f183-4352-8441-ed9e2b6b5c38"
 
 			test := raml.NewAnyMap(1)
 			test.SerializeOrdered(false)
@@ -173,8 +173,8 @@ func TestAnyMap_ToYAML(t *testing.T) {
 
 func TestAnyMap_PutIfNotNil(t *testing.T) {
 	Convey("TestAnyMap.PutIfNotNil", t, func() {
-		var k interface{} = "044fa5d2-58de-4ff3-a999-5d33e6477571"
-		var v interface{} = "029d5d4e-ea7f-480f-ac4b-3e36afb114e0"
+		var k interface{} = "4307279a-f46f-4b0f-ac58-cd33de090ab7"
+		var v interface{} = "206e0f27-bafd-48c6-bdbc-eda3435f309e"
 
 		test := raml.NewAnyMap(1)
 
@@ -185,11 +185,11 @@ func TestAnyMap_PutIfNotNil(t *testing.T) {
 		So(test.Len(), ShouldEqual, 1)
 		So(test.At(0).Val, ShouldEqual, v)
 
-		So(test.PutIfNotNil("fe7a5c03-f061-4438-906b-6d72afd1bce7", (*interface{})(nil)), ShouldPointTo, test)
+		So(test.PutIfNotNil("20a7b281-5aef-4618-ae44-b432abbe12c5", (*interface{})(nil)), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 1)
 
-		var x interface{} = "a8148f3b-59ff-45b0-b789-2bf69b1830d6"
-		So(test.PutIfNotNil("04fe2ec5-cbaf-4951-b00d-6a1f52621c2b", &x), ShouldPointTo, test)
+		var x interface{} = "5daace89-8309-4257-bccc-5658f80da23a"
+		So(test.PutIfNotNil("8e43103d-d2a3-432b-a438-ce5fa591945c", &x), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 2)
 		So(test.At(1).Val, ShouldEqual, x)
 	})
@@ -197,16 +197,16 @@ func TestAnyMap_PutIfNotNil(t *testing.T) {
 
 func TestAnyMap_ReplaceIfExists(t *testing.T) {
 	Convey("TestAnyMap.ReplaceIfExists", t, func() {
-		var k interface{} = "ca4345fd-8f71-4ec3-a3b6-6646ee3eade1"
-		var v interface{} = "e1b5610c-14be-4777-bdab-cd9e2abae041"
-		var x interface{} = "5700cbac-0206-460d-9a5e-81d1a57a531d"
+		var k interface{} = "d693ff3d-726a-4c7c-b314-551290dd2cb4"
+		var v interface{} = "6ebf2d4c-cc82-45fd-896a-b3a803128f24"
+		var x interface{} = "80416915-0303-41f9-aac8-5bb049962eba"
 
 		test := raml.NewAnyMap(1)
 
 		So(test.Put(k, v), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 1)
 
-		So(test.ReplaceIfExists("a87adef2-daf4-4391-9519-31161652d0a0", x), ShouldPointTo, test)
+		So(test.ReplaceIfExists("6e2aaf5f-7ea0-406e-9f94-562ff57665a1", x), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 1)
 		So(test.At(0).Val, ShouldEqual, v)
 
@@ -218,16 +218,16 @@ func TestAnyMap_ReplaceIfExists(t *testing.T) {
 
 func TestAnyMap_ReplaceOrPut(t *testing.T) {
 	Convey("TestAnyMap.ReplaceOrPut", t, func() {
-		var k interface{} = "922fc1b2-e14f-4a63-b12a-07c2d1fb7b6f"
-		var v interface{} = "e4390c0f-cd92-469c-9e57-5b1c0b62960a"
-		var x interface{} = "39a2bdbb-3814-4fc2-bb5c-f182aa29992d"
+		var k interface{} = "e7be5f85-41fa-45bf-9ea9-88247948ceac"
+		var v interface{} = "59633c63-c4a7-4bc5-8555-3a4dc088f5df"
+		var x interface{} = "9c9a0382-e9e1-4060-a2dc-6d2e2aec4483"
 
 		test := raml.NewAnyMap(1)
 
 		So(test.Put(k, v), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 1)
 
-		So(test.ReplaceOrPut("947eb900-b961-4bb7-8237-26373b159227", x), ShouldPointTo, test)
+		So(test.ReplaceOrPut("6aa006db-e7dd-4018-9af3-8bae0ad0bd2c", x), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 2)
 		So(test.At(1).Val, ShouldEqual, x)
 
@@ -240,8 +240,8 @@ func TestAnyMap_ReplaceOrPut(t *testing.T) {
 func TestAnyMap_MarshalJSON(t *testing.T) {
 	Convey("TestAnyMap.MarshalJSON", t, func() {
 		Convey("Ordered", func() {
-			var k interface{} = "4e6511b8-c19b-46b8-b588-21aa8ade4d65"
-			var v interface{} = "b67607dc-5709-4a06-a1dd-1d69f1382375"
+			var k interface{} = "4b4f11a6-0dc1-4d5e-95f1-f46f07225ba7"
+			var v interface{} = "dee7e0ff-8232-453e-9fd3-648e55ae07e9"
 
 			test := raml.NewAnyMap(1)
 
@@ -250,12 +250,12 @@ func TestAnyMap_MarshalJSON(t *testing.T) {
 
 			a, b := test.MarshalJSON()
 			So(b, ShouldBeNil)
-			So(string(a), ShouldEqual, `[{"key":"4e6511b8-c19b-46b8-b588-21aa8ade4d65","value":"b67607dc-5709-4a06-a1dd-1d69f1382375"}]`)
+			So(string(a), ShouldEqual, `[{"key":"4b4f11a6-0dc1-4d5e-95f1-f46f07225ba7","value":"dee7e0ff-8232-453e-9fd3-648e55ae07e9"}]`)
 		})
 
 		Convey("Unordered", func() {
-			var k interface{} = "4e6511b8-c19b-46b8-b588-21aa8ade4d65"
-			var v interface{} = "b67607dc-5709-4a06-a1dd-1d69f1382375"
+			var k interface{} = "4b4f11a6-0dc1-4d5e-95f1-f46f07225ba7"
+			var v interface{} = "dee7e0ff-8232-453e-9fd3-648e55ae07e9"
 
 			test := raml.NewAnyMap(1)
 			test.SerializeOrdered(false)
@@ -265,7 +265,7 @@ func TestAnyMap_MarshalJSON(t *testing.T) {
 
 			a, b := test.MarshalJSON()
 			So(b, ShouldBeNil)
-			So(string(a), ShouldEqual, `{"4e6511b8-c19b-46b8-b588-21aa8ade4d65":"b67607dc-5709-4a06-a1dd-1d69f1382375"}`)
+			So(string(a), ShouldEqual, `{"4b4f11a6-0dc1-4d5e-95f1-f46f07225ba7":"dee7e0ff-8232-453e-9fd3-648e55ae07e9"}`)
 		})
 
 	})

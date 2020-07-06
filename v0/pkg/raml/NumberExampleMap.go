@@ -128,7 +128,9 @@ func (i *implNumberExampleMap) ToYAML() (*yaml.Node, error) {
 
 		for j := range i.ordered {
 			tmp := xyml.NewMapNode(1)
-			_ = xyml.MapAppend(tmp, i.ordered[j].Key, i.ordered[j].Val)
+			if e := xyml.MapAppend(tmp, i.ordered[j].Key, i.ordered[j].Val); e != nil {
+				return nil, e
+			}
 			if err := xyml.SequenceAppend(out, tmp); err != nil {
 				return nil, err
 			}
@@ -140,7 +142,9 @@ func (i *implNumberExampleMap) ToYAML() (*yaml.Node, error) {
 	out := xyml.NewMapNode(i.Len())
 
 	for j := range i.ordered {
-		xyml.MapAppend(out, i.ordered[j].Key, i.ordered[j].Val)
+		if e := xyml.MapAppend(out, i.ordered[j].Key, i.ordered[j].Val); e != nil {
+			return nil, e
+		}
 	}
 
 	return out, nil

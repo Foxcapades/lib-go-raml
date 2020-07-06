@@ -13,7 +13,7 @@ import (
 // NewBoolType returns a new internal implementation
 // of the raml.BoolType interface.
 //
-// Generated @ 2020-07-06T12:49:37.941034901-04:00
+// Generated @ 2020-07-06T13:52:18.671712454-04:00
 func NewBoolType() *BoolType {
 	out := &BoolType{
 		examples: raml.NewBoolExampleMap(0),
@@ -27,7 +27,7 @@ func NewBoolType() *BoolType {
 // BoolType is a default generated implementation of
 // the raml.BoolType interface
 //
-// Generated @ 2020-07-06T12:49:37.941034901-04:00
+// Generated @ 2020-07-06T13:52:18.671712454-04:00
 type BoolType struct {
 	*ExtendedDataType
 

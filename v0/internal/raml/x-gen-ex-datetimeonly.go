@@ -12,7 +12,7 @@ import (
 // NewDatetimeOnlyExample returns a new internal implementation of the
 // raml.DatetimeOnlyExample interface.
 //
-// Generated @ 2020-07-06T12:49:37.48714807-04:00
+// Generated @ 2020-07-06T13:52:18.264181542-04:00
 func NewDatetimeOnlyExample() *DatetimeOnlyExample {
 	return &DatetimeOnlyExample{
 		annotations: raml.NewAnnotationMap(0).SerializeOrdered(false),

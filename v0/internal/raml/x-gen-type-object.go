@@ -13,7 +13,7 @@ import (
 // NewObjectType returns a new internal implementation
 // of the raml.ObjectType interface.
 //
-// Generated @ 2020-07-06T12:49:37.941034901-04:00
+// Generated @ 2020-07-06T13:52:18.671712454-04:00
 func NewObjectType() *ObjectType {
 	out := &ObjectType{
 		examples: raml.NewObjectExampleMap(0),
@@ -30,7 +30,7 @@ func NewObjectType() *ObjectType {
 // ObjectType is a default generated implementation of
 // the raml.ObjectType interface
 //
-// Generated @ 2020-07-06T12:49:37.941034901-04:00
+// Generated @ 2020-07-06T13:52:18.671712454-04:00
 type ObjectType struct {
 	*ExtendedDataType
 

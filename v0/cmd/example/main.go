@@ -7,13 +7,14 @@ import (
 )
 
 func main() {
-	res, err := simple.GetRequest("https://raw.githubusercontent.com/raml-org/raml-examples/master/annotations/advanced.raml").
+	res, err := simple.GetRequest("https://raw.githubusercontent.com/raml-org/raml-examples/master/typesystem/complex.raml").
 		Submit().
 		GetRawResponse()
 	check(err)
 	defer res.Body.Close()
 
 	api, err := rparse.ParseApiDoc(res.Body)
+
 	check(err)
 
 	check(api.WriteRAML(os.Stdout))

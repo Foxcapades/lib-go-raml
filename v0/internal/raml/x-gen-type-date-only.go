@@ -13,7 +13,7 @@ import (
 // NewDateOnlyType returns a new internal implementation
 // of the raml.DateOnlyType interface.
 //
-// Generated @ 2020-07-06T12:49:37.941034901-04:00
+// Generated @ 2020-07-06T13:52:18.671712454-04:00
 func NewDateOnlyType() *DateOnlyType {
 	out := &DateOnlyType{
 		examples: raml.NewDateOnlyExampleMap(0),
@@ -27,7 +27,7 @@ func NewDateOnlyType() *DateOnlyType {
 // DateOnlyType is a default generated implementation of
 // the raml.DateOnlyType interface
 //
-// Generated @ 2020-07-06T12:49:37.941034901-04:00
+// Generated @ 2020-07-06T13:52:18.671712454-04:00
 type DateOnlyType struct {
 	*ExtendedDataType
 

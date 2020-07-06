@@ -46,8 +46,6 @@ type UnionExampleMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value UnionExample, exists bool)
 
-	
-
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -186,8 +184,6 @@ func (i *implUnionExampleMap) Get(k string) (value UnionExample, exists bool) {
 	v, ok := i.index[k]
 	return v, ok
 }
-
-
 
 func (i *implUnionExampleMap) At(j int) UnionExampleMapEntry {
 	return i.ordered[j]

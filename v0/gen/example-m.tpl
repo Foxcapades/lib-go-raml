@@ -17,8 +17,8 @@ import (
 // Generated @ {{.Time}}
 func New{{.Name}}Example() *{{.Name}}Example {
 	return &{{.Name}}Example{
-		annotations: raml.NewAnnotationMap(0),
-		extra:       raml.NewAnyMap(0),
+		annotations: raml.NewAnnotationMap(0).SerializeOrdered(false),
+		extra:       raml.NewAnyMap(0).SerializeOrdered(false),
 		strict:      rmeta.ExampleDefaultStrict,
 	}
 }

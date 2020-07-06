@@ -14,7 +14,7 @@ func Foo() {
 	out := &{{ .Name }}Type{}
 
 {{define "object-constructor"}}
-	out.properties = raml.NewPropertyMap(3)
+	out.properties = raml.NewPropertyMap(3).SerializeOrdered(false)
 	out.addtlProps = true
 {{end}}
 }

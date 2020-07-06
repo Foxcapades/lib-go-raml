@@ -12,14 +12,14 @@ import (
 
 func NewLibrary() *Library {
 	return &Library{
-		annotations:     raml.NewAnnotationMap(0),
-		annotationTypes: raml.NewUntypedMap(0),
-		extra:           raml.NewAnyMap(0),
-		uses:            raml.NewStringMap(1),
-		resourceTypes:   raml.NewUntypedMap(5),
-		securitySchemes: raml.NewUntypedMap(1),
-		traits:          raml.NewUntypedMap(2),
-		types:           raml.NewDataTypeMap(10),
+		annotations:     raml.NewAnnotationMap(0).SerializeOrdered(false),
+		annotationTypes: raml.NewUntypedMap(0).SerializeOrdered(false),
+		extra:           raml.NewAnyMap(0).SerializeOrdered(false),
+		uses:            raml.NewStringMap(1).SerializeOrdered(false),
+		resourceTypes:   raml.NewUntypedMap(5).SerializeOrdered(false),
+		securitySchemes: raml.NewUntypedMap(1).SerializeOrdered(false),
+		traits:          raml.NewUntypedMap(2).SerializeOrdered(false),
+		types:           raml.NewDataTypeMap(10).SerializeOrdered(false),
 	}
 }
 

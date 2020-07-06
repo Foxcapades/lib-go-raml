@@ -2,12 +2,12 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// StringType generated @ 2020-07-02T14:31:30.98374873-04:00
+// StringType generated @ 2020-07-06T12:49:37.941034901-04:00
 type StringType interface {
 	Unmarshaler
 	Marshaler
 	ExtendedDataType
-	
+
 	// SetType sets the parent type name, this does not change
 	// the underlying kind of the DataType.
 	SetType(string) StringType
@@ -143,7 +143,7 @@ type StringType interface {
 	UnsetExtraFacets() StringType
 
 	SetRequired(bool) StringType
-// Pattern returns an option which will contain the regex
+	// Pattern returns an option which will contain the regex
 	// pattern for the current string type definition if it is
 	// set.
 	Pattern() option.String

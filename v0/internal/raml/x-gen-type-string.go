@@ -1,7 +1,7 @@
 package raml
 
 import (
-"github.com/Foxcapades/goop/v1/pkg/option"
+	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -13,12 +13,12 @@ import (
 // NewStringType returns a new internal implementation
 // of the raml.StringType interface.
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 func NewStringType() *StringType {
 	out := &StringType{
 		examples: raml.NewStringExampleMap(0),
 	}
-	
+
 	out.minLength = rmeta.StringDefaultMinLength
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeString, out)
@@ -29,17 +29,17 @@ func NewStringType() *StringType {
 // StringType is a default generated implementation of
 // the raml.StringType interface
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 type StringType struct {
 	*ExtendedDataType
 
-	def      *string
-	example  raml.StringExample
-	examples raml.StringExampleMap
-	enum     []string
-	pattern      *string
-	minLength    uint
-	maxLength    *uint
+	def       *string
+	example   raml.StringExample
+	examples  raml.StringExampleMap
+	enum      []string
+	pattern   *string
+	minLength uint
+	maxLength *uint
 }
 
 func (o *StringType) SetType(s string) raml.StringType {
@@ -260,7 +260,7 @@ func (o *StringType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			if val, err := xyml.ToString(cur); err != nil {
-			
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)
@@ -272,7 +272,7 @@ func (o *StringType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-	
+
 	switch key.Value {
 	case rmeta.KeyPattern:
 		return assign.AsStringPtr(val, &o.pattern)
@@ -284,4 +284,3 @@ func (o *StringType) assign(key, val *yaml.Node) error {
 
 	return o.ExtendedDataType.assign(key, val)
 }
-

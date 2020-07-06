@@ -1,7 +1,7 @@
 package raml
 
 import (
-"github.com/Foxcapades/goop/v1/pkg/option"
+	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -13,12 +13,12 @@ import (
 // NewIntegerType returns a new internal implementation
 // of the raml.IntegerType interface.
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 func NewIntegerType() *IntegerType {
 	out := &IntegerType{
 		examples: raml.NewIntegerExampleMap(0),
 	}
-	
+
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeInteger, out)
 
 	return out
@@ -27,14 +27,14 @@ func NewIntegerType() *IntegerType {
 // IntegerType is a default generated implementation of
 // the raml.IntegerType interface
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 type IntegerType struct {
 	*ExtendedDataType
 
-	def      *int64
-	example  raml.IntegerExample
-	examples raml.IntegerExampleMap
-	enum     []int64
+	def        *int64
+	example    raml.IntegerExample
+	examples   raml.IntegerExampleMap
+	enum       []int64
 	minimum    *int64
 	maximum    *int64
 	format     raml.NumberFormat
@@ -277,7 +277,7 @@ func (o *IntegerType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			if val, err := xyml.ToInt(cur, 10); err != nil {
-			
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)
@@ -289,7 +289,7 @@ func (o *IntegerType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-	
+
 	switch key.Value {
 	case rmeta.KeyMinimum:
 		return assign.AsInt64Ptr(val, &o.minimum)
@@ -308,4 +308,3 @@ func (o *IntegerType) assign(key, val *yaml.Node) error {
 
 	return o.ExtendedDataType.assign(key, val)
 }
-

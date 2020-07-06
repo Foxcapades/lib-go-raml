@@ -1,7 +1,7 @@
 package raml
 
 import (
-"github.com/Foxcapades/goop/v1/pkg/option"
+	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -13,12 +13,12 @@ import (
 // NewAnyType returns a new internal implementation
 // of the raml.AnyType interface.
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 func NewAnyType() *AnyType {
 	out := &AnyType{
 		examples: raml.NewAnyExampleMap(0),
 	}
-	
+
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeAny, out)
 
 	return out
@@ -27,7 +27,7 @@ func NewAnyType() *AnyType {
 // AnyType is a default generated implementation of
 // the raml.AnyType interface
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 type AnyType struct {
 	*ExtendedDataType
 
@@ -35,7 +35,6 @@ type AnyType struct {
 	example  raml.AnyExample
 	examples raml.AnyExampleMap
 	enum     []interface{}
-	
 }
 
 func (o *AnyType) SetType(s string) raml.AnyType {
@@ -187,7 +186,7 @@ func (o *AnyType) marshal(out raml.AnyMap) error {
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	
+
 	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
 		PutIfNotNil(rmeta.KeyExample, o.example)
 
@@ -222,7 +221,6 @@ func (o *AnyType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-	
+
 	return o.ExtendedDataType.assign(key, val)
 }
-

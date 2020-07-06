@@ -12,11 +12,11 @@ import (
 // NewCustomExample returns a new internal implementation of the
 // raml.CustomExample interface.
 //
-// Generated @ 2020-07-02T14:19:59.953300998-04:00
+// Generated @ 2020-07-06T12:49:37.48714807-04:00
 func NewCustomExample() *CustomExample {
 	return &CustomExample{
-		annotations: raml.NewAnnotationMap(0),
-		extra:       raml.NewAnyMap(0),
+		annotations: raml.NewAnnotationMap(0).SerializeOrdered(false),
+		extra:       raml.NewAnyMap(0).SerializeOrdered(false),
 		strict:      rmeta.ExampleDefaultStrict,
 	}
 }

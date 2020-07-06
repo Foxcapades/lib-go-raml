@@ -355,7 +355,7 @@ func (a *APISpec) UnmarshalYAML(raw *yaml.Node) error {
 
 func (a *APISpec) WriteRAML(w io.Writer) error {
 	out := &yaml.Node{
-		Kind: yaml.DocumentNode,
+		Kind:        yaml.DocumentNode,
 		HeadComment: "#%RAML 1.0", //rmeta.HeaderRoot,
 	}
 	body, err := a.MarshalYAML()

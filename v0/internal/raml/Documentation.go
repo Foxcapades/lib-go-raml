@@ -8,7 +8,7 @@ import (
 )
 
 func NewDocumentation() *Documentation {
-	return &Documentation{extra: raml.NewAnyMap(0)}
+	return &Documentation{extra: raml.NewAnyMap(0).SerializeOrdered(false)}
 }
 
 type Documentation struct {

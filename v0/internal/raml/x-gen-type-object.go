@@ -1,7 +1,7 @@
 package raml
 
 import (
-"github.com/Foxcapades/goop/v1/pkg/option"
+	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -13,13 +13,13 @@ import (
 // NewObjectType returns a new internal implementation
 // of the raml.ObjectType interface.
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 func NewObjectType() *ObjectType {
 	out := &ObjectType{
 		examples: raml.NewObjectExampleMap(0),
 	}
-	
-	out.properties = raml.NewPropertyMap(3)
+
+	out.properties = raml.NewPropertyMap(3).SerializeOrdered(false)
 	out.addtlProps = true
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeObject, out)
@@ -30,14 +30,14 @@ func NewObjectType() *ObjectType {
 // ObjectType is a default generated implementation of
 // the raml.ObjectType interface
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 type ObjectType struct {
 	*ExtendedDataType
 
-	def      *interface{}
-	example  raml.ObjectExample
-	examples raml.ObjectExampleMap
-	enum     []interface{}
+	def        *interface{}
+	example    raml.ObjectExample
+	examples   raml.ObjectExampleMap
+	enum       []interface{}
 	properties raml.PropertyMap
 	minProps   *uint
 	maxProps   *uint
@@ -324,7 +324,7 @@ func (o *ObjectType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-	
+
 	switch key.Value {
 	case rmeta.KeyProperties:
 		return UnmarshalPropertyMapRAML(o.properties, val)
@@ -344,4 +344,3 @@ func (o *ObjectType) assign(key, val *yaml.Node) error {
 
 	return o.ExtendedDataType.assign(key, val)
 }
-

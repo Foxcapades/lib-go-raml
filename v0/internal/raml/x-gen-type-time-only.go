@@ -1,7 +1,7 @@
 package raml
 
 import (
-"github.com/Foxcapades/goop/v1/pkg/option"
+	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -13,12 +13,12 @@ import (
 // NewTimeOnlyType returns a new internal implementation
 // of the raml.TimeOnlyType interface.
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 func NewTimeOnlyType() *TimeOnlyType {
 	out := &TimeOnlyType{
 		examples: raml.NewTimeOnlyExampleMap(0),
 	}
-	
+
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeTimeOnly, out)
 
 	return out
@@ -27,7 +27,7 @@ func NewTimeOnlyType() *TimeOnlyType {
 // TimeOnlyType is a default generated implementation of
 // the raml.TimeOnlyType interface
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 type TimeOnlyType struct {
 	*ExtendedDataType
 
@@ -35,7 +35,6 @@ type TimeOnlyType struct {
 	example  raml.TimeOnlyExample
 	examples raml.TimeOnlyExampleMap
 	enum     []string
-	
 }
 
 func (o *TimeOnlyType) SetType(s string) raml.TimeOnlyType {
@@ -187,7 +186,7 @@ func (o *TimeOnlyType) marshal(out raml.AnyMap) error {
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	
+
 	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
 		PutIfNotNil(rmeta.KeyExample, o.example)
 
@@ -215,7 +214,7 @@ func (o *TimeOnlyType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			if val, err := xyml.ToString(cur); err != nil {
-			
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)
@@ -227,7 +226,6 @@ func (o *TimeOnlyType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-	
+
 	return o.ExtendedDataType.assign(key, val)
 }
-

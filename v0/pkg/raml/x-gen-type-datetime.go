@@ -2,12 +2,12 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// DatetimeType generated @ 2020-07-02T14:31:30.98374873-04:00
+// DatetimeType generated @ 2020-07-06T12:49:37.941034901-04:00
 type DatetimeType interface {
 	Unmarshaler
 	Marshaler
 	ExtendedDataType
-	
+
 	// SetType sets the parent type name, this does not change
 	// the underlying kind of the DataType.
 	SetType(string) DatetimeType
@@ -143,7 +143,7 @@ type DatetimeType interface {
 	UnsetExtraFacets() DatetimeType
 
 	SetRequired(bool) DatetimeType
-// Format returns the value of the "format" facet on the
+	// Format returns the value of the "format" facet on the
 	// current datetime type definition or nil if the facet is
 	// not set.
 	Format() DateFormat

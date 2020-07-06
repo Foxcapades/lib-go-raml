@@ -1,7 +1,7 @@
 package raml
 
 import (
-"github.com/Foxcapades/goop/v1/pkg/option"
+	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -13,12 +13,12 @@ import (
 // NewDateOnlyType returns a new internal implementation
 // of the raml.DateOnlyType interface.
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 func NewDateOnlyType() *DateOnlyType {
 	out := &DateOnlyType{
 		examples: raml.NewDateOnlyExampleMap(0),
 	}
-	
+
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeDateOnly, out)
 
 	return out
@@ -27,7 +27,7 @@ func NewDateOnlyType() *DateOnlyType {
 // DateOnlyType is a default generated implementation of
 // the raml.DateOnlyType interface
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 type DateOnlyType struct {
 	*ExtendedDataType
 
@@ -35,7 +35,6 @@ type DateOnlyType struct {
 	example  raml.DateOnlyExample
 	examples raml.DateOnlyExampleMap
 	enum     []string
-	
 }
 
 func (o *DateOnlyType) SetType(s string) raml.DateOnlyType {
@@ -187,7 +186,7 @@ func (o *DateOnlyType) marshal(out raml.AnyMap) error {
 	if err := o.ExtendedDataType.marshal(out); err != nil {
 		return err
 	}
-	
+
 	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
 		PutIfNotNil(rmeta.KeyExample, o.example)
 
@@ -215,7 +214,7 @@ func (o *DateOnlyType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			if val, err := xyml.ToString(cur); err != nil {
-			
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)
@@ -227,7 +226,6 @@ func (o *DateOnlyType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-	
+
 	return o.ExtendedDataType.assign(key, val)
 }
-

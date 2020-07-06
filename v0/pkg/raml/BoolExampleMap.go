@@ -46,8 +46,6 @@ type BoolExampleMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value BoolExample, exists bool)
 
-	
-
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -186,8 +184,6 @@ func (i *implBoolExampleMap) Get(k string) (value BoolExample, exists bool) {
 	v, ok := i.index[k]
 	return v, ok
 }
-
-
 
 func (i *implBoolExampleMap) At(j int) BoolExampleMapEntry {
 	return i.ordered[j]

@@ -1,7 +1,7 @@
 package raml
 
 import (
-"github.com/Foxcapades/goop/v1/pkg/option"
+	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
@@ -13,12 +13,12 @@ import (
 // NewFileType returns a new internal implementation
 // of the raml.FileType interface.
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 func NewFileType() *FileType {
 	out := &FileType{
 		examples: raml.NewFileExampleMap(0),
 	}
-	
+
 	out.minLength = rmeta.FileDefaultMinLength
 	out.maxLength = rmeta.FileDefaultMaxLength
 
@@ -30,14 +30,14 @@ func NewFileType() *FileType {
 // FileType is a default generated implementation of
 // the raml.FileType interface
 //
-// Generated @ 2020-07-02T14:31:30.98374873-04:00
+// Generated @ 2020-07-06T12:49:37.941034901-04:00
 type FileType struct {
 	*ExtendedDataType
 
-	def      *interface{}
-	example  raml.FileExample
-	examples raml.FileExampleMap
-	enum     []interface{}
+	def       *interface{}
+	example   raml.FileExample
+	examples  raml.FileExampleMap
+	enum      []interface{}
 	fileTypes []string
 	minLength uint
 	maxLength uint
@@ -267,7 +267,7 @@ func (o *FileType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
-	
+
 	switch key.Value {
 	case rmeta.KeyFileTypes:
 		return assign.AsStringList(val, &o.fileTypes)
@@ -279,4 +279,3 @@ func (o *FileType) assign(key, val *yaml.Node) error {
 
 	return o.ExtendedDataType.assign(key, val)
 }
-

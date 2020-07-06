@@ -2,12 +2,12 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// UnionType generated @ 2020-07-02T14:31:30.98374873-04:00
+// UnionType generated @ 2020-07-06T12:49:37.941034901-04:00
 type UnionType interface {
 	Unmarshaler
 	Marshaler
 	ExtendedDataType
-	
+
 	// SetType sets the parent type name, this does not change
 	// the underlying kind of the DataType.
 	SetType(string) UnionType
@@ -143,5 +143,4 @@ type UnionType interface {
 	UnsetExtraFacets() UnionType
 
 	SetRequired(bool) UnionType
-
 }

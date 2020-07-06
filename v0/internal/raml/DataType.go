@@ -48,7 +48,7 @@ func (d *DataType) ToRAML() (string, error) {
 }
 
 func (d DataType) MarshalYAML() (interface{}, error) {
-	out := raml.NewAnyMap(0)
+	out := raml.NewAnyMap(0).SerializeOrdered(false)
 	if short, err := d.MarshalRAML(out); err != nil {
 		return nil, err
 	} else if short {

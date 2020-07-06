@@ -2,6 +2,7 @@ package raml
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/Foxcapades/gomp/v1/pkg/gomp"
 	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
@@ -71,6 +72,15 @@ type ArrayExampleMap interface {
 
 	// ForEach calls the given function for for every entry in the map.
 	ForEach(func(k string, v ArrayExample)) ArrayExampleMap
+
+	// SerializeOrdered sets whether or not the ordering should be enforced by
+	// type when serializing the map.
+	//
+	// If set to true (the default value), the output will use an ordered type
+	// when serializing (array for json, ordered map for yaml).  If set to false
+	// the map will be serialized as a map/struct type and property ordering will
+	// be determined by the serialization library.
+	SerializeOrdered(bool) ArrayExampleMap
 }
 
 // ArrayExampleMapEntry is a single entry in an instance of
@@ -84,15 +94,17 @@ type ArrayExampleMapEntry struct {
 // given size.
 func NewArrayExampleMap(size int) ArrayExampleMap {
 	return &implArrayExampleMap{
-		ordered: make([]ArrayExampleMapEntry, 0, size),
-		index:   make(map[string]ArrayExample, size),
+		ordered:  make([]ArrayExampleMapEntry, 0, size),
+		index:    make(map[string]ArrayExample, size),
+		outOrder: true,
 	}
 }
 
 // ArrayExampleMap is an ordered map string to ArrayExample.
 type implArrayExampleMap struct {
-	ordered []ArrayExampleMapEntry
-	index   map[string]ArrayExample
+	ordered  []ArrayExampleMapEntry
+	index    map[string]ArrayExample
+	outOrder bool
 }
 
 func (i implArrayExampleMap) MarshalYAML() (interface{}, error) {
@@ -100,18 +112,37 @@ func (i implArrayExampleMap) MarshalYAML() (interface{}, error) {
 }
 
 func (i implArrayExampleMap) MarshalJSON() ([]byte, error) {
-	return json.Marshal(i.ordered)
+	if i.outOrder {
+		return json.Marshal(i.ordered)
+	}
+
+	out := make(map[string]interface{}, len(i.index))
+	for k, v := range i.index {
+		out[fmt.Sprint(k)] = v
+	}
+
+	return json.Marshal(out)
 }
 
 func (i *implArrayExampleMap) ToYAML() (*yaml.Node, error) {
-	out := xyml.NewOrderedMapNode(i.Len())
+	if i.outOrder {
+		out := xyml.NewOrderedMapNode(i.Len())
+
+		for j := range i.ordered {
+			tmp := xyml.NewMapNode(1)
+			_ = xyml.MapAppend(tmp, i.ordered[j].Key, i.ordered[j].Val)
+			if err := xyml.SequenceAppend(out, tmp); err != nil {
+				return nil, err
+			}
+		}
+
+		return out, nil
+	}
+
+	out := xyml.NewMapNode(i.Len())
 
 	for j := range i.ordered {
-		tmp := xyml.NewMapNode(1)
-		_ = xyml.MapAppend(tmp, i.ordered[j].Key, i.ordered[j].Val)
-		if err := xyml.SequenceAppend(out, tmp); err != nil {
-			return nil, err
-		}
+		xyml.MapAppend(out, i.ordered[j].Key, i.ordered[j].Val)
 	}
 
 	return out, nil
@@ -199,5 +230,10 @@ func (i *implArrayExampleMap) ForEach(f func(k string, v ArrayExample)) ArrayExa
 		f(i.ordered[j].Key, i.ordered[j].Val)
 	}
 
+	return i
+}
+
+func (i *implArrayExampleMap) SerializeOrdered(b bool) ArrayExampleMap {
+	i.outOrder = b
 	return i
 }

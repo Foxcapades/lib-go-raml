@@ -172,7 +172,7 @@ func (l *Library) UnmarshalYAML(root *yaml.Node) error {
 }
 
 func (l Library) MarshalYAML() (interface{}, error) {
-	out := raml.NewAnyMap(1)
+	out := raml.NewAnyMap(1).SerializeOrdered(false)
 
 	if l.usage != nil {
 		out.Put(rmeta.KeyUsage, *l.usage)

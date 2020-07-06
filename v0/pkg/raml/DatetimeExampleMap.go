@@ -2,6 +2,7 @@ package raml
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/Foxcapades/gomp/v1/pkg/gomp"
 	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
@@ -71,6 +72,15 @@ type DatetimeExampleMap interface {
 
 	// ForEach calls the given function for for every entry in the map.
 	ForEach(func(k string, v DatetimeExample)) DatetimeExampleMap
+
+	// SerializeOrdered sets whether or not the ordering should be enforced by
+	// type when serializing the map.
+	//
+	// If set to true (the default value), the output will use an ordered type
+	// when serializing (array for json, ordered map for yaml).  If set to false
+	// the map will be serialized as a map/struct type and property ordering will
+	// be determined by the serialization library.
+	SerializeOrdered(bool) DatetimeExampleMap
 }
 
 // DatetimeExampleMapEntry is a single entry in an instance of
@@ -84,15 +94,17 @@ type DatetimeExampleMapEntry struct {
 // given size.
 func NewDatetimeExampleMap(size int) DatetimeExampleMap {
 	return &implDatetimeExampleMap{
-		ordered: make([]DatetimeExampleMapEntry, 0, size),
-		index:   make(map[string]DatetimeExample, size),
+		ordered:  make([]DatetimeExampleMapEntry, 0, size),
+		index:    make(map[string]DatetimeExample, size),
+		outOrder: true,
 	}
 }
 
 // DatetimeExampleMap is an ordered map string to DatetimeExample.
 type implDatetimeExampleMap struct {
-	ordered []DatetimeExampleMapEntry
-	index   map[string]DatetimeExample
+	ordered  []DatetimeExampleMapEntry
+	index    map[string]DatetimeExample
+	outOrder bool
 }
 
 func (i implDatetimeExampleMap) MarshalYAML() (interface{}, error) {
@@ -100,18 +112,37 @@ func (i implDatetimeExampleMap) MarshalYAML() (interface{}, error) {
 }
 
 func (i implDatetimeExampleMap) MarshalJSON() ([]byte, error) {
-	return json.Marshal(i.ordered)
+	if i.outOrder {
+		return json.Marshal(i.ordered)
+	}
+
+	out := make(map[string]interface{}, len(i.index))
+	for k, v := range i.index {
+		out[fmt.Sprint(k)] = v
+	}
+
+	return json.Marshal(out)
 }
 
 func (i *implDatetimeExampleMap) ToYAML() (*yaml.Node, error) {
-	out := xyml.NewOrderedMapNode(i.Len())
+	if i.outOrder {
+		out := xyml.NewOrderedMapNode(i.Len())
+
+		for j := range i.ordered {
+			tmp := xyml.NewMapNode(1)
+			_ = xyml.MapAppend(tmp, i.ordered[j].Key, i.ordered[j].Val)
+			if err := xyml.SequenceAppend(out, tmp); err != nil {
+				return nil, err
+			}
+		}
+
+		return out, nil
+	}
+
+	out := xyml.NewMapNode(i.Len())
 
 	for j := range i.ordered {
-		tmp := xyml.NewMapNode(1)
-		_ = xyml.MapAppend(tmp, i.ordered[j].Key, i.ordered[j].Val)
-		if err := xyml.SequenceAppend(out, tmp); err != nil {
-			return nil, err
-		}
+		xyml.MapAppend(out, i.ordered[j].Key, i.ordered[j].Val)
 	}
 
 	return out, nil
@@ -199,5 +230,10 @@ func (i *implDatetimeExampleMap) ForEach(f func(k string, v DatetimeExample)) Da
 		f(i.ordered[j].Key, i.ordered[j].Val)
 	}
 
+	return i
+}
+
+func (i *implDatetimeExampleMap) SerializeOrdered(b bool) DatetimeExampleMap {
+	i.outOrder = b
 	return i
 }

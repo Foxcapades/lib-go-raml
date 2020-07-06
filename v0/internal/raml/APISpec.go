@@ -13,16 +13,16 @@ import (
 func NewApiSpec() *APISpec {
 
 	return &APISpec{
-		baseURIParameters: raml.NewUntypedMap(0),
-		types:             raml.NewDataTypeMap(5),
-		traits:            raml.NewUntypedMap(2),
-		resourceTypes:     raml.NewUntypedMap(0),
-		annotationTypes:   raml.NewUntypedMap(0),
-		annotations:       raml.NewAnnotationMap(0),
-		securitySchemes:   raml.NewUntypedMap(1),
-		uses:              raml.NewStringMap(0),
-		resources:         raml.NewUntypedMap(10),
-		extra:             raml.NewAnyMap(0),
+		baseURIParameters: raml.NewUntypedMap(0).SerializeOrdered(false),
+		types:             raml.NewDataTypeMap(5).SerializeOrdered(false),
+		traits:            raml.NewUntypedMap(2).SerializeOrdered(false),
+		resourceTypes:     raml.NewUntypedMap(0).SerializeOrdered(false),
+		annotationTypes:   raml.NewUntypedMap(0).SerializeOrdered(false),
+		annotations:       raml.NewAnnotationMap(0).SerializeOrdered(false),
+		securitySchemes:   raml.NewUntypedMap(1).SerializeOrdered(false),
+		uses:              raml.NewStringMap(0).SerializeOrdered(false),
+		resources:         raml.NewUntypedMap(10).SerializeOrdered(false),
+		extra:             raml.NewAnyMap(0).SerializeOrdered(false),
 	}
 }
 
@@ -311,7 +311,8 @@ func (a APISpec) MarshalYAML() (interface{}, error) {
 		PutIfNotNil(rmeta.KeyProtocols, a.protocols).
 		PutIfNotNil(rmeta.KeyMediaType, a.mediaType).
 		PutIfNotNil(rmeta.KeyDocumentation, a.documentation).
-		PutIfNotNil(rmeta.KeySecuredBy, a.securedBy)
+		PutIfNotNil(rmeta.KeySecuredBy, a.securedBy).
+		SerializeOrdered(false)
 
 	if a.uses.Len() > 0 {
 		out.Put(rmeta.KeyUses, a.uses)

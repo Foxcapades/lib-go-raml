@@ -48,5 +48,9 @@ func (d *IntegerFormat) UnmarshalYAML(y *yaml.Node) error {
 }
 
 func (d IntegerFormat) MarshalYAML() (interface{}, error) {
-	return string(d), nil
+	return d.ToYAML()
+}
+
+func (d IntegerFormat) ToYAML() (*yaml.Node, error) {
+	return xyml.NewStringNode(string(d)), nil
 }

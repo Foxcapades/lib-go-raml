@@ -51,5 +51,9 @@ func (d *NumberFormat) UnmarshalYAML(y *yaml.Node) error {
 }
 
 func (d NumberFormat) MarshalYAML() (interface{}, error) {
-	return string(d), nil
+	return d.ToYAML()
+}
+
+func (d NumberFormat) ToYAML() (*yaml.Node, error) {
+	return xyml.NewStringNode(string(d)), nil
 }

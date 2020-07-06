@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/Foxcapades/Go-ChainRequest v2.7.4+incompatible
-	github.com/Foxcapades/gomp v1.2.5
+	github.com/Foxcapades/gomp v1.3.1
 	github.com/Foxcapades/goop v1.0.1
 	github.com/Foxcapades/lib-go-yaml v1.3.4
 	github.com/sirupsen/logrus v1.6.0

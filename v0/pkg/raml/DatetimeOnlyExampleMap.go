@@ -46,8 +46,6 @@ type DatetimeOnlyExampleMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value DatetimeOnlyExample, exists bool)
 
-	
-
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -190,8 +188,6 @@ func (i *implDatetimeOnlyExampleMap) Get(k string) (value DatetimeOnlyExample, e
 	v, ok := i.index[k]
 	return v, ok
 }
-
-
 
 func (i *implDatetimeOnlyExampleMap) At(j int) DatetimeOnlyExampleMapEntry {
 	return i.ordered[j]

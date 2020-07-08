@@ -46,8 +46,6 @@ type FileExampleMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value FileExample, exists bool)
 
-	
-
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -190,8 +188,6 @@ func (i *implFileExampleMap) Get(k string) (value FileExample, exists bool) {
 	v, ok := i.index[k]
 	return v, ok
 }
-
-
 
 func (i *implFileExampleMap) At(j int) FileExampleMapEntry {
 	return i.ordered[j]

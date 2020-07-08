@@ -46,8 +46,6 @@ type TimeOnlyExampleMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value TimeOnlyExample, exists bool)
 
-	
-
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -190,8 +188,6 @@ func (i *implTimeOnlyExampleMap) Get(k string) (value TimeOnlyExample, exists bo
 	v, ok := i.index[k]
 	return v, ok
 }
-
-
 
 func (i *implTimeOnlyExampleMap) At(j int) TimeOnlyExampleMapEntry {
 	return i.ordered[j]

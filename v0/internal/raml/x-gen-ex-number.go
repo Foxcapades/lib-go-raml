@@ -12,7 +12,7 @@ import (
 // NewNumberExample returns a new internal implementation of the
 // raml.NumberExample interface.
 //
-// Generated @ 2020-07-06T13:52:18.264181542-04:00
+// Generated @ 2020-07-08T13:31:34.46078727-04:00
 func NewNumberExample() *NumberExample {
 	return &NumberExample{
 		annotations: raml.NewAnnotationMap(0).SerializeOrdered(false),
@@ -102,6 +102,14 @@ func (e *NumberExample) SetStrict(b bool) raml.NumberExample {
 
 func (e *NumberExample) ExtraFacets() raml.AnyMap {
 	return e.extra
+}
+
+func (e NumberExample) ToYAML() (*yaml.Node, error) {
+	out := raml.NewAnyMap(4 + e.annotations.Len() + e.extra.Len())
+	if _, err := e.MarshalRAML(out); err != nil {
+		return nil, err
+	}
+	return out.ToYAML()
 }
 
 func (e *NumberExample) UnmarshalRAML(value *yaml.Node) error {

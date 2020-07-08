@@ -46,8 +46,6 @@ type NumberExampleMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value NumberExample, exists bool)
 
-	
-
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -190,8 +188,6 @@ func (i *implNumberExampleMap) Get(k string) (value NumberExample, exists bool) 
 	v, ok := i.index[k]
 	return v, ok
 }
-
-
 
 func (i *implNumberExampleMap) At(j int) NumberExampleMapEntry {
 	return i.ordered[j]

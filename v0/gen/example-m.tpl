@@ -110,6 +110,14 @@ func (e *{{.Name}}Example) ExtraFacets() raml.AnyMap {
 	return e.extra
 }
 
+func (e {{.Name}}Example) ToYAML() (*yaml.Node, error) {
+	out := raml.NewAnyMap(4 + e.annotations.Len() + e.extra.Len())
+	if _, err := e.MarshalRAML(out); err != nil {
+		return nil, err
+	}
+	return out.ToYAML()
+}
+
 func (e *{{.Name}}Example) UnmarshalRAML(value *yaml.Node) error {
 
 	if xyml.IsMap(value) {

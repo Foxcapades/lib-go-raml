@@ -12,7 +12,7 @@ import (
 // NewCustomExample returns a new internal implementation of the
 // raml.CustomExample interface.
 //
-// Generated @ 2020-07-06T13:52:18.264181542-04:00
+// Generated @ 2020-07-08T13:31:34.46078727-04:00
 func NewCustomExample() *CustomExample {
 	return &CustomExample{
 		annotations: raml.NewAnnotationMap(0).SerializeOrdered(false),
@@ -102,6 +102,14 @@ func (e *CustomExample) SetStrict(b bool) raml.CustomExample {
 
 func (e *CustomExample) ExtraFacets() raml.AnyMap {
 	return e.extra
+}
+
+func (e CustomExample) ToYAML() (*yaml.Node, error) {
+	out := raml.NewAnyMap(4 + e.annotations.Len() + e.extra.Len())
+	if _, err := e.MarshalRAML(out); err != nil {
+		return nil, err
+	}
+	return out.ToYAML()
 }
 
 func (e *CustomExample) UnmarshalRAML(value *yaml.Node) error {

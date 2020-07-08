@@ -46,6 +46,8 @@ type IntegerExampleMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value IntegerExample, exists bool)
 
+	
+
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -122,7 +124,7 @@ func (i implIntegerExampleMap) MarshalJSON() ([]byte, error) {
 	return json.Marshal(out)
 }
 
-func (i *implIntegerExampleMap) ToYAML() (*yaml.Node, error) {
+func (i implIntegerExampleMap) ToYAML() (*yaml.Node, error) {
 	if i.outOrder {
 		out := xyml.NewOrderedMapNode(i.Len())
 
@@ -188,6 +190,8 @@ func (i *implIntegerExampleMap) Get(k string) (value IntegerExample, exists bool
 	v, ok := i.index[k]
 	return v, ok
 }
+
+
 
 func (i *implIntegerExampleMap) At(j int) IntegerExampleMapEntry {
 	return i.ordered[j]

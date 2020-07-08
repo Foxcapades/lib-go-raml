@@ -46,6 +46,8 @@ type AnnotationMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value Annotation, exists bool)
 
+	
+
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -122,7 +124,7 @@ func (i implAnnotationMap) MarshalJSON() ([]byte, error) {
 	return json.Marshal(out)
 }
 
-func (i *implAnnotationMap) ToYAML() (*yaml.Node, error) {
+func (i implAnnotationMap) ToYAML() (*yaml.Node, error) {
 	if i.outOrder {
 		out := xyml.NewOrderedMapNode(i.Len())
 
@@ -188,6 +190,8 @@ func (i *implAnnotationMap) Get(k string) (value Annotation, exists bool) {
 	v, ok := i.index[k]
 	return v, ok
 }
+
+
 
 func (i *implAnnotationMap) At(j int) AnnotationMapEntry {
 	return i.ordered[j]

@@ -12,8 +12,8 @@ import (
 
 func TestAnyExampleMap_Put(t *testing.T) {
 	Convey("TestAnyExampleMap.Put", t, func() {
-		var k string = "1eb7261e-5e03-456a-8c5e-63aedb95132d"
-		var v interface{} = "06ade346-d2f3-4be1-99fe-1ade49b2b61c"
+		var k string = "2ef5acdc-998a-470e-8ad4-fd34a1770a02"
+		var v interface{} = "56a90f83-3e07-40ff-93cf-85f2f59ca2cc"
 
 		test := raml.NewAnyExampleMap(1)
 
@@ -26,8 +26,8 @@ func TestAnyExampleMap_Put(t *testing.T) {
 
 func TestAnyExampleMap_Delete(t *testing.T) {
 	Convey("TestAnyExampleMap.Delete", t, func() {
-		var k string = "c1946012-3558-45b2-8c29-2a4ead361d74"
-		var v interface{} = "0f4b51d8-b117-451a-a15b-fd484c3637a3"
+		var k string = "06efeb53-ce3d-4369-b69a-03ca4b8e3dcb"
+		var v interface{} = "8093c103-d262-4930-955e-ce582177eea5"
 
 		test := raml.NewAnyExampleMap(1)
 
@@ -41,8 +41,8 @@ func TestAnyExampleMap_Delete(t *testing.T) {
 
 func TestAnyExampleMap_Has(t *testing.T) {
 	Convey("TestAnyExampleMap.Has", t, func() {
-		var k string = "2cf2804e-5544-46b7-adfc-399c50426f77"
-		var v interface{} = "ed089e1b-3e48-4dbf-a50d-c0272bd3f65e"
+		var k string = "065184c7-4269-43d9-82fc-94972be637b5"
+		var v interface{} = "444fc017-465d-4b5e-8c53-321ac0af37e5"
 
 		test := raml.NewAnyExampleMap(1)
 
@@ -50,14 +50,14 @@ func TestAnyExampleMap_Has(t *testing.T) {
 		So(test.Len(), ShouldEqual, 1)
 
 		So(test.Has(k), ShouldBeTrue)
-		So(test.Has("0995f490-f979-4a84-8243-45b47de8fa88"+"9bed2c72-28d6-4111-a27c-74b8c9a1f93d"), ShouldBeFalse)
+		So(test.Has("c6b70999-7af6-4e0a-9914-80fb4fd54240"+"10f4c9d3-5cee-46e4-a5f4-8a2c320db5d8"), ShouldBeFalse)
 	})
 }
 
 func TestAnyExampleMap_Get(t *testing.T) {
 	Convey("TestAnyExampleMap.Get", t, func() {
-		var k string = "fc9ddd5c-4428-4284-8916-2d835861bcbe"
-		var v interface{} = "2aa75d31-1295-4544-b893-f04e540b08f0"
+		var k string = "fd6341e8-6405-4dd9-9abf-5f12906b481e"
+		var v interface{} = "f39363ea-9d9f-4aff-a3db-65ef86b44571"
 
 		test := raml.NewAnyExampleMap(1)
 
@@ -68,15 +68,15 @@ func TestAnyExampleMap_Get(t *testing.T) {
 		So(b, ShouldBeTrue)
 		So(a, ShouldEqual, v)
 
-		_, b = test.Get("5fe83ce0-99e3-4ff2-9502-7dd29592c594" + "15bd6566-ddb0-4b94-b533-457d060bebd2")
+		_, b = test.Get("a6865a26-ef6f-4af6-9359-2d782c971c77" + "ee9bbbcd-3523-4203-8b21-0a4a8542e731")
 		So(b, ShouldBeFalse)
 	})
 }
 
 func TestAnyExampleMap_GetOpt(t *testing.T) {
 	Convey("TestAnyExampleMap.GetOpt", t, func() {
-		var k string = "5cdca5e2-92c6-41ca-aeb2-03f5960e2f61"
-		var v interface{} = "3374040e-8539-448d-8867-ffd90fc57006"
+		var k string = "af793c8d-7f03-4a33-8d30-aa473b2bb428"
+		var v interface{} = "fb6aa142-c390-4af2-b705-6cf601e5cf91"
 
 		test := raml.NewAnyExampleMap(1)
 
@@ -87,15 +87,15 @@ func TestAnyExampleMap_GetOpt(t *testing.T) {
 		So(a.IsPresent(), ShouldBeTrue)
 		So(a.Get(), ShouldEqual, v)
 
-		a = test.GetOpt("5786728f-cd6a-475e-8c5b-29b54f879457" + "e605187e-4bbb-4d0b-9dab-e370159864c6")
+		a = test.GetOpt("ff18fcec-c843-414d-aaa9-270e4098d2b0" + "490c921d-1dd6-4730-9bd2-410e313a9890")
 		So(a.IsNil(), ShouldBeTrue)
 	})
 }
 
 func TestAnyExampleMap_ForEach(t *testing.T) {
 	Convey("TestAnyExampleMap.ForEach", t, func() {
-		var k string = "8be8181b-de83-4c1f-8827-e0138688dd8f"
-		var v interface{} = "5d35b537-b6c2-484c-864c-b71132a44862"
+		var k string = "2987eb55-419b-4c69-b905-e00198ccb27e"
+		var v interface{} = "25e102c0-150f-4a8d-ad3f-2c567a5a522c"
 		hits := 0
 
 		test := raml.NewAnyExampleMap(1)
@@ -114,8 +114,8 @@ func TestAnyExampleMap_ForEach(t *testing.T) {
 
 func TestAnyExampleMap_MarshalYAML(t *testing.T) {
 	Convey("TestAnyExampleMap.MarshalYAML", t, func() {
-		var k string = "d99fc728-c0d4-47f2-a5c2-174493fb052c"
-		var v interface{} = "dd55f781-62e2-4edc-968d-d3116fbaf4ca"
+		var k string = "a69f9294-0219-4518-aeb9-626033116c54"
+		var v interface{} = "b5c39e83-af24-4342-bd0d-bdced8d6ad36"
 
 		test := raml.NewAnyExampleMap(1)
 
@@ -135,8 +135,8 @@ func TestAnyExampleMap_MarshalYAML(t *testing.T) {
 func TestAnyExampleMap_ToYAML(t *testing.T) {
 	Convey("TestAnyExampleMap.ToYAML", t, func() {
 		Convey("Ordered", func() {
-			var k string = "acac2ee2-f38e-4179-874c-ba37f1abeb6f"
-			var v interface{} = "6b653dc8-9368-431f-ad34-ff6c2407459b"
+			var k string = "878e5a55-c3ae-4857-b23f-75158f397568"
+			var v interface{} = "aca8bcf6-5a22-4a3d-9143-eaac6cd297c6"
 
 			test := raml.NewAnyExampleMap(1)
 
@@ -152,8 +152,8 @@ func TestAnyExampleMap_ToYAML(t *testing.T) {
 		})
 
 		Convey("Unordered", func() {
-			var k string = "3d95318f-c80b-498f-afba-2a0075213900"
-			var v interface{} = "5a40887f-8323-4e30-a354-c9f27cf2cdf4"
+			var k string = "8862146a-c022-4cb7-9fb8-8be2e74d75dc"
+			var v interface{} = "b7d74534-ed11-4c56-aee4-3d8260a02408"
 
 			test := raml.NewAnyExampleMap(1)
 			test.SerializeOrdered(false)
@@ -173,8 +173,8 @@ func TestAnyExampleMap_ToYAML(t *testing.T) {
 
 func TestAnyExampleMap_PutIfNotNil(t *testing.T) {
 	Convey("TestAnyExampleMap.PutIfNotNil", t, func() {
-		var k string = "e2eb26aa-bee4-4d1b-b1da-d2d44b9da8bb"
-		var v interface{} = "ba0298a6-199a-4084-b8e9-e1a22c367f7e"
+		var k string = "b5e00d82-ed59-431e-89fd-a1a93d1f8cf8"
+		var v interface{} = "ca69c05d-cbe2-44b3-8ca3-75033cd11034"
 
 		test := raml.NewAnyExampleMap(1)
 
@@ -185,11 +185,11 @@ func TestAnyExampleMap_PutIfNotNil(t *testing.T) {
 		So(test.Len(), ShouldEqual, 1)
 		So(test.At(0).Val, ShouldEqual, v)
 
-		So(test.PutIfNotNil("ac963117-39df-485d-a9ac-52623e4f186e", (*interface{})(nil)), ShouldPointTo, test)
+		So(test.PutIfNotNil("613d19f5-f263-4db3-9fb2-76b9905d5dbc", (*interface{})(nil)), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 1)
 
-		var x interface{} = "1da20d2e-136e-43c4-8529-33c82f4f0e02"
-		So(test.PutIfNotNil("d85d29ad-01bf-45c0-85a8-fe4be74e39fc", &x), ShouldPointTo, test)
+		var x interface{} = "58368a54-8037-438d-9020-404d92aca144"
+		So(test.PutIfNotNil("db569e59-023d-4340-8148-eefbf7ede9c7", &x), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 2)
 		So(test.At(1).Val, ShouldEqual, x)
 	})
@@ -197,16 +197,16 @@ func TestAnyExampleMap_PutIfNotNil(t *testing.T) {
 
 func TestAnyExampleMap_ReplaceIfExists(t *testing.T) {
 	Convey("TestAnyExampleMap.ReplaceIfExists", t, func() {
-		var k string = "a2730c99-3608-4ad5-be75-12f24e53db0b"
-		var v interface{} = "2fba8f3f-1be2-4d1f-8475-7c5ea4ce5794"
-		var x interface{} = "a799ff23-5840-40df-b2f9-c5ae695b3ec4"
+		var k string = "74f442a0-5f59-4608-96a9-1fa4997cb7fb"
+		var v interface{} = "07bf306e-e2e5-44f4-9c6d-974153811b1d"
+		var x interface{} = "9352cd43-32a5-4eec-8af9-c00b215d4d20"
 
 		test := raml.NewAnyExampleMap(1)
 
 		So(test.Put(k, v), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 1)
 
-		So(test.ReplaceIfExists("86478908-a734-4b35-8d1b-5ee93bf1e4dd", x), ShouldPointTo, test)
+		So(test.ReplaceIfExists("2a406074-2119-4b98-95e6-9dce30b3d591", x), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 1)
 		So(test.At(0).Val, ShouldEqual, v)
 
@@ -218,16 +218,16 @@ func TestAnyExampleMap_ReplaceIfExists(t *testing.T) {
 
 func TestAnyExampleMap_ReplaceOrPut(t *testing.T) {
 	Convey("TestAnyExampleMap.ReplaceOrPut", t, func() {
-		var k string = "8b25138c-1b46-47e1-86ee-d724ba4b2d8f"
-		var v interface{} = "eac5dba6-f2e4-47df-bf9c-4120ff2ac466"
-		var x interface{} = "baca153a-6dab-4ca1-9a43-b08623704caa"
+		var k string = "4913813e-ce0d-484a-8099-cbe99bc4dc72"
+		var v interface{} = "b5d23328-03cf-4900-989f-5347f728a6f7"
+		var x interface{} = "f0db180c-b5a3-49cd-b8c2-ab9133bbf65b"
 
 		test := raml.NewAnyExampleMap(1)
 
 		So(test.Put(k, v), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 1)
 
-		So(test.ReplaceOrPut("8cd9e1d7-fe0b-43b1-ad0d-4a0398a572e6", x), ShouldPointTo, test)
+		So(test.ReplaceOrPut("01a8f4fe-9305-4c65-a23f-5cc148a5496d", x), ShouldPointTo, test)
 		So(test.Len(), ShouldEqual, 2)
 		So(test.At(1).Val, ShouldEqual, x)
 
@@ -240,8 +240,8 @@ func TestAnyExampleMap_ReplaceOrPut(t *testing.T) {
 func TestAnyExampleMap_MarshalJSON(t *testing.T) {
 	Convey("TestAnyExampleMap.MarshalJSON", t, func() {
 		Convey("Ordered", func() {
-			var k string = "f66e7f74-70ae-47e1-92a8-e61ee70aad79"
-			var v interface{} = "3b376dc3-ecfa-4e60-9069-0c4c4ef638cc"
+			var k string = "592bb290-ce7f-4ad4-aba0-008b74c55197"
+			var v interface{} = "efac9a23-11cf-42c3-b85b-7dcd70cb085c"
 
 			test := raml.NewAnyExampleMap(1)
 
@@ -250,12 +250,12 @@ func TestAnyExampleMap_MarshalJSON(t *testing.T) {
 
 			a, b := test.MarshalJSON()
 			So(b, ShouldBeNil)
-			So(string(a), ShouldEqual, `[{"key":"f66e7f74-70ae-47e1-92a8-e61ee70aad79","value":"3b376dc3-ecfa-4e60-9069-0c4c4ef638cc"}]`)
+			So(string(a), ShouldEqual, `[{"key":"592bb290-ce7f-4ad4-aba0-008b74c55197","value":"efac9a23-11cf-42c3-b85b-7dcd70cb085c"}]`)
 		})
 
 		Convey("Unordered", func() {
-			var k string = "f66e7f74-70ae-47e1-92a8-e61ee70aad79"
-			var v interface{} = "3b376dc3-ecfa-4e60-9069-0c4c4ef638cc"
+			var k string = "592bb290-ce7f-4ad4-aba0-008b74c55197"
+			var v interface{} = "efac9a23-11cf-42c3-b85b-7dcd70cb085c"
 
 			test := raml.NewAnyExampleMap(1)
 			test.SerializeOrdered(false)
@@ -265,7 +265,7 @@ func TestAnyExampleMap_MarshalJSON(t *testing.T) {
 
 			a, b := test.MarshalJSON()
 			So(b, ShouldBeNil)
-			So(string(a), ShouldEqual, `{"f66e7f74-70ae-47e1-92a8-e61ee70aad79":"3b376dc3-ecfa-4e60-9069-0c4c4ef638cc"}`)
+			So(string(a), ShouldEqual, `{"592bb290-ce7f-4ad4-aba0-008b74c55197":"efac9a23-11cf-42c3-b85b-7dcd70cb085c"}`)
 		})
 
 	})

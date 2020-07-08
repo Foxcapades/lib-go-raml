@@ -46,6 +46,8 @@ type StringExampleMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value StringExample, exists bool)
 
+	
+
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -122,7 +124,7 @@ func (i implStringExampleMap) MarshalJSON() ([]byte, error) {
 	return json.Marshal(out)
 }
 
-func (i *implStringExampleMap) ToYAML() (*yaml.Node, error) {
+func (i implStringExampleMap) ToYAML() (*yaml.Node, error) {
 	if i.outOrder {
 		out := xyml.NewOrderedMapNode(i.Len())
 
@@ -188,6 +190,8 @@ func (i *implStringExampleMap) Get(k string) (value StringExample, exists bool) 
 	v, ok := i.index[k]
 	return v, ok
 }
+
+
 
 func (i *implStringExampleMap) At(j int) StringExampleMapEntry {
 	return i.ordered[j]

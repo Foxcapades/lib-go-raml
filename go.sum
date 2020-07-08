@@ -2,8 +2,8 @@ github.com/Foxcapades/Argonaut v0.1.7 h1:eDwa4xgT/zMicdbHIv77iB9YUTCVou60LW7kfiY
 github.com/Foxcapades/Argonaut v0.1.7/go.mod h1:KXdth3ZGCceAcZpHLNw5/DARJ3VxU1asReMSFPMDF3U=
 github.com/Foxcapades/Go-ChainRequest v2.7.4+incompatible h1:hUmvv11pLn3oNv8LSom8EDlwS/imErSKQi2cfwmxfYM=
 github.com/Foxcapades/Go-ChainRequest v2.7.4+incompatible/go.mod h1:sKBa2PYX7hjF4rQLnUKUPj2QuhTUm417vKB/oqDeXJE=
-github.com/Foxcapades/gomp v1.3.3 h1:V7dp7KzUSYFS06TV32E3ctrXeOedESCGmFZVF4aJAuY=
-github.com/Foxcapades/gomp v1.3.3/go.mod h1:aZIfT+KZl/m0KcQKgpol1wK/f/ho04aNkdjuPgKh21k=
+github.com/Foxcapades/gomp v1.3.4 h1:IE8LtDXZBojZ9Ij53XIb1l4ECIci9fceT5pR05dnPKc=
+github.com/Foxcapades/gomp v1.3.4/go.mod h1:aZIfT+KZl/m0KcQKgpol1wK/f/ho04aNkdjuPgKh21k=
 github.com/Foxcapades/goop v1.0.1 h1:AXKiuhDU4dmzrz8G2tJObaDVnFD9xF839OrQ9nf1wOk=
 github.com/Foxcapades/goop v1.0.1/go.mod h1:b3aNWZeWduy0Kl4bISx+MHOq3Ll6Tb0Q2M78ZmdJ/DM=
 github.com/Foxcapades/lib-go-yaml v1.4.0 h1:mMDwUoAqC+6D9Wv9LsjlBDpGdUg1piVf+lbdjtsCwUE=

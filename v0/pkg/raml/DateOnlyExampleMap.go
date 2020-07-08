@@ -46,6 +46,8 @@ type DateOnlyExampleMap interface {
 	// Returns a value and a boolean value indicating whether the value was found.
 	Get(k string) (value DateOnlyExample, exists bool)
 
+	
+
 	// At returns the key/value pair at the given index.
 	//
 	// This method makes no attempt to verify that the index given actually exists
@@ -122,7 +124,7 @@ func (i implDateOnlyExampleMap) MarshalJSON() ([]byte, error) {
 	return json.Marshal(out)
 }
 
-func (i *implDateOnlyExampleMap) ToYAML() (*yaml.Node, error) {
+func (i implDateOnlyExampleMap) ToYAML() (*yaml.Node, error) {
 	if i.outOrder {
 		out := xyml.NewOrderedMapNode(i.Len())
 
@@ -188,6 +190,8 @@ func (i *implDateOnlyExampleMap) Get(k string) (value DateOnlyExample, exists bo
 	v, ok := i.index[k]
 	return v, ok
 }
+
+
 
 func (i *implDateOnlyExampleMap) At(j int) DateOnlyExampleMapEntry {
 	return i.ordered[j]

@@ -1,7 +1,6 @@
 package raml
 
 import (
-	"fmt"
 	"github.com/Foxcapades/goop/v1/pkg/option"
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
@@ -9,7 +8,6 @@ import (
 	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
-	"os"
 )
 
 // NewStringType returns a new internal implementation
@@ -261,7 +259,6 @@ func (o *StringType) assign(key, val *yaml.Node) error {
 		return UnmarshalStringExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
-			fmt.Fprintln(os.Stderr, cur)
 			if tmp, err := xyml.ToString(cur); err != nil {
 
 				return err

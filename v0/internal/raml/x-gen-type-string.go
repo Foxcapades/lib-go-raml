@@ -13,7 +13,7 @@ import (
 // NewStringType returns a new internal implementation
 // of the raml.StringType interface.
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 func NewStringType() *StringType {
 	out := &StringType{
 		examples: raml.NewStringExampleMap(0),
@@ -29,7 +29,7 @@ func NewStringType() *StringType {
 // StringType is a default generated implementation of
 // the raml.StringType interface
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 type StringType struct {
 	*ExtendedDataType
 
@@ -259,15 +259,16 @@ func (o *StringType) assign(key, val *yaml.Node) error {
 		return UnmarshalStringExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
-			if tmp, err := xyml.ToString(cur); err != nil {
+			if val, err := xyml.ToString(cur); err != nil {
 
 				return err
 			} else {
-				o.enum = append(o.enum, tmp)
+				o.enum = append(o.enum, val)
 			}
 
 			return nil
 		})
+		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

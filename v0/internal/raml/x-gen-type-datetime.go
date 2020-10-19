@@ -13,7 +13,7 @@ import (
 // NewDatetimeType returns a new internal implementation
 // of the raml.DatetimeType interface.
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 func NewDatetimeType() *DatetimeType {
 	out := &DatetimeType{
 		examples: raml.NewDatetimeExampleMap(0),
@@ -27,7 +27,7 @@ func NewDatetimeType() *DatetimeType {
 // DatetimeType is a default generated implementation of
 // the raml.DatetimeType interface
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 type DatetimeType struct {
 	*ExtendedDataType
 

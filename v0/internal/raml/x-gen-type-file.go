@@ -13,7 +13,7 @@ import (
 // NewFileType returns a new internal implementation
 // of the raml.FileType interface.
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 func NewFileType() *FileType {
 	out := &FileType{
 		examples: raml.NewFileExampleMap(0),
@@ -30,7 +30,7 @@ func NewFileType() *FileType {
 // FileType is a default generated implementation of
 // the raml.FileType interface
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 type FileType struct {
 	*ExtendedDataType
 
@@ -259,7 +259,7 @@ func (o *FileType) assign(key, val *yaml.Node) error {
 		return UnmarshalFileExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
-			o.enum = append(o.enum, val)
+			o.enum = append(o.enum, cur)
 
 			return nil
 		})

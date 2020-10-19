@@ -1,6 +1,6 @@
 package raml
 
-// IncludeType generated @ 2020-07-06T13:52:18.671712454-04:00
+// IncludeType generated @ 2020-10-19T13:48:24.9771134-04:00
 type IncludeType interface {
 	Unmarshaler
 	Marshaler

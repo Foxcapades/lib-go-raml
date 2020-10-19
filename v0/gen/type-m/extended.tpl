@@ -294,7 +294,7 @@ func (o *{{.Name}}Type) assign(key, val *yaml.Node) error {
 				o.enum = append(o.enum, val)
 			}
 			{{- else -}}
-			o.enum = append(o.enum, val)
+			o.enum = append(o.enum, cur)
 			{{- end}}
 
 			return nil

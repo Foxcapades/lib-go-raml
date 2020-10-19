@@ -12,7 +12,7 @@ import (
 // NewArrayType returns a new internal implementation
 // of the raml.ArrayType interface.
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 func NewArrayType() *ArrayType {
 	out := &ArrayType{
 		examples: raml.NewArrayExampleMap(0),
@@ -30,7 +30,7 @@ func NewArrayType() *ArrayType {
 // ArrayType is a default generated implementation of
 // the raml.ArrayType interface
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 type ArrayType struct {
 	*ExtendedDataType
 
@@ -275,7 +275,7 @@ func (o *ArrayType) assign(key, val *yaml.Node) error {
 		return UnmarshalArrayExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
-			o.enum = append(o.enum, val)
+			o.enum = append(o.enum, cur)
 
 			return nil
 		})

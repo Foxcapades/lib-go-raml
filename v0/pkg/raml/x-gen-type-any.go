@@ -2,7 +2,7 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// AnyType generated @ 2020-07-06T13:52:18.671712454-04:00
+// AnyType generated @ 2020-10-19T13:48:24.9771134-04:00
 type AnyType interface {
 	Unmarshaler
 	Marshaler

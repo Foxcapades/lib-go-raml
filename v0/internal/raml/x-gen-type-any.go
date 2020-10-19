@@ -13,7 +13,7 @@ import (
 // NewAnyType returns a new internal implementation
 // of the raml.AnyType interface.
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 func NewAnyType() *AnyType {
 	out := &AnyType{
 		examples: raml.NewAnyExampleMap(0),
@@ -27,7 +27,7 @@ func NewAnyType() *AnyType {
 // AnyType is a default generated implementation of
 // the raml.AnyType interface
 //
-// Generated @ 2020-07-06T13:52:18.671712454-04:00
+// Generated @ 2020-10-19T13:48:24.9771134-04:00
 type AnyType struct {
 	*ExtendedDataType
 
@@ -213,7 +213,7 @@ func (o *AnyType) assign(key, val *yaml.Node) error {
 		return UnmarshalAnyExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
-			o.enum = append(o.enum, val)
+			o.enum = append(o.enum, cur)
 
 			return nil
 		})

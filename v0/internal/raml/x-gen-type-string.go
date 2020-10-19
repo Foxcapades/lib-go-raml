@@ -259,16 +259,15 @@ func (o *StringType) assign(key, val *yaml.Node) error {
 		return UnmarshalStringExampleMapRAML(o.examples, val)
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
-			if val, err := xyml.ToString(cur); err != nil {
+			if tmp, err := xyml.ToString(cur); err != nil {
 
 				return err
 			} else {
-				o.enum = append(o.enum, val)
+				o.enum = append(o.enum, tmp)
 			}
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

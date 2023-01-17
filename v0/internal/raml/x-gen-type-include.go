@@ -9,7 +9,7 @@ import (
 // NewIncludeType returns a new internal implementation of
 // the raml.IncludeType interface.
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 func NewIncludeType() *IncludeType {
 	out := &IncludeType{}
 
@@ -21,7 +21,7 @@ func NewIncludeType() *IncludeType {
 // IncludeType is a generated internal implementation of
 // the raml.IncludeType interface.
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 type IncludeType struct {
 	*DataType
 }

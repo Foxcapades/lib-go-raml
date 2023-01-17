@@ -18,11 +18,11 @@ type DataType interface {
 	// Similar to SetType on higher level implementations, this sets the type
 	// property of the current element, but without the builder pattern setter.
 	//
-	// Additionally this is the only way to set a custom (invalid) type on basic
+	// Additionally, this is the only way to set a custom (invalid) type on basic
 	// nodes such as Nil or Any.
 	OverrideType(t string)
 
-	// Kind returns the the base or computed type for the RAML element.
+	// Kind returns the base or computed type for the RAML element.
 	Kind() rmeta.DataTypeKind
 
 	// ExtraFacets returns a mutable map of the extra facets

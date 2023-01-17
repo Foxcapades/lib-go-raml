@@ -5,7 +5,7 @@ const headerBase = "#%RAML 1.0"
 type ModuleType string
 
 // RAML Module Types
-//noinspection GoUnusedConst
+// noinspection GoUnusedConst
 const (
 	TypeRoot ModuleType = "root"
 

@@ -13,11 +13,13 @@ import (
 // NewCustomType returns a new internal implementation
 // of the raml.CustomType interface.
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 func NewCustomType() *CustomType {
 	out := &CustomType{
 		examples: raml.NewCustomExampleMap(0),
 	}
+
+	out.examples.SerializeOrdered(false)
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeCustom, out)
 
@@ -27,7 +29,7 @@ func NewCustomType() *CustomType {
 // CustomType is a default generated implementation of
 // the raml.CustomType interface
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 type CustomType struct {
 	*ExtendedDataType
 

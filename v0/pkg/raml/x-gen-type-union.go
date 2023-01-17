@@ -2,7 +2,7 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// UnionType generated @ 2020-10-19T13:48:24.9771134-04:00
+// UnionType generated @ 2023-01-17T10:02:54.294844187-05:00
 type UnionType interface {
 	Unmarshaler
 	Marshaler

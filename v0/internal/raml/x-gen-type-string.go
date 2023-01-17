@@ -13,11 +13,13 @@ import (
 // NewStringType returns a new internal implementation
 // of the raml.StringType interface.
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 func NewStringType() *StringType {
 	out := &StringType{
 		examples: raml.NewStringExampleMap(0),
 	}
+
+	out.examples.SerializeOrdered(false)
 
 	out.minLength = rmeta.StringDefaultMinLength
 
@@ -29,7 +31,7 @@ func NewStringType() *StringType {
 // StringType is a default generated implementation of
 // the raml.StringType interface
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 type StringType struct {
 	*ExtendedDataType
 

@@ -2,7 +2,7 @@
 package raml
 {{ define "extended" }}
 import (
-{{if not (eq .Name "Array") -}}
+{{- if not (eq .Name "Array")}}
 	"github.com/Foxcapades/goop/v1/pkg/option"
 {{- end}}
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
@@ -21,6 +21,8 @@ func New{{ .Name }}Type() *{{ .Name }}Type {
 	out := &{{.Name}}Type{
 		examples: raml.New{{.Name}}ExampleMap(0),
 	}
+
+  out.examples.SerializeOrdered(false)
 	{{if eq .Name "Object" -}}
 		{{template "object-constructor" $}}
 	{{- else if eq .Name "Array" -}}

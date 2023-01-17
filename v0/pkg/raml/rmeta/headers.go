@@ -1,7 +1,7 @@
 package rmeta
 
 // Raml Headers
-//noinspection GoUnusedConst
+// noinspection GoUnusedConst
 const (
 	headerBase      = "#%RAML 1.0"
 	headerFoot      = "\n---\n"

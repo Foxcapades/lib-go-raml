@@ -12,11 +12,13 @@ import (
 // NewArrayType returns a new internal implementation
 // of the raml.ArrayType interface.
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 func NewArrayType() *ArrayType {
 	out := &ArrayType{
 		examples: raml.NewArrayExampleMap(0),
 	}
+
+	out.examples.SerializeOrdered(false)
 
 	out.minItems = rmeta.ArrayDefaultMinItems
 	out.maxItems = rmeta.ArrayDefaultMaxItems
@@ -30,7 +32,7 @@ func NewArrayType() *ArrayType {
 // ArrayType is a default generated implementation of
 // the raml.ArrayType interface
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 type ArrayType struct {
 	*ExtendedDataType
 

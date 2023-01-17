@@ -13,11 +13,13 @@ import (
 // NewIntegerType returns a new internal implementation
 // of the raml.IntegerType interface.
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 func NewIntegerType() *IntegerType {
 	out := &IntegerType{
 		examples: raml.NewIntegerExampleMap(0),
 	}
+
+	out.examples.SerializeOrdered(false)
 
 	out.ExtendedDataType = NewExtendedDataType(rmeta.TypeInteger, out)
 
@@ -27,7 +29,7 @@ func NewIntegerType() *IntegerType {
 // IntegerType is a default generated implementation of
 // the raml.IntegerType interface
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 type IntegerType struct {
 	*ExtendedDataType
 

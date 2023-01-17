@@ -13,11 +13,13 @@ import (
 // NewFileType returns a new internal implementation
 // of the raml.FileType interface.
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 func NewFileType() *FileType {
 	out := &FileType{
 		examples: raml.NewFileExampleMap(0),
 	}
+
+	out.examples.SerializeOrdered(false)
 
 	out.minLength = rmeta.FileDefaultMinLength
 	out.maxLength = rmeta.FileDefaultMaxLength
@@ -30,7 +32,7 @@ func NewFileType() *FileType {
 // FileType is a default generated implementation of
 // the raml.FileType interface
 //
-// Generated @ 2020-10-19T13:48:24.9771134-04:00
+// Generated @ 2023-01-17T10:02:54.294844187-05:00
 type FileType struct {
 	*ExtendedDataType
 

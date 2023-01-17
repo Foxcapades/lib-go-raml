@@ -2,7 +2,7 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// CustomType generated @ 2020-10-19T13:48:24.9771134-04:00
+// CustomType generated @ 2023-01-17T10:02:54.294844187-05:00
 type CustomType interface {
 	Unmarshaler
 	Marshaler

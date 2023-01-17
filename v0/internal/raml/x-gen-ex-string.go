@@ -12,7 +12,7 @@ import (
 // NewStringExample returns a new internal implementation of the
 // raml.StringExample interface.
 //
-// Generated @ 2020-07-08T13:31:34.46078727-04:00
+// Generated @ 2023-01-17T11:42:46.993195814-05:00
 func NewStringExample() *StringExample {
 	return &StringExample{
 		annotations: raml.NewAnnotationMap(0).SerializeOrdered(false),
@@ -105,7 +105,7 @@ func (e *StringExample) ExtraFacets() raml.AnyMap {
 }
 
 func (e StringExample) ToYAML() (*yaml.Node, error) {
-	out := raml.NewAnyMap(4 + e.annotations.Len() + e.extra.Len())
+	out := raml.NewAnyMap(4 + e.annotations.Len() + e.extra.Len()).SerializeOrdered(false)
 	if _, err := e.MarshalRAML(out); err != nil {
 		return nil, err
 	}

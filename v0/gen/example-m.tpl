@@ -111,7 +111,7 @@ func (e *{{.Name}}Example) ExtraFacets() raml.AnyMap {
 }
 
 func (e {{.Name}}Example) ToYAML() (*yaml.Node, error) {
-	out := raml.NewAnyMap(4 + e.annotations.Len() + e.extra.Len())
+	out := raml.NewAnyMap(4 + e.annotations.Len() + e.extra.Len()).SerializeOrdered(false)
 	if _, err := e.MarshalRAML(out); err != nil {
 		return nil, err
 	}

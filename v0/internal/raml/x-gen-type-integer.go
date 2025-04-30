@@ -13,7 +13,7 @@ import (
 // NewIntegerType returns a new internal implementation
 // of the raml.IntegerType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewIntegerType() *IntegerType {
 	out := &IntegerType{
 		examples: raml.NewIntegerExampleMap(0),
@@ -29,7 +29,7 @@ func NewIntegerType() *IntegerType {
 // IntegerType is a default generated implementation of
 // the raml.IntegerType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type IntegerType struct {
 	*ExtendedDataType
 
@@ -50,6 +50,7 @@ func (o *IntegerType) SetType(s string) raml.IntegerType {
 
 func (o *IntegerType) Default() option.Int64 {
 	return option.NewMaybeInt64(o.def)
+
 }
 
 func (o *IntegerType) SetDefault(i int64) raml.IntegerType {
@@ -252,6 +253,7 @@ func (o *IntegerType) marshal(out raml.AnyMap) error {
 		PutIfNotNil(rmeta.KeyMinimum, o.minimum).
 		PutIfNotNil(rmeta.KeyMaximum, o.maximum).
 		PutIfNotNil(rmeta.KeyMultipleOf, o.multipleOf)
+
 	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
 		PutIfNotNil(rmeta.KeyExample, o.example)
 
@@ -287,7 +289,6 @@ func (o *IntegerType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

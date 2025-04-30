@@ -13,7 +13,7 @@ import (
 // NewDateOnlyType returns a new internal implementation
 // of the raml.DateOnlyType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewDateOnlyType() *DateOnlyType {
 	out := &DateOnlyType{
 		examples: raml.NewDateOnlyExampleMap(0),
@@ -29,7 +29,7 @@ func NewDateOnlyType() *DateOnlyType {
 // DateOnlyType is a default generated implementation of
 // the raml.DateOnlyType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type DateOnlyType struct {
 	*ExtendedDataType
 
@@ -46,6 +46,7 @@ func (o *DateOnlyType) SetType(s string) raml.DateOnlyType {
 
 func (o *DateOnlyType) Default() option.String {
 	return option.NewMaybeString(o.def)
+
 }
 
 func (o *DateOnlyType) SetDefault(i string) raml.DateOnlyType {
@@ -224,7 +225,6 @@ func (o *DateOnlyType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

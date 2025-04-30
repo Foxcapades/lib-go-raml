@@ -13,7 +13,7 @@ import (
 // NewDatetimeType returns a new internal implementation
 // of the raml.DatetimeType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewDatetimeType() *DatetimeType {
 	out := &DatetimeType{
 		examples: raml.NewDatetimeExampleMap(0),
@@ -29,7 +29,7 @@ func NewDatetimeType() *DatetimeType {
 // DatetimeType is a default generated implementation of
 // the raml.DatetimeType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type DatetimeType struct {
 	*ExtendedDataType
 
@@ -47,6 +47,7 @@ func (o *DatetimeType) SetType(s string) raml.DatetimeType {
 
 func (o *DatetimeType) Default() option.String {
 	return option.NewMaybeString(o.def)
+
 }
 
 func (o *DatetimeType) SetDefault(i string) raml.DatetimeType {
@@ -204,6 +205,7 @@ func (o *DatetimeType) marshal(out raml.AnyMap) error {
 		return err
 	}
 	out.PutIfNotNil(rmeta.KeyFormat, o.format)
+
 	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
 		PutIfNotNil(rmeta.KeyExample, o.example)
 
@@ -239,7 +241,6 @@ func (o *DatetimeType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

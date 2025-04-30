@@ -3,11 +3,6 @@ package raml
 
 {{define "base" -}}
 import (
-	{{if eq .Name "Include" -}}
-	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
-	"gopkg.in/yaml.v3"
-
-{{- end}}
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 )
 
@@ -30,23 +25,4 @@ func New{{.Name}}Type() *{{.Name}}Type {
 type {{.Name}}Type struct {
 	*DataType
 }
-{{if eq .Name "Include"}}
-func (a {{.Name}}Type) marshal(out raml.AnyMap) error {
-	out.Put(rmeta.KeyType, &yaml.Node{
-		Kind: yaml.ScalarNode,
-		Tag: "!include",
-		Value: a.DataType.schema,
-	})
-	a.DataType.hasExtra.out(out)
-
-	return nil
-}
-func(a *{{.Name}}Type) assign(key, val *yaml.Node) (err error) {
-	switch key.Value {
-	case rmeta.KeyType, rmeta.KeySchema:
-		a.DataType.schema = val.Value
-	}
-	return nil
-}
-{{end}}
 {{end}}

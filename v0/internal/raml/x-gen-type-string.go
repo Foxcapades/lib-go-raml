@@ -13,7 +13,7 @@ import (
 // NewStringType returns a new internal implementation
 // of the raml.StringType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewStringType() *StringType {
 	out := &StringType{
 		examples: raml.NewStringExampleMap(0),
@@ -31,7 +31,7 @@ func NewStringType() *StringType {
 // StringType is a default generated implementation of
 // the raml.StringType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type StringType struct {
 	*ExtendedDataType
 
@@ -51,6 +51,7 @@ func (o *StringType) SetType(s string) raml.StringType {
 
 func (o *StringType) Default() option.String {
 	return option.NewMaybeString(o.def)
+
 }
 
 func (o *StringType) SetDefault(i string) raml.StringType {
@@ -235,6 +236,7 @@ func (o *StringType) marshal(out raml.AnyMap) error {
 		out.Put(rmeta.KeyMinLength, o.minLength)
 	}
 	out.PutIfNotNil(rmeta.KeyMaxLength, o.maxLength)
+
 	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
 		PutIfNotNil(rmeta.KeyExample, o.example)
 
@@ -270,7 +272,6 @@ func (o *StringType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

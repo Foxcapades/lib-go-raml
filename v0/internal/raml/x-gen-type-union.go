@@ -13,7 +13,7 @@ import (
 // NewUnionType returns a new internal implementation
 // of the raml.UnionType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewUnionType() *UnionType {
 	out := &UnionType{
 		examples: raml.NewUnionExampleMap(0),
@@ -29,7 +29,7 @@ func NewUnionType() *UnionType {
 // UnionType is a default generated implementation of
 // the raml.UnionType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type UnionType struct {
 	*ExtendedDataType
 
@@ -46,6 +46,7 @@ func (o *UnionType) SetType(s string) raml.UnionType {
 
 func (o *UnionType) Default() option.Untyped {
 	return option.NewMaybeUntyped(o.def)
+
 }
 
 func (o *UnionType) SetDefault(i interface{}) raml.UnionType {
@@ -219,7 +220,6 @@ func (o *UnionType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

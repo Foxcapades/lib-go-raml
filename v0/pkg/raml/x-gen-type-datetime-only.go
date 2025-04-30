@@ -2,7 +2,7 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// DatetimeOnlyType generated @ 2025-04-30T18:02:23.857064227-04:00
+// DatetimeOnlyType generated @ 2025-04-30T18:50:42.201241268-04:00
 type DatetimeOnlyType interface {
 	Unmarshaler
 	Marshaler

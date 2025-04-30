@@ -13,7 +13,7 @@ import (
 // NewAnyType returns a new internal implementation
 // of the raml.AnyType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewAnyType() *AnyType {
 	out := &AnyType{
 		examples: raml.NewAnyExampleMap(0),
@@ -29,7 +29,7 @@ func NewAnyType() *AnyType {
 // AnyType is a default generated implementation of
 // the raml.AnyType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type AnyType struct {
 	*ExtendedDataType
 
@@ -46,6 +46,7 @@ func (o *AnyType) SetType(s string) raml.AnyType {
 
 func (o *AnyType) Default() option.Untyped {
 	return option.NewMaybeUntyped(o.def)
+
 }
 
 func (o *AnyType) SetDefault(i interface{}) raml.AnyType {
@@ -219,7 +220,6 @@ func (o *AnyType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

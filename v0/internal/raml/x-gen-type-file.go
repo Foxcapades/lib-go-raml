@@ -13,7 +13,7 @@ import (
 // NewFileType returns a new internal implementation
 // of the raml.FileType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewFileType() *FileType {
 	out := &FileType{
 		examples: raml.NewFileExampleMap(0),
@@ -32,7 +32,7 @@ func NewFileType() *FileType {
 // FileType is a default generated implementation of
 // the raml.FileType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type FileType struct {
 	*ExtendedDataType
 
@@ -52,6 +52,7 @@ func (o *FileType) SetType(s string) raml.FileType {
 
 func (o *FileType) Default() option.Untyped {
 	return option.NewMaybeUntyped(o.def)
+
 }
 
 func (o *FileType) SetDefault(i interface{}) raml.FileType {
@@ -235,6 +236,7 @@ func (o *FileType) marshal(out raml.AnyMap) error {
 	if o.maxLength != rmeta.FileDefaultMaxLength {
 		out.Put(rmeta.KeyMaxLength, o.maxLength)
 	}
+
 	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
 		PutIfNotNil(rmeta.KeyExample, o.example)
 
@@ -265,7 +267,6 @@ func (o *FileType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

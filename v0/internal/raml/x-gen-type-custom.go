@@ -13,7 +13,7 @@ import (
 // NewCustomType returns a new internal implementation
 // of the raml.CustomType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewCustomType() *CustomType {
 	out := &CustomType{
 		examples: raml.NewCustomExampleMap(0),
@@ -29,7 +29,7 @@ func NewCustomType() *CustomType {
 // CustomType is a default generated implementation of
 // the raml.CustomType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type CustomType struct {
 	*ExtendedDataType
 
@@ -46,6 +46,7 @@ func (o *CustomType) SetType(s string) raml.CustomType {
 
 func (o *CustomType) Default() option.Untyped {
 	return option.NewMaybeUntyped(o.def)
+
 }
 
 func (o *CustomType) SetDefault(i interface{}) raml.CustomType {
@@ -219,7 +220,6 @@ func (o *CustomType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

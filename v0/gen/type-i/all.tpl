@@ -26,6 +26,7 @@ type name interface {
 	// nothing.
 	UnsetDefault() {{.Name}}Type
 
+  {{if eq .SkipExamples false -}}
 	// Example returns the singular example value assigned to
 	// the current DataType definition.
 	Example() {{.Name}}Example
@@ -65,6 +66,7 @@ type name interface {
 	// example map.
 	UnsetExamples() {{.Name}}Type
 
+	{{end -}}
 	// SetDisplayName sets the current DataType definition's
 	// displayName value.
 	SetDisplayName(string) {{.Name}}Type

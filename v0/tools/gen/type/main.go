@@ -32,8 +32,7 @@ const (
 )
 
 var types = []extTypeProps{
-	{Name: "Include", Type: "include", Time: now, Base: true},
-	{Name: "Nil", Type: "nil", Time: now, Base: true},
+	{Name: "Nil", Type: "nil", Time: now, Base: true, SkipExamples: true},
 
 	{Name: "Any", Type: "any", Time: now, DefType: typeUntyped, DefTypeName: nameUntyped, EnumType: enumAny, DefIsOpt: true},
 	{Name: "Array", Type: "array", Time: now, DefType: "[]interface{}", DefTypeName: "[]interface{}", EnumType: enumAny},
@@ -49,6 +48,7 @@ var types = []extTypeProps{
 	{Name: "Object", Type: "object", Time: now, DefType: typeUntyped, DefTypeName: nameUntyped, EnumType: enumAny, DefIsOpt: true},
 	{Name: "String", Type: "string", Time: now, DefType: typeString, DefTypeName: nameString, EnumType: enumString, DefIsOpt: true},
 	{Name: "Union", Type: "union", Time: now, DefType: typeUntyped, DefTypeName: nameUntyped, EnumType: enumAny, DefIsOpt: true},
+	{Name: "Include", Type: "include", Time: now, DefType: typeUntyped, DefTypeName: nameUntyped, EnumType: enumAny, DefIsOpt: true, SkipExamples: true},
 }
 
 func main() {
@@ -86,6 +86,8 @@ type extTypeProps struct {
 
 	EnumType string
 	Base     bool
+
+	SkipExamples bool
 }
 
 func (e extTypeProps) IsDefPtr() bool {

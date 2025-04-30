@@ -18,25 +18,32 @@ import (
 //
 // Generated @ {{ .Time }}
 func New{{ .Name }}Type() *{{ .Name }}Type {
+	{{if eq .SkipExamples false -}}
 	out := &{{.Name}}Type{
 		examples: raml.New{{.Name}}ExampleMap(0),
 	}
 
-  out.examples.SerializeOrdered(false)
+	out.examples.SerializeOrdered(false)
+	{{else -}}
+	out := &{{.Name}}Type{}
+	{{- end}}
+
 	{{if eq .Name "Object" -}}
 		{{template "object-constructor" $}}
-	{{- else if eq .Name "Array" -}}
+	{{else if eq .Name "Array" -}}
 		{{template "array-constructor" $}}
-	{{- else if eq .Name "String" -}}
+	{{else if eq .Name "String" -}}
 		{{template "string-constructor" $}}
-	{{- else if eq .Name "Number" -}}
+	{{else if eq .Name "Number" -}}
 		{{template "number-constructor" $}}
-	{{- else if eq .Name "Integer" -}}
+	{{else if eq .Name "Integer" -}}
 		{{template "integer-constructor" $}}
-	{{- else if eq .Name "File" -}}
+	{{else if eq .Name "File" -}}
 		{{template "file-constructor" $}}
-	{{- else if eq .Name "Datetime" -}}
+	{{else if eq .Name "Datetime" -}}
 		{{template "datetime-constructor" $}}
+	{{else if eq .Name "Include" -}}
+		{{template "include-constructor" $}}
 	{{- end }}
 	out.ExtendedDataType = NewExtendedDataType(rmeta.Type{{.Name}}, out)
 
@@ -51,23 +58,27 @@ type {{.Name}}Type struct {
 	*ExtendedDataType
 
 	def      {{if .IsDefPtr}}*{{end}}{{.DefType}}
+	{{if eq .SkipExamples false -}}
 	example  raml.{{.Name}}Example
 	examples raml.{{.Name}}ExampleMap
+	{{end -}}
 	enum     []{{.EnumType}}
 	{{if eq .Name "Object" -}}
 		{{template "object-props" $}}
-	{{- else if eq .Name "Array" -}}
+	{{else if eq .Name "Array" -}}
 		{{template "array-props" $}}
-	{{- else if eq .Name "String" -}}
+	{{else if eq .Name "String" -}}
 		{{template "string-props" $}}
-	{{- else if eq .Name "Number" -}}
+	{{else if eq .Name "Number" -}}
 		{{template "number-props" $}}
-	{{- else if eq .Name "Integer" -}}
+	{{else if eq .Name "Integer" -}}
 		{{template "integer-props" $}}
-	{{- else if eq .Name "File" -}}
+	{{else if eq .Name "File" -}}
 		{{template "file-props" $}}
-	{{- else if eq .Name "Datetime" -}}
+	{{else if eq .Name "Datetime" -}}
 		{{template "datetime-props" $}}
+	{{else if eq .Name "Include" -}}
+		{{template "include-props" $}}
 	{{- end }}
 }
 
@@ -79,7 +90,7 @@ func (o *{{.Name}}Type) SetType(s string) raml.{{.Name}}Type {
 func (o *{{.Name}}Type) Default() {{if .DefIsOpt}}option.{{end}}{{.DefTypeName}} {
 	{{ if .DefIsOpt -}}
 		return option.NewMaybe{{.DefTypeName}}(o.def)
-	{{- else -}}
+	{{else -}}
 		return o.def
 	{{- end}}
 }
@@ -94,6 +105,7 @@ func (o *{{.Name}}Type) UnsetDefault() raml.{{.Name}}Type {
 	return o
 }
 
+{{if eq .SkipExamples false -}}
 func (o *{{.Name}}Type) Example() raml.{{.Name}}Example {
 	return o.example
 }
@@ -126,6 +138,7 @@ func (o *{{.Name}}Type) UnsetExamples() raml.{{.Name}}Type {
 	return o
 }
 
+{{end -}}
 func (o *{{.Name}}Type) SetDisplayName(s string) raml.{{.Name}}Type {
 	o.displayName = &s
 	return o
@@ -219,18 +232,20 @@ func (o *{{.Name}}Type) SetRequired(b bool) raml.{{.Name}}Type {
 
 {{if eq .Name "Object" -}}
 	{{template "object-methods" $}}
-{{- else if eq .Name "Array" -}}
+{{else if eq .Name "Array" -}}
 	{{template "array-methods" $}}
-{{- else if eq .Name "String" -}}
+{{else if eq .Name "String" -}}
 	{{template "string-methods" $}}
-{{- else if eq .Name "Number" -}}
+{{else if eq .Name "Number" -}}
 	{{template "number-methods" $}}
-{{- else if eq .Name "Integer" -}}
+{{else if eq .Name "Integer" -}}
 	{{template "integer-methods" $}}
-{{- else if eq .Name "File" -}}
+{{else if eq .Name "File" -}}
 	{{template "file-methods" $}}
-{{- else if eq .Name "Datetime" -}}
+{{else if eq .Name "Datetime" -}}
 	{{template "datetime-methods" $}}
+{{else if eq .Name "Include" -}}
+	{{template "include-methods" $}}
 {{- end -}}
 
 func (o *{{.Name}}Type) marshal(out raml.AnyMap) error {
@@ -242,31 +257,36 @@ func (o *{{.Name}}Type) marshal(out raml.AnyMap) error {
 	}
 	{{if eq .Name "Object" -}}
 	{{template "object-marshal" $}}
-	{{- else if eq .Name "Array" -}}
+	{{else if eq .Name "Array" -}}
 	{{template "array-marshal" $}}
-	{{- else if eq .Name "String" -}}
+	{{else if eq .Name "String" -}}
 	{{template "string-marshal" $}}
-	{{- else if eq .Name "Number" -}}
+	{{else if eq .Name "Number" -}}
 	{{template "number-marshal" $}}
-	{{- else if eq .Name "Integer" -}}
+	{{else if eq .Name "Integer" -}}
 	{{template "integer-marshal" $}}
-	{{- else if eq .Name "File" -}}
+	{{else if eq .Name "File" -}}
 	{{template "file-marshal" $}}
-	{{- else if eq .Name "Datetime" -}}
+	{{else if eq .Name "Datetime" -}}
 	{{template "datetime-marshal" $}}
+	{{else if eq .Name "Include" -}}
+	{{template "include-marshal" $}}
 	{{- end}}
-	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
-		PutIfNotNil(rmeta.KeyExample, o.example)
+	out.PutIfNotNil(rmeta.KeyEnum, o.enum){{if eq .SkipExamples false}}.
+		PutIfNotNil(rmeta.KeyExample, o.example){{end}}
 
+	{{if eq .SkipExamples false -}}
 	if o.examples.Len() > 0 {
 		out.PutIfNotNil(rmeta.KeyExamples, o.examples)
 	}
 
+	{{end -}}
 	return nil
 }
 
 func (o *{{.Name}}Type) assign(key, val *yaml.Node) error {
 	switch key.Value {
+	{{if eq .SkipExamples false -}}
 	case rmeta.KeyExample:
 		if ex, err := ExampleSortingHat(o.kind); err != nil {
 			return err
@@ -279,6 +299,7 @@ func (o *{{.Name}}Type) assign(key, val *yaml.Node) error {
 		return nil
 	case rmeta.KeyExamples:
 		return Unmarshal{{.Name}}ExampleMapRAML(o.examples, val)
+	{{end -}}
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			{{if eq .DefTypeName "Bool" "Float64" "Int64" "String" -}}
@@ -288,37 +309,38 @@ func (o *{{.Name}}Type) assign(key, val *yaml.Node) error {
 				if val, err := xyml.ToInt(cur, 10); err != nil {
 			{{else if eq .DefTypeName "Float64" -}}
 				if val, err := xyml.ToFloat(cur); err != nil {
-			{{- else -}}
+			{{else -}}
 				if val, err := xyml.To{{.DefTypeName}}(cur); err != nil {
 			{{end}}
 				return err
 			} else {
 				o.enum = append(o.enum, val)
 			}
-			{{- else -}}
+			{{else -}}
 			o.enum = append(o.enum, cur)
 			{{- end}}
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}
 	{{if eq .Name "Object" -}}
 	{{template "object-assign" $}}
-	{{- else if eq .Name "Array" -}}
+	{{else if eq .Name "Array" -}}
 	{{template "array-assign" $}}
-	{{- else if eq .Name "String" -}}
+	{{else if eq .Name "String" -}}
 	{{template "string-assign" $}}
-	{{- else if eq .Name "Number" -}}
+	{{else if eq .Name "Number" -}}
 	{{template "number-assign" $}}
-	{{- else if eq .Name "Integer" -}}
+	{{else if eq .Name "Integer" -}}
 	{{template "integer-assign" $}}
-	{{- else if eq .Name "File" -}}
+	{{else if eq .Name "File" -}}
 	{{template "file-assign" $}}
-	{{- else if eq .Name "Datetime" -}}
+	{{else if eq .Name "Datetime" -}}
 	{{template "datetime-assign" $}}
+	{{else if eq .Name "Include" -}}
+	{{template "include-assign" $}}
 	{{- end}}
 	return o.ExtendedDataType.assign(key, val)
 }

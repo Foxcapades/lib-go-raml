@@ -13,7 +13,7 @@ import (
 // NewNumberType returns a new internal implementation
 // of the raml.NumberType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewNumberType() *NumberType {
 	out := &NumberType{
 		examples: raml.NewNumberExampleMap(0),
@@ -29,7 +29,7 @@ func NewNumberType() *NumberType {
 // NumberType is a default generated implementation of
 // the raml.NumberType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type NumberType struct {
 	*ExtendedDataType
 
@@ -50,6 +50,7 @@ func (o *NumberType) SetType(s string) raml.NumberType {
 
 func (o *NumberType) Default() option.Float64 {
 	return option.NewMaybeFloat64(o.def)
+
 }
 
 func (o *NumberType) SetDefault(i float64) raml.NumberType {
@@ -252,6 +253,7 @@ func (o *NumberType) marshal(out raml.AnyMap) error {
 		PutIfNotNil(rmeta.KeyMinimum, o.minimum).
 		PutIfNotNil(rmeta.KeyMaximum, o.maximum).
 		PutIfNotNil(rmeta.KeyMultipleOf, o.multipleOf)
+
 	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
 		PutIfNotNil(rmeta.KeyExample, o.example)
 
@@ -279,6 +281,7 @@ func (o *NumberType) assign(key, val *yaml.Node) error {
 	case rmeta.KeyEnum:
 		return xyml.SequenceForEach(val, func(cur *yaml.Node) error {
 			if val, err := xyml.ToFloat(cur); err != nil {
+
 				return err
 			} else {
 				o.enum = append(o.enum, val)
@@ -286,7 +289,6 @@ func (o *NumberType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

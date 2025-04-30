@@ -13,7 +13,7 @@ import (
 // NewObjectType returns a new internal implementation
 // of the raml.ObjectType interface.
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 func NewObjectType() *ObjectType {
 	out := &ObjectType{
 		examples: raml.NewObjectExampleMap(0),
@@ -32,7 +32,7 @@ func NewObjectType() *ObjectType {
 // ObjectType is a default generated implementation of
 // the raml.ObjectType interface
 //
-// Generated @ 2025-04-30T18:02:23.857064227-04:00
+// Generated @ 2025-04-30T18:50:42.201241268-04:00
 type ObjectType struct {
 	*ExtendedDataType
 
@@ -55,6 +55,7 @@ func (o *ObjectType) SetType(s string) raml.ObjectType {
 
 func (o *ObjectType) Default() option.Untyped {
 	return option.NewMaybeUntyped(o.def)
+
 }
 
 func (o *ObjectType) SetDefault(i interface{}) raml.ObjectType {
@@ -292,6 +293,7 @@ func (o *ObjectType) marshal(out raml.AnyMap) error {
 	if o.properties.Len() > 0 {
 		out.Put(rmeta.KeyProperties, o.properties)
 	}
+
 	out.PutIfNotNil(rmeta.KeyEnum, o.enum).
 		PutIfNotNil(rmeta.KeyExample, o.example)
 
@@ -322,7 +324,6 @@ func (o *ObjectType) assign(key, val *yaml.Node) error {
 
 			return nil
 		})
-		return nil
 	case rmeta.KeyRequired:
 		return assign.AsBool(val, &o.required)
 	}

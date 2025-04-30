@@ -2,11 +2,12 @@ package raml
 
 import (
 	"github.com/Foxcapades/goop/v1/pkg/option"
+	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
+	"gopkg.in/yaml.v3"
+
 	"github.com/Foxcapades/lib-go-raml/v0/internal/util/assign"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
 	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
-	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
-	"gopkg.in/yaml.v3"
 )
 
 func NewExtendedDataType(kind rmeta.DataTypeKind, self concreteType) *ExtendedDataType {
@@ -14,7 +15,6 @@ func NewExtendedDataType(kind rmeta.DataTypeKind, self concreteType) *ExtendedDa
 		DataType:       NewDataType(kind, self),
 		hasAnnotations: makeAnnotations(),
 		facets:         raml.NewFacetMap(0),
-		required:       true,
 	}
 }
 
@@ -26,7 +26,6 @@ type ExtendedDataType struct {
 	description *string
 	facets      raml.FacetMap
 	xml         raml.XML
-	required    bool
 }
 
 func (e *ExtendedDataType) DisplayName() option.String {
@@ -43,10 +42,6 @@ func (e *ExtendedDataType) FacetDefinitions() raml.FacetMap {
 
 func (e *ExtendedDataType) XML() raml.XML {
 	return e.xml
-}
-
-func (e *ExtendedDataType) Required() bool {
-	return e.required
 }
 
 func (e *ExtendedDataType) marshal(out raml.AnyMap) error {

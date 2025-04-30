@@ -2,11 +2,13 @@ package raml
 
 import (
 	"errors"
-	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
-	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
+
 	"github.com/Foxcapades/lib-go-yaml/v1/pkg/xyml"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
+
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml"
+	"github.com/Foxcapades/lib-go-raml/v0/pkg/raml/rmeta"
 )
 
 func NewDataType(kind rmeta.DataTypeKind, self concreteType) *DataType {
@@ -15,6 +17,7 @@ func NewDataType(kind rmeta.DataTypeKind, self concreteType) *DataType {
 		schema:   string(kind),
 		kind:     kind,
 		hasExtra: makeExtra(),
+		required: true,
 	}
 }
 
@@ -23,8 +26,13 @@ type DataType struct {
 
 	self concreteType
 
-	schema string
-	kind   rmeta.DataTypeKind
+	schema   string
+	kind     rmeta.DataTypeKind
+	required bool
+}
+
+func (d *DataType) Required() bool {
+	return d.required
 }
 
 func (d *DataType) Schema() string {

@@ -13,7 +13,7 @@ import (
 // NewFileType returns a new internal implementation
 // of the raml.FileType interface.
 //
-// Generated @ 2023-01-17T10:02:54.294844187-05:00
+// Generated @ 2025-04-30T18:02:23.857064227-04:00
 func NewFileType() *FileType {
 	out := &FileType{
 		examples: raml.NewFileExampleMap(0),
@@ -32,7 +32,7 @@ func NewFileType() *FileType {
 // FileType is a default generated implementation of
 // the raml.FileType interface
 //
-// Generated @ 2023-01-17T10:02:54.294844187-05:00
+// Generated @ 2025-04-30T18:02:23.857064227-04:00
 type FileType struct {
 	*ExtendedDataType
 

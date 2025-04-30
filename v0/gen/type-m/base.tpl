@@ -41,5 +41,12 @@ func (a {{.Name}}Type) marshal(out raml.AnyMap) error {
 
 	return nil
 }
+func(a *{{.Name}}Type) assign(key, val *yaml.Node) (err error) {
+	switch key.Value {
+	case rmeta.KeyType, rmeta.KeySchema:
+		a.DataType.schema = val.Value
+	}
+	return nil
+}
 {{end}}
 {{end}}

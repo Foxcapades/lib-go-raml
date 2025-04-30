@@ -13,7 +13,7 @@ import (
 // NewAnyType returns a new internal implementation
 // of the raml.AnyType interface.
 //
-// Generated @ 2023-01-17T10:02:54.294844187-05:00
+// Generated @ 2025-04-30T18:02:23.857064227-04:00
 func NewAnyType() *AnyType {
 	out := &AnyType{
 		examples: raml.NewAnyExampleMap(0),
@@ -29,7 +29,7 @@ func NewAnyType() *AnyType {
 // AnyType is a default generated implementation of
 // the raml.AnyType interface
 //
-// Generated @ 2023-01-17T10:02:54.294844187-05:00
+// Generated @ 2025-04-30T18:02:23.857064227-04:00
 type AnyType struct {
 	*ExtendedDataType
 

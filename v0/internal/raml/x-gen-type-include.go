@@ -13,7 +13,7 @@ import (
 // NewIncludeType returns a new internal implementation
 // of the raml.IncludeType interface.
 //
-// Generated @ 2025-04-30T18:50:42.201241268-04:00
+// Generated @ 2025-05-01T01:20:50.297484942-04:00
 func NewIncludeType() *IncludeType {
 	out := &IncludeType{}
 
@@ -25,7 +25,7 @@ func NewIncludeType() *IncludeType {
 // IncludeType is a default generated implementation of
 // the raml.IncludeType interface
 //
-// Generated @ 2025-04-30T18:50:42.201241268-04:00
+// Generated @ 2025-05-01T01:20:50.297484942-04:00
 type IncludeType struct {
 	*ExtendedDataType
 
@@ -176,6 +176,7 @@ func (o *IncludeType) assign(key, val *yaml.Node) error {
 	switch key.Value {
 	case rmeta.KeyType, rmeta.KeySchema:
 		o.DataType.schema = val.Value
+		return nil
 	}
 
 	return o.ExtendedDataType.assign(key, val)

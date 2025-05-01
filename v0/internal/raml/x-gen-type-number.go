@@ -13,7 +13,7 @@ import (
 // NewNumberType returns a new internal implementation
 // of the raml.NumberType interface.
 //
-// Generated @ 2025-04-30T18:50:42.201241268-04:00
+// Generated @ 2025-05-01T01:20:50.297484942-04:00
 func NewNumberType() *NumberType {
 	out := &NumberType{
 		examples: raml.NewNumberExampleMap(0),
@@ -29,7 +29,7 @@ func NewNumberType() *NumberType {
 // NumberType is a default generated implementation of
 // the raml.NumberType interface
 //
-// Generated @ 2025-04-30T18:50:42.201241268-04:00
+// Generated @ 2025-05-01T01:20:50.297484942-04:00
 type NumberType struct {
 	*ExtendedDataType
 

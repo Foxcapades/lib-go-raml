@@ -33,6 +33,7 @@ func (o {{.Name}}Type) assign(key, val *yaml.Value) (err error) {
 	switch key.Value {
 	case rmeta.KeyType, rmeta.KeySchema:
 		o.DataType.schema = val.Value
+		return nil
 	}
 {{end}}
 	return

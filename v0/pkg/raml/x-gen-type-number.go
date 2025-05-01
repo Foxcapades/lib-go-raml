@@ -2,7 +2,7 @@ package raml
 
 import "github.com/Foxcapades/goop/v1/pkg/option"
 
-// NumberType generated @ 2025-04-30T18:50:42.201241268-04:00
+// NumberType generated @ 2025-05-01T01:20:50.297484942-04:00
 type NumberType interface {
 	Unmarshaler
 	Marshaler

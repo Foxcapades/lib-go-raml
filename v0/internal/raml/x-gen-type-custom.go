@@ -13,7 +13,7 @@ import (
 // NewCustomType returns a new internal implementation
 // of the raml.CustomType interface.
 //
-// Generated @ 2025-04-30T18:50:42.201241268-04:00
+// Generated @ 2025-05-01T01:20:50.297484942-04:00
 func NewCustomType() *CustomType {
 	out := &CustomType{
 		examples: raml.NewCustomExampleMap(0),
@@ -29,7 +29,7 @@ func NewCustomType() *CustomType {
 // CustomType is a default generated implementation of
 // the raml.CustomType interface
 //
-// Generated @ 2025-04-30T18:50:42.201241268-04:00
+// Generated @ 2025-05-01T01:20:50.297484942-04:00
 type CustomType struct {
 	*ExtendedDataType
 
